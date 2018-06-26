@@ -1,3 +1,4 @@
+using Avocado.Domain;
 using Avocado.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,6 +29,8 @@ namespace Avocado.Web
             });
 
             services.AddDbContext<AvocadoContext>();
+
+            services.AddScoped<IRepository<Event>, ContextRepository<Event>>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

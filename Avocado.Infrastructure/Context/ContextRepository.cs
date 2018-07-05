@@ -3,7 +3,7 @@ using System.Linq;
 using Avocado.Domain;
 using Microsoft.EntityFrameworkCore;
 
-namespace Avocado.Infrastructure
+namespace Avocado.Infrastructure.Context
 {
     public class ContextRepository<T> : IRepository<T> where T : class
     {

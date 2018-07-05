@@ -3,13 +3,13 @@ using Avocado.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace Avocado.Infrastructure
+namespace Avocado.Infrastructure.Context
 {
     public class AvocadoContext : DbContext
     {
         private readonly string _connectionString;
 
-        public AvocadoContext(IOptions<ContextOptions> options)
+        public AvocadoContext(IOptions<ContextOptions<AvocadoContext>> options)
         {
             _connectionString = options.Value.ConnectionString;
         }

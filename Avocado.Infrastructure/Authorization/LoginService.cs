@@ -28,9 +28,9 @@ namespace Avocado.Infrastructure.Authorization
         private Login FindLogin(Providers provider, string providerId) => _loginRepo.Find(new FindLogin(provider, providerId));
 
         // register
-        public bool TryRegister(string name, LoginModel model, out string token)
+        public bool TryRegister(RegisterModel model, out string token)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(model.Name))
             {
                 token = string.Empty;
                 return false;
@@ -50,9 +50,13 @@ namespace Avocado.Infrastructure.Authorization
                 return false;
             }
             // create account
-            var account = new Account(name);
+            var account = new Account(model.Name);
+            if (!string.IsNullOrWhiteSpace(model.Picture))
+            {
+                account.UpdatePicture(model.Picture);
+            }
             // create login
-            login = new Login(account, Providers.Password, model.ProviderId, model.ProviderKey);
+            login = new Login(account, provider, model.ProviderId, model.ProviderKey);
             // save account and login
             _accountRepo.Add(account);
             _loginRepo.Add(login);
@@ -68,15 +72,14 @@ namespace Avocado.Infrastructure.Authorization
         {
             var login = FindLogin(Enum.Parse<Providers>(model.Provider), model.ProviderId);
 
-            if (model.Provider != model.Provider ||
-                model.ProviderId != model.ProviderId ||
-                model.ProviderKey != model.ProviderKey)
+            if (login == null || login.ProviderKey != model.ProviderKey)
             {
                 token = string.Empty;
                 return false;
             }
 
-            token = GenerateToken(null);
+            var account = _accountRepo.Find(new FindAccount(login.AccountId));
+            token = GenerateToken(account);
 
             return true;
         }

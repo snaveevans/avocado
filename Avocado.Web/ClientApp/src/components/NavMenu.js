@@ -34,6 +34,11 @@ export default props => (
             <Glyphicon glyph='th-list' /> Events
           </NavItem>
         </LinkContainer>
+        <LinkContainer to={'/login'}>
+          <NavItem>
+            <Glyphicon glyph='th-list' /> Login/Register
+          </NavItem>
+        </LinkContainer>
       </Nav>
     </Navbar.Collapse>
   </Navbar>

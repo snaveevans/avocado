@@ -7,7 +7,7 @@ namespace Avocado.Domain
         public Guid Id { get; private set; }
         public string Name { get; private set; }
         public bool IsEnabled { get; private set; }
-        public string Avatar { get; private set; }
+        public string Picture { get; private set; }
 
         [Obsolete("system constructor")]
         protected Account() { }
@@ -20,7 +20,7 @@ namespace Avocado.Domain
             Id = Guid.NewGuid();
             Name = name.Trim();
             IsEnabled = true;
-            Avatar = string.Empty;
+            Picture = string.Empty;
         }
 
         public void Disable()
@@ -41,12 +41,12 @@ namespace Avocado.Domain
             Name = name.Trim();
         }
 
-        public void UpdateAvatar(string avatar)
+        public void UpdatePicture(string picture)
         {
-            if (string.IsNullOrWhiteSpace(avatar))
-                throw new ArgumentNullException(nameof(avatar));
+            if (string.IsNullOrWhiteSpace(picture))
+                throw new ArgumentNullException(nameof(picture));
 
-            Avatar = avatar.Trim();
+            Picture = picture.Trim();
         }
     }
 }

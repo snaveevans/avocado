@@ -3,15 +3,17 @@ using System;
 using Avocado.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Avocado.Infrastructure.Migrations
 {
     [DbContext(typeof(AvocadoContext))]
-    partial class AvocadoContextModelSnapshot : ModelSnapshot
+    [Migration("20180706215355_ChangeToPicture")]
+    partial class ChangeToPicture
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

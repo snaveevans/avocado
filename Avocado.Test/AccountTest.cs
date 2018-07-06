@@ -16,7 +16,7 @@ namespace Avocado.Test
             Assert.NotEqual(Guid.Empty, account.Id);
             Assert.Equal("tyler evans", account.Name);
             Assert.True(account.IsEnabled);
-            Assert.Equal(string.Empty, account.Avatar);
+            Assert.Equal(string.Empty, account.Picture);
         }
 
         [Fact]
@@ -45,9 +45,9 @@ namespace Avocado.Test
         {
             var account = new Account("tyler evans");
             
-            account.UpdateAvatar("foobar");
+            account.UpdatePicture("foobar");
 
-            Assert.Equal("foobar", account.Avatar);
+            Assert.Equal("foobar", account.Picture);
         }
 
         [Fact]

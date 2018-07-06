@@ -20,5 +20,6 @@ namespace Avocado.Infrastructure.Context
         }
 
         public DbSet<Event> Events { get; set; }
+        public DbSet<Account> Accounts { get; set; }
     }
 }

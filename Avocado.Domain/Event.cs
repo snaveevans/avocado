@@ -9,7 +9,7 @@ namespace Avocado.Domain
         public string Description { get; private set; }
 
         [Obsolete("system constructor")]
-        public Event() { }
+        protected Event() { }
 
         public Event(string title, string description)
         {

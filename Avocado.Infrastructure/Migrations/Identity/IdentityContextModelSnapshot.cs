@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace Avocado.Infrastructure.Migrations
+namespace Avocado.Infrastructure.Migrations.Identity
 {
-    [DbContext(typeof(AvocadoContext))]
-    partial class AvocadoContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(IdentityContext))]
+    partial class IdentityContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -19,34 +19,22 @@ namespace Avocado.Infrastructure.Migrations
                 .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("Avocado.Domain.Account", b =>
+            modelBuilder.Entity("Avocado.Infrastructure.Authorization.Login", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Avatar");
+                    b.Property<Guid>("AccountId");
 
-                    b.Property<bool>("IsEnabled");
+                    b.Property<string>("Provider");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("ProviderId");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("Accounts");
-                });
-
-            modelBuilder.Entity("Avocado.Domain.Event", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Description");
-
-                    b.Property<string>("Title");
+                    b.Property<string>("ProviderKey");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Events");
+                    b.ToTable("Logins");
                 });
 #pragma warning restore 612, 618
         }

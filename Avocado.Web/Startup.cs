@@ -26,24 +26,30 @@ namespace Avocado.Web
         {
             services.AddMvc();
 
-            var connectionString = Configuration.GetConnectionString("AvocadoContext");
             services.Configure<ContextOptions<AvocadoContext>>(options =>
             {
-                options.ConnectionString = connectionString;
+                options.ConnectionString = Configuration.GetConnectionString("AvocadoContext");
+            });
+
+            services.Configure<ContextOptions<IdentityContext>>(options =>
+            {
+                options.ConnectionString = Configuration.GetConnectionString("IdentityContext");
+            });
+
+            services.Configure<LoginOptions>(options =>
+            {
+                options.Issuer = Configuration["JwtIssuer"];
+                options.MillisecondsUntilExpiration = long.Parse(Configuration["JwtExpireMilliseconds"]);
+                options.Key = Configuration["JwtKey"];
             });
 
             services.AddDbContext<AvocadoContext>();
+            services.AddDbContext<IdentityContext>();
 
-            services.AddScoped<IRepository<Event>, ContextRepository<Event>>();
-            services.AddScoped<LoginService>(options =>
-            {
-                return new LoginService(new LoginOptions
-                {
-                    Issuer = Configuration["JwtIssuer"],
-                    MillisecondsUntilExpiration = long.Parse(Configuration["JwtExpireMilliseconds"]),
-                    Key = Configuration["JwtKey"]
-                });
-            });
+            services.AddScoped<IRepository<Event>, ContextRepository<Event, AvocadoContext>>();
+            services.AddScoped<IRepository<Account>, ContextRepository<Account, AvocadoContext>>();
+            services.AddScoped<IRepository<Login>, ContextRepository<Login, IdentityContext>>();
+            services.AddScoped<LoginService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

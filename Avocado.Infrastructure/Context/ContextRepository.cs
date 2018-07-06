@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Avocado.Domain;
@@ -5,18 +6,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Avocado.Infrastructure.Context
 {
-    public class ContextRepository<T> : IRepository<T> where T : class
+    public class ContextRepository<T, TContext> : IRepository<T> where T : class where TContext : DbContext
     {
         private readonly DbSet<T> _dbset;
+        private readonly Action _save;
 
-        public ContextRepository(AvocadoContext context)
+        public ContextRepository(TContext context)
         {
             _dbset = context.Set<T>();
+            _save = () => { context.SaveChanges(); };
         }
 
         public void Add(T item)
         {
             _dbset.Add(item);
+            _save();
         }
 
         public T Find(ISpecification<T> spec)
@@ -32,6 +36,7 @@ namespace Avocado.Infrastructure.Context
         public bool Remove(T Item)
         {
             var entityRemoved = _dbset.Remove(Item);
+            _save();
             return entityRemoved != null;
         }
     }

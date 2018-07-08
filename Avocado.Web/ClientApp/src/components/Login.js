@@ -46,9 +46,9 @@ class Login extends Component {
             return (
                 <div>
                     <h2>Login</h2>
-                    <button className="btn btn-primary btn-large" onClick={() => this.changeMode("Login")}>Login</button>
+                    <button onClick={() => this.changeMode("Login")}>Login</button>
                     <br /><br />
-                    <button className="btn btn-primary btn-large" onClick={() => this.changeMode("Register")}>Register</button>
+                    <button onClick={() => this.changeMode("Register")}>Register</button>
                 </div>
             );
         }
@@ -66,7 +66,7 @@ class Login extends Component {
                         <input type="hidden" name="scope" value="https://www.googleapis.com/auth/contacts.readonly" />
                         <input type="hidden" name="include_granted_scopes" value="true" />
                         <input type="hidden" name="state" value="pass-through value" />
-                        <button type="submit" className="btn btn-primary btn-large" >Google</button>
+                        <button type="submit" >Google</button>
                     </form>
                 </div>
             );

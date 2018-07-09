@@ -23,6 +23,14 @@ namespace Avocado.Web.Controllers
             _configuration = configuration;
         }
 
+        [HttpPost("testtoken")]
+        public IActionResult TestToken([FromBody] LoginModel model)
+        {
+            if (!_loginService.TryLogin(model, out string token)) { return BadRequest(); }
+
+            return Ok(token);
+        }
+
         [HttpGet("google/{mode}"), AllowAnonymous]
         public IActionResult Google(string mode, string code)
         {

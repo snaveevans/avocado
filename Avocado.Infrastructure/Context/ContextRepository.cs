@@ -33,9 +33,9 @@ namespace Avocado.Infrastructure.Context
             return spec.Filter(_dbset);
         }
 
-        public bool Remove(T Item)
+        public bool Remove(T item)
         {
-            var entityRemoved = _dbset.Remove(Item);
+            var entityRemoved = _dbset.Remove(item);
             _save();
             return entityRemoved != null;
         }

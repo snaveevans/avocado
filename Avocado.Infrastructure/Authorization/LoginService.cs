@@ -30,7 +30,9 @@ namespace Avocado.Infrastructure.Authorization
         // register
         public bool TryRegister(RegisterModel model, out string token)
         {
-            if (string.IsNullOrWhiteSpace(model.Name))
+            if (string.IsNullOrWhiteSpace(model.Name) ||
+                string.IsNullOrWhiteSpace(model.Provider) ||
+                string.IsNullOrWhiteSpace(model.ProviderId))
             {
                 token = string.Empty;
                 return false;
@@ -70,6 +72,13 @@ namespace Avocado.Infrastructure.Authorization
         // login
         public bool TryLogin(LoginModel model, out string token)
         {
+            if (string.IsNullOrWhiteSpace(model.Provider) ||
+                string.IsNullOrWhiteSpace(model.ProviderId))
+            {
+                token = string.Empty;
+                return false;
+            }
+            
             var login = FindLogin(Enum.Parse<Providers>(model.Provider), model.ProviderId);
 
             if (login == null || login.ProviderKey != model.ProviderKey)

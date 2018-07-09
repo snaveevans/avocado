@@ -1,8 +1,9 @@
+using System;
 using System.Linq;
 using Avocado.Domain.Entities;
 using Avocado.Domain.Interfaces;
 using Avocado.Domain.Services;
-using Avocado.Infrastructure.Specifications;
+using Avocado.Infrastructure.Specifications.Events;
 using Avocado.Web.Models;
 using Avocado.Web.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -14,14 +15,17 @@ namespace Avocado.Web.Controllers
     public class EventsController : Controller
     {
         private readonly IRepository<Event> _eventRepo;
+        private readonly IRepository<Invitee> _inviteeRepo;
         private readonly EventService _eventService;
         private readonly AccountService _accountService;
 
         public EventsController(IRepository<Event> eventRepo,
+            IRepository<Invitee> inviteeRepo,
             EventService eventService,
             AccountService accountService)
         {
             _eventRepo = eventRepo;
+            _inviteeRepo = inviteeRepo;
             _eventService = eventService;
             _accountService = accountService;
         }
@@ -29,18 +33,31 @@ namespace Avocado.Web.Controllers
         [HttpGet]
         public IActionResult GetAllEvents()
         {
-            return Ok(_eventRepo.Query(new AllEventsSpecification()));
+            if (!_accountService.TryGetCurrentAccount(out Account account))
+            {
+                return Unauthorized();
+            }
+
+            return Ok(_eventRepo.Query(new AllAuthorizedEvents(account, _inviteeRepo)));
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetEvent(Guid id)
+        {
+            var evnt = _eventRepo.Find(new EventById(id));
+            if (evnt == null) { return BadRequest(); }
+            return Ok(evnt);
         }
 
         [HttpPost]
         public IActionResult Create([FromBody] CreateEventModel model)
         {
-            var errors = model.GetValidationErrors();
-            if (errors.Any()) { return BadRequest(errors); };
             if (!_accountService.TryGetCurrentAccount(out Account account))
             {
                 return Unauthorized();
             }
+            var errors = model.GetValidationErrors();
+            if (errors.Any()) { return BadRequest(errors); };
             var evnt = _eventService.Create(account, model.Title, model.Description);
             return Ok(evnt);
         }

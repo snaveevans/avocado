@@ -1,8 +1,9 @@
 using System.Collections.Generic;
-using Avocado.Domain;
+using Avocado.Domain.Entities;
 using Avocado.Infrastructure.Enumerations;
 using Avocado.Infrastructure.Authorization;
 using System.Linq;
+using Avocado.Domain.Interfaces;
 
 namespace Avocado.Infrastructure.Specifications
 {

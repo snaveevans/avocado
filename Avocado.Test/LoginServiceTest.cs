@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using Avocado.Domain;
+using Avocado.Domain.Entities;
 using Avocado.Infrastructure.Authorization;
 using Avocado.Infrastructure.Enumerations;
 using Microsoft.Extensions.Options;

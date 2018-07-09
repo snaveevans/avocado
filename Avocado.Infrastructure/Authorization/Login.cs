@@ -1,5 +1,5 @@
 using System;
-using Avocado.Domain;
+using Avocado.Domain.Entities;
 using Avocado.Infrastructure.Enumerations;
 
 namespace Avocado.Infrastructure.Authorization

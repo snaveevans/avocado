@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Avocado.Domain;
+using Avocado.Domain.Entities;
+using Avocado.Domain.Interfaces;
 
 namespace Avocado.Test
 {

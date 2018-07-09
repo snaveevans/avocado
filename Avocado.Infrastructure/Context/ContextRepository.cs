@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Avocado.Domain;
+using Avocado.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Avocado.Infrastructure.Context

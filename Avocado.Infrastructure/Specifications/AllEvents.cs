@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using Avocado.Domain;
+using Avocado.Domain.Entities;
+using Avocado.Domain.Interfaces;
 
 namespace Avocado.Infrastructure.Specifications
 {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Avocado.Domain
+namespace Avocado.Domain.Entities
 {
     public class Account
     {

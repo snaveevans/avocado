@@ -1,13 +1,18 @@
 using System.Text;
-using Avocado.Domain;
+using Avocado.Domain.Entities;
+using Avocado.Domain.Interfaces;
+using Avocado.Domain.Services;
 using Avocado.Infrastructure.Authorization;
 using Avocado.Infrastructure.Context;
+using Avocado.Web.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Avocado.Web
@@ -18,12 +23,12 @@ namespace Avocado.Web
         {
             Configuration = configuration;
         }
-
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMvc();
 
             services.Configure<ContextOptions<AvocadoContext>>(options =>
@@ -47,7 +52,11 @@ namespace Avocado.Web
             services.AddDbContext<IdentityContext>();
 
             services.AddScoped<IRepository<Event>, ContextRepository<Event, AvocadoContext>>();
+            services.AddScoped<IRepository<Invitee>, ContextRepository<Invitee, AvocadoContext>>();
             services.AddScoped<IRepository<Account>, ContextRepository<Account, AvocadoContext>>();
+            services.AddScoped<AccountService>();
+            services.AddScoped<EventService>();
+
             services.AddScoped<IRepository<Login>, ContextRepository<Login, IdentityContext>>();
             services.AddScoped<LoginService>();
 

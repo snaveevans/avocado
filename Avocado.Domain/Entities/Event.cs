@@ -1,6 +1,6 @@
 using System;
 
-namespace Avocado.Domain
+namespace Avocado.Domain.Entities
 {
     public class Event
     {
@@ -11,7 +11,7 @@ namespace Avocado.Domain
         [Obsolete("system constructor")]
         protected Event() { }
 
-        public Event(string title, string description)
+        internal Event(string title, string description)
         {
             if (string.IsNullOrWhiteSpace(title))
                 throw new ArgumentNullException(nameof(title));

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Avocado.Domain
+namespace Avocado.Domain.Interfaces
 {
     public interface IRepository<T>
     {

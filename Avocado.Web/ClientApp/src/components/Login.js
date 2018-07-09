@@ -1,7 +1,17 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import Typography from '@material-ui/core/Typography';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
 import { actionCreators } from '../store/Account';
+import Button from '@material-ui/core/Button';
+
+const styles = theme => ({
+    button: {
+        margin: theme.spacing.unit
+    }
+});
 
 class Login extends Component {
     constructor(props) {
@@ -31,7 +41,7 @@ class Login extends Component {
         });
     }
     render() {
-        const { token } = this.props;
+        const { token, classes } = this.props;
         const { mode } = this.state;
 
         if (token !== "") {
@@ -45,10 +55,15 @@ class Login extends Component {
         if (mode === "") {
             return (
                 <div>
-                    <h2>Login</h2>
-                    <button onClick={() => this.changeMode("Login")}>Login</button>
-                    <br /><br />
-                    <button onClick={() => this.changeMode("Register")}>Register</button>
+                    <Typography variant="headline" color="inherit" align="center">
+                        Login/Register
+                    </Typography>
+                    <Button onClick={() => this.changeMode("Login")} variant="contained" color="primary" className={classes.button}>
+                        Login
+                    </Button>
+                    <Button onClick={() => this.changeMode("Login")} variant="contained" color="primary" className={classes.button}>
+                        Register
+                    </Button>
                 </div>
             );
         }
@@ -58,7 +73,9 @@ class Login extends Component {
             const redirectUri = `http://local.tylerevans.co:5000/api/token/google/${action}`;
             return (
                 <div>
-                    <h1>{mode}</h1>
+                    <Typography variant="headline" color="inherit" align="center">
+                        {mode}
+                    </Typography>
                     <form action="https://accounts.google.com/o/oauth2/v2/auth" method="get" target="_blank">
                         <input type="hidden" name="client_id" value="36370953457-31iaemqdva2uoio9brcptifcc3cbnl2t.apps.googleusercontent.com" />
                         <input type="hidden" name="redirect_uri" value={redirectUri} />
@@ -66,7 +83,9 @@ class Login extends Component {
                         <input type="hidden" name="scope" value="https://www.googleapis.com/auth/contacts.readonly" />
                         <input type="hidden" name="include_granted_scopes" value="true" />
                         <input type="hidden" name="state" value="pass-through value" />
-                        <button type="submit" >Google</button>
+                        <Button type="submit" variant="contained" color="primary" className={classes.button}>
+                            Google
+                        </Button>
                     </form>
                 </div>
             );
@@ -80,7 +99,11 @@ class Login extends Component {
     }
 };
 
+Login.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
 export default connect(
     state => state.account,
     dispatch => bindActionCreators(actionCreators, dispatch)
-)(Login);
+)(withStyles(styles)(Login));

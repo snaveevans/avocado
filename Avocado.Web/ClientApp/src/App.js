@@ -1,13 +1,13 @@
 ﻿import React from 'react';
 import { Route } from 'react-router';
 import Layout from './components/Layout/Layout';
-import { routes } from "./Routes";
+import * as Routes from "./Routes";
 
 export default () => (
   <Layout>
     {
-      Object.keys(routes).map(key => {
-        const route = routes[key];
+      Object.keys(Routes).map(key => {
+        const route = Routes[key];
         return <Route key={key} 
           exact={route.exact} 
           path={route.path} 

@@ -6,10 +6,10 @@ const initialState = {
 };
 
 export const actionCreators = {
-    openDrawer: () => async (dispatch) => {
+    openDrawer: () => (dispatch) => {
         dispatch({ type: openDrawer });
     },
-    closeDrawer: () => async (dispatch) => {
+    closeDrawer: () => (dispatch) => {
         dispatch({ type: closeDrawer });
     }
 };

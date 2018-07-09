@@ -45,11 +45,11 @@ class MenuAppBar extends React.Component {
 
   toggleDrawer = () => {
     if (this.props.isDrawerOpen) {
-        this.props.closeDrawer();
+      this.props.closeDrawer();
     } else {
-        this.props.openDrawer();
+      this.props.openDrawer();
     }
-}
+  }
 
   render() {
     const { classes, isLoggedIn } = this.props;
@@ -57,46 +57,46 @@ class MenuAppBar extends React.Component {
     const open = Boolean(anchorEl);
 
     return (
-        <AppBar position="static" className={classes.root}>
-          <Toolbar>
-            <IconButton onClick={() => this.toggleDrawer()} className={classes.menuButton} color="inherit" aria-label="Menu">
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="title" color="inherit" className={classes.flex}>
-              Avocado
+      <AppBar position="static" className={classes.root}>
+        <Toolbar>
+          <IconButton onClick={() => this.toggleDrawer()} className={classes.menuButton} color="inherit" aria-label="Menu">
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="title" color="inherit" className={classes.flex}>
+            Avocado
             </Typography>
-              {isLoggedIn ? <div>
-                <IconButton
-                  aria-owns={open ? 'menu-appbar' : null}
-                  aria-haspopup="true"
-                  onClick={this.handleMenu}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  open={open}
-                  onClose={this.handleClose}
-                >
-                  <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-                  <MenuItem onClick={this.handleClose}>My account</MenuItem>
-                </Menu>
-              </div> :
-            <Button color="inherit">
-              <Link style={{ textDecoration: "none" }} to={login.path}>{login.text}</Link>
-            </Button>}
-          </Toolbar>
-        </AppBar>
+          {isLoggedIn ? <div>
+            <IconButton
+              aria-owns={open ? 'menu-appbar' : null}
+              aria-haspopup="true"
+              onClick={this.handleMenu}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={open}
+              onClose={this.handleClose}
+            >
+              <MenuItem onClick={this.handleClose}>Profile</MenuItem>
+              <MenuItem onClick={this.handleClose}>My account</MenuItem>
+            </Menu>
+          </div> :
+            <Link to={login.path}>
+              <Button color="inherit"> {login.text}</Button>
+            </Link>}
+        </Toolbar>
+      </AppBar>
     );
   }
 }
@@ -106,9 +106,9 @@ MenuAppBar.propTypes = {
 };
 
 export default connect(
-    state => ({
-        isDrawerOpen: state.navigation.isDrawerOpen,
-        isLoggedIn: state.account.token !== ""
-    }),
-    dispatch => bindActionCreators(actionCreators, dispatch)
+  state => ({
+    isDrawerOpen: state.navigation.isDrawerOpen,
+    isLoggedIn: state.account.token !== ""
+  }),
+  dispatch => bindActionCreators(actionCreators, dispatch)
 )(withStyles(styles)(withStyles(styles)(MenuAppBar)));

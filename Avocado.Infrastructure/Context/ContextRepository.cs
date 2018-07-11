@@ -39,5 +39,11 @@ namespace Avocado.Infrastructure.Context
             _save();
             return entityRemoved != null;
         }
+
+        public void Update(T item)
+        {
+            var changeTracker =_dbset.Update(item);
+            _save();
+        }
     }
 }

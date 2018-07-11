@@ -40,6 +40,34 @@ namespace Avocado.Domain.Services
             return evnt;
         }
 
+        public Event Update(Guid id, string title, string description)
+        {
+            var evnt = FindOne(id);
+            if (evnt == null)
+                return null;
+
+            var hasChange = false;
+
+            if (!string.IsNullOrWhiteSpace(title) && evnt.Title != title)
+            {
+                evnt.UpdateTitle(title);
+                hasChange = true;
+            }
+
+            if (!string.IsNullOrWhiteSpace(description) && evnt.Description != description)
+            {
+                evnt.UpdateDescription(description);
+                hasChange = true;
+            }
+
+            if (hasChange)
+            {
+                _eventRepo.Update(evnt);
+            }
+
+            return evnt;
+        }
+
         public Event FindOne(Guid id)
         {
             var evnt = _eventRepo.Find(new EventById(id));
@@ -61,6 +89,15 @@ namespace Avocado.Domain.Services
             var invitees = _inviteeRepo.Query(new InviteesForAccount(account));
             var events = _eventRepo.Query(new EventsForInvitees(invitees));
             return events;
+        }
+
+        public bool DeleteEvent(Guid id)
+        {
+            var evnt = FindOne(id);
+            if (evnt == null)
+                return false;
+
+            return _eventRepo.Remove(evnt);
         }
     }
 }

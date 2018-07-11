@@ -22,5 +22,19 @@ namespace Avocado.Domain.Entities
             Title = title;
             Description = description;
         }
+
+        internal void UpdateTitle(string title)
+        {
+            if (string.IsNullOrWhiteSpace(title))
+                throw new ArgumentNullException(nameof(title));
+            Title = title;
+        }
+
+        internal void UpdateDescription(string description)
+        {
+            if (string.IsNullOrWhiteSpace(description))
+                throw new ArgumentNullException(nameof(description));
+            Description = description;
+        }
     }
 }

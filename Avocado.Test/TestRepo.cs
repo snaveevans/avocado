@@ -32,5 +32,10 @@ namespace Avocado.Test
         {
             return List.Remove(item);
         }
+
+        public void Update(T item)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

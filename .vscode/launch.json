@@ -9,7 +9,7 @@
            "type": "coreclr",
            "request": "launch",
            "preLaunchTask": "build",
-           "program": "${workspaceRoot}/Avocado.Web/bin/Debug/netcoreapp2.0/Avocado.Web.dll",
+           "program": "${workspaceRoot}/Avocado.Web/bin/Debug/netcoreapp2.1/Avocado.Web.dll",
            "args": [],
            "cwd": "${workspaceRoot}/Avocado.Web",
            "stopAtEntry": false,
@@ -40,7 +40,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Avocado.Test/bin/Debug/netcoreapp2.0/Avocado.Test.dll",
+            "program": "${workspaceFolder}/Avocado.Test/bin/Debug/netcoreapp2.1/Avocado.Test.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Avocado.Test",
             // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window

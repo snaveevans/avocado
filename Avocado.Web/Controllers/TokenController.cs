@@ -26,7 +26,10 @@ namespace Avocado.Web.Controllers
         [HttpPost("testtoken")]
         public IActionResult TestToken([FromBody] LoginModel model)
         {
-            if (!_loginService.TryLogin(model, out string token)) { return BadRequest(); }
+            if (!_loginService.TryLogin(model, out string token))
+            {
+                return BadRequest();
+            }
 
             return Ok(token);
         }

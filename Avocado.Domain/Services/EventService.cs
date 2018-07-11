@@ -29,7 +29,9 @@ namespace Avocado.Domain.Services
         {
             var account = _accountAccessor.Account;
             if (account == null)
+            {
                 return null;
+            }
 
             var evnt = new Event(title, description);
             var invitee = new Invitee(account, evnt);
@@ -44,7 +46,9 @@ namespace Avocado.Domain.Services
         {
             var evnt = FindOne(id);
             if (evnt == null)
+            {
                 return null;
+            }
 
             var hasChange = false;
 
@@ -72,10 +76,14 @@ namespace Avocado.Domain.Services
         {
             var evnt = _eventRepo.Find(new EventById(id));
             if (evnt == null)
+            {
                 return null;
+            }
 
             if (!_authorizationService.CanReadEvent(evnt))
+            {
                 return null;
+            }
 
             return evnt;
         }
@@ -84,7 +92,9 @@ namespace Avocado.Domain.Services
         {
             var account = _accountAccessor.Account;
             if (account == null)
+            {
                 return null;
+            }
 
             var invitees = _inviteeRepo.Query(new InviteesForAccount(account));
             var events = _eventRepo.Query(new EventsForInvitees(invitees));
@@ -95,7 +105,9 @@ namespace Avocado.Domain.Services
         {
             var evnt = FindOne(id);
             if (evnt == null)
+            {
                 return false;
+            }
 
             return _eventRepo.Remove(evnt);
         }

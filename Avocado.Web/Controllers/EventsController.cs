@@ -28,7 +28,9 @@ namespace Avocado.Web.Controllers
         {
             var evnt = _eventService.FindOne(id);
             if (evnt == null)
+            {
                 return Unauthorized();
+            }
             return Ok(evnt);
         }
 
@@ -37,7 +39,9 @@ namespace Avocado.Web.Controllers
         {
             var errors = model.GetValidationErrors();
             if (errors.Any())
+            {
                 return BadRequest(errors);
+            }
             var evnt = _eventService.Create(model.Title, model.Description);
             return Ok(evnt);
         }
@@ -47,10 +51,14 @@ namespace Avocado.Web.Controllers
         {
             var errors = model.GetValidationErrors();
             if (errors.Any())
+            {
                 return BadRequest(errors);
+            }
             var evnt = _eventService.Update(id, model.Title, model.Description);
             if (evnt == null)
+            {
                 return Unauthorized();
+            }
             return Ok(evnt);
         }
 
@@ -60,7 +68,9 @@ namespace Avocado.Web.Controllers
             var isDeleted = _eventService.DeleteEvent(id);
 
             if (!isDeleted)
+            {
                 return Unauthorized();
+            }
 
             return NoContent();
         }

@@ -20,7 +20,9 @@ namespace Avocado.Domain.Services
         {
             var account = _accountAccessor.Account; ;
             if (account == null || evnt == null)
+            {
                 return false;
+            }
 
             var invitee = _inviteeRepo.Find(new FindInvitee(account, evnt));
 

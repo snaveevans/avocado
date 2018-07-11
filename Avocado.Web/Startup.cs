@@ -2,7 +2,7 @@ using System.Text;
 using Avocado.Domain.Entities;
 using Avocado.Domain.Interfaces;
 using Avocado.Domain.Services;
-using Avocado.Infrastructure.Authorization;
+using Avocado.Infrastructure.Authentication;
 using Avocado.Infrastructure.Context;
 using Avocado.Web.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -54,8 +54,9 @@ namespace Avocado.Web
             services.AddScoped<IRepository<Event>, ContextRepository<Event, AvocadoContext>>();
             services.AddScoped<IRepository<Invitee>, ContextRepository<Invitee, AvocadoContext>>();
             services.AddScoped<IRepository<Account>, ContextRepository<Account, AvocadoContext>>();
-            services.AddScoped<AccountService>();
+            services.AddScoped<IAccountAccessor,AccountAccessor>();
             services.AddScoped<EventService>();
+            services.AddScoped<AuthorizationService>();
 
             services.AddScoped<IRepository<Login>, ContextRepository<Login, IdentityContext>>();
             services.AddScoped<LoginService>();

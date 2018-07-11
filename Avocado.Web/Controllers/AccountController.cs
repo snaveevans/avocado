@@ -1,4 +1,4 @@
-using Avocado.Infrastructure.Authorization;
+using Avocado.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Avocado.Web.Controllers

@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using Avocado.Domain.Entities;
-using Avocado.Infrastructure.Authorization;
+using Avocado.Infrastructure.Authentication;
 using Avocado.Infrastructure.Enumerations;
 using Microsoft.Extensions.Options;
 using Xunit;

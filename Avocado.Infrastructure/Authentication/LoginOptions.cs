@@ -1,4 +1,4 @@
-namespace Avocado.Infrastructure.Authorization
+namespace Avocado.Infrastructure.Authentication
 {
     public class LoginOptions
     {

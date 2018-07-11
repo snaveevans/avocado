@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Avocado.Domain.Entities;
 using Avocado.Domain.Enumerations;
+using Avocado.Domain.Interfaces;
 using Avocado.Domain.Services;
 using Xunit;
 
@@ -12,19 +13,22 @@ namespace Avocado.Test
         private readonly EventService _eventService;
         private readonly TestRepo<Event> _eventRepo;
         private readonly TestRepo<Invitee> _inviteeRepo;
-        
+        private readonly IAccountAccessor _accountAccessor;
+                
         public InviteeTest()
         {
             _eventRepo = new TestRepo<Event>();
             _inviteeRepo = new TestRepo<Invitee>();
-            _eventService = new EventService(_eventRepo, _inviteeRepo);
+            var account = new Account("tyler");
+            _accountAccessor = new TestAccountAccessor(account);
+            _eventService = new EventService(_eventRepo, _inviteeRepo, null, _accountAccessor);
         }
 
         [Fact]
         public void Constructor()
         {
-            var account = new Account("tyler");
-            var evnt = _eventService.Create(new Account("blah"), "Foo", "Bar");
+            var account = new Account("blah");
+            var evnt = _eventService.Create("Foo", "Bar");
 
             Assert.Throws<ArgumentNullException>(() => new Invitee(null, evnt));
             Assert.Throws<ArgumentNullException>(() => new Invitee(account, null));
@@ -39,8 +43,8 @@ namespace Avocado.Test
         [Fact]
         public void UpdateStatus()
         {
-            var account = new Account("tyler");
-            var evnt = _eventService.Create(account, "Foo", "Bar");
+            var account = new Account("blah");
+            var evnt = _eventService.Create("Foo", "Bar");
 
             var invitee = _inviteeRepo.List.First();
             invitee.UpdateAttendanceStatus(AttendanceStatuses.Going);

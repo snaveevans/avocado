@@ -6,10 +6,10 @@ using Avocado.Domain.Interfaces;
 
 namespace Avocado.Infrastructure.Specifications
 {
-    public class FindAccount : ISpecification<Account>
+    public class AccountById : ISpecification<Account>
     {
         private readonly Guid _accountId;
-        public FindAccount(Guid accountId)
+        public AccountById(Guid accountId)
         {
             _accountId = accountId;
         }

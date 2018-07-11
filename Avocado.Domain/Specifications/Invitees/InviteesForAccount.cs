@@ -3,7 +3,7 @@ using System.Linq;
 using Avocado.Domain.Entities;
 using Avocado.Domain.Interfaces;
 
-namespace Avocado.Infrastructure.Specifications.Invitees
+namespace Avocado.Domain.Specifications.Invitees
 {
     public class InviteesForAccount : ISpecification<Invitee>
     {

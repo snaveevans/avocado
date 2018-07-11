@@ -1,5 +1,9 @@
+using System;
+using System.Collections.Generic;
 using Avocado.Domain.Entities;
 using Avocado.Domain.Interfaces;
+using Avocado.Domain.Specifications.Events;
+using Avocado.Domain.Specifications.Invitees;
 
 namespace Avocado.Domain.Services
 {
@@ -7,16 +11,26 @@ namespace Avocado.Domain.Services
     {
         private readonly IRepository<Event> _eventRepo;
         private readonly IRepository<Invitee> _inviteeRepo;
+        private readonly AuthorizationService _authorizationService;
+        private readonly IAccountAccessor _accountAccessor;
 
         public EventService(IRepository<Event> eventRepo,
-            IRepository<Invitee> inviteeRepo)
+            IRepository<Invitee> inviteeRepo,
+            AuthorizationService authorizationService,
+            IAccountAccessor accountAccessor)
         {
             _eventRepo = eventRepo;
             _inviteeRepo = inviteeRepo;
+            _authorizationService = authorizationService;
+            _accountAccessor = accountAccessor;
         }
 
-        public Event Create(Account account, string title, string description)
+        public Event Create(string title, string description)
         {
+            var account = _accountAccessor.Account;
+            if (account == null)
+                return null;
+
             var evnt = new Event(title, description);
             var invitee = new Invitee(account, evnt);
 
@@ -24,6 +38,29 @@ namespace Avocado.Domain.Services
             _inviteeRepo.Add(invitee);
 
             return evnt;
+        }
+
+        public Event FindOne(Guid id)
+        {
+            var evnt = _eventRepo.Find(new EventById(id));
+            if (evnt == null)
+                return null;
+
+            if (!_authorizationService.CanReadEvent(evnt))
+                return null;
+
+            return evnt;
+        }
+
+        public IEnumerable<Event> FindAuthorized()
+        {
+            var account = _accountAccessor.Account;
+            if (account == null)
+                return null;
+
+            var invitees = _inviteeRepo.Query(new InviteesForAccount(account));
+            var events = _eventRepo.Query(new EventsForInvitees(invitees));
+            return events;
         }
     }
 }

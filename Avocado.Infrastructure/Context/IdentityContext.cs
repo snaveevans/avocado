@@ -1,4 +1,4 @@
-using Avocado.Infrastructure.Authorization;
+using Avocado.Infrastructure.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 

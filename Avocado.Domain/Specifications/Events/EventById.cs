@@ -4,7 +4,7 @@ using System.Linq;
 using Avocado.Domain.Entities;
 using Avocado.Domain.Interfaces;
 
-namespace Avocado.Infrastructure.Specifications.Events
+namespace Avocado.Domain.Specifications.Events
 {
     public class EventById : ISpecification<Event>
     {

@@ -21,7 +21,7 @@ namespace Avocado.Infrastructure.Migrations.Identity
                 .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("Avocado.Infrastructure.Authorization.Login", b =>
+            modelBuilder.Entity("Avocado.Infrastructure.Authentication.Login", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();

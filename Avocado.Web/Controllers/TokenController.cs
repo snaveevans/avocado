@@ -1,6 +1,6 @@
 using System;
 using System.Net;
-using Avocado.Infrastructure.Authorization;
+using Avocado.Infrastructure.Authentication;
 using Avocado.Infrastructure.Enumerations;
 using Avocado.Web.Models;
 using Microsoft.AspNetCore.Authorization;

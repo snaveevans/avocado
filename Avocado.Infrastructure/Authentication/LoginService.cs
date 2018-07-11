@@ -9,7 +9,7 @@ using Avocado.Infrastructure.Specifications;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Avocado.Infrastructure.Authorization
+namespace Avocado.Infrastructure.Authentication
 {
     public class LoginService
     {
@@ -88,7 +88,7 @@ namespace Avocado.Infrastructure.Authorization
                 return false;
             }
 
-            var account = _accountRepo.Find(new FindAccount(login.AccountId));
+            var account = _accountRepo.Find(new AccountById(login.AccountId));
             token = GenerateToken(account);
 
             return true;

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Avocado.Domain.Entities;
 using Avocado.Infrastructure.Enumerations;
-using Avocado.Infrastructure.Authorization;
+using Avocado.Infrastructure.Authentication;
 using System.Linq;
 using Avocado.Domain.Interfaces;
 

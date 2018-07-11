@@ -2,7 +2,7 @@ using System;
 using Avocado.Domain.Entities;
 using Avocado.Infrastructure.Enumerations;
 
-namespace Avocado.Infrastructure.Authorization
+namespace Avocado.Infrastructure.Authentication
 {
     public class Login
     {

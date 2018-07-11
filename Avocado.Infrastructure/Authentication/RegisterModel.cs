@@ -1,6 +1,6 @@
-using Avocado.Infrastructure.Authorization;
+using Avocado.Infrastructure.Authentication;
 
-namespace Avocado.Infrastructure.Authorization
+namespace Avocado.Infrastructure.Authentication
 {
     public class RegisterModel : LoginModel
     {

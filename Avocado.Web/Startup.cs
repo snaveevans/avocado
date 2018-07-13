@@ -57,6 +57,7 @@ namespace Avocado.Web
             services.AddScoped<IRepository<Account>, ContextRepository<Account, AvocadoContext>>();
             services.AddScoped<IAccountAccessor,AccountAccessor>();
             services.AddScoped<EventService>();
+            services.AddScoped<InviteeService>();
             services.AddScoped<AuthorizationService>();
 
             services.AddScoped<IRepository<Login>, ContextRepository<Login, IdentityContext>>();

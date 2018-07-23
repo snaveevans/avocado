@@ -10,15 +10,15 @@ namespace Avocado.Test
     {
         private readonly EventService _eventService;
         private readonly TestRepo<Event> _eventRepo;
-        private readonly TestRepo<Invitee> _inviteeRepo;
+        private readonly TestRepo<Member> _memberRepo;
         private readonly TestAccountAccessor _accountAccessor;
         
         public EventServiceTest()
         {
             _eventRepo = new TestRepo<Event>();
-            _inviteeRepo = new TestRepo<Invitee>();
+            _memberRepo = new TestRepo<Member>();
             _accountAccessor = new TestAccountAccessor(null);
-            _eventService = new EventService(_eventRepo, _inviteeRepo, null, _accountAccessor);
+            _eventService = new EventService(_eventRepo, _memberRepo, null, _accountAccessor);
         }
 
         [Fact]
@@ -36,7 +36,7 @@ namespace Avocado.Test
             Assert.Equal("Foo", evnt.Title);
             Assert.Equal("Bar", evnt.Description);
             Assert.Single(_eventRepo.List);
-            Assert.Single(_inviteeRepo.List);
+            Assert.Single(_memberRepo.List);
         }
     }
 }

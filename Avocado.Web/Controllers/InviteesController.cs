@@ -6,33 +6,33 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Avocado.Web.Controllers
 {
-    [Route("api/events/{eventId}/invitees"), Authorize]
-    public class InviteesController : Controller
+    [Route("api/events/{eventId}/members"), Authorize]
+    public class MembersController : Controller
     {
-        private readonly InviteeService _inviteeService;
+        private readonly MemberService _memberService;
 
-        public InviteesController(InviteeService inviteeService)
+        public MembersController(MemberService memberService)
         {
-            _inviteeService = inviteeService;
+            _memberService = memberService;
         }
 
         [HttpGet]
         public IActionResult Get(Guid eventId)
         {
-            var invitees = _inviteeService.GetInvitees(eventId);
+            var members = _memberService.GetMembers(eventId);
 
-            if (!invitees.Any())
+            if (!members.Any())
             {
                 return Unauthorized();
             }
 
-            return Ok(invitees);
+            return Ok(members);
         }
 
-        // add invitees
+        // add members
 
 
-        // remove invitees
-        // update invitee status
+        // remove members
+        // update member status
     }
 }

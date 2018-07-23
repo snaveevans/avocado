@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Avocado.Infrastructure.Migrations
 {
     [DbContext(typeof(AvocadoContext))]
-    [Migration("20180706215355_ChangeToPicture")]
-    partial class ChangeToPicture
+    [Migration("20180723222104_InitialAvocado")]
+    partial class InitialAvocado
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,7 +21,7 @@ namespace Avocado.Infrastructure.Migrations
                 .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("Avocado.Domain.Account", b =>
+            modelBuilder.Entity("Avocado.Domain.Entities.Account", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -37,7 +37,7 @@ namespace Avocado.Infrastructure.Migrations
                     b.ToTable("Accounts");
                 });
 
-            modelBuilder.Entity("Avocado.Domain.Event", b =>
+            modelBuilder.Entity("Avocado.Domain.Entities.Event", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -49,6 +49,21 @@ namespace Avocado.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Events");
+                });
+
+            modelBuilder.Entity("Avocado.Domain.Entities.Member", b =>
+                {
+                    b.Property<Guid>("AccountId");
+
+                    b.Property<Guid>("EventId");
+
+                    b.Property<string>("AttendanceStatus");
+
+                    b.Property<string>("Role");
+
+                    b.HasKey("AccountId", "EventId");
+
+                    b.ToTable("Members");
                 });
 #pragma warning restore 612, 618
         }

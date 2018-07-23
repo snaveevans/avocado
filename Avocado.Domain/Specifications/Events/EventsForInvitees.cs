@@ -5,17 +5,17 @@ using Avocado.Domain.Interfaces;
 
 namespace Avocado.Domain.Specifications.Events
 {
-    public class EventsForInvitees : ISpecification<Event>
+    public class EventsForMembers : ISpecification<Event>
     {
-        private readonly IEnumerable<Invitee> _invitees;
+        private readonly IEnumerable<Member> _members;
         
-        public EventsForInvitees(IEnumerable<Invitee> invitees)
+        public EventsForMembers(IEnumerable<Member> members)
         {
-            _invitees = invitees;
+            _members = members;
         }
         public IEnumerable<Event> Filter(IEnumerable<Event> items)
         {
-            var eventIds = _invitees.Select(i => i.EventId);
+            var eventIds = _members.Select(i => i.EventId);
             return items.Where(e => eventIds.Contains(e.Id));
         }
     }

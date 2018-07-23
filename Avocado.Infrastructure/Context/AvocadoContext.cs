@@ -10,7 +10,7 @@ namespace Avocado.Infrastructure.Context
         private readonly string _connectionString;
 
         public DbSet<Event> Events { get; set; }
-        public DbSet<Invitee> Invitees { get; set; }
+        public DbSet<Member> Members { get; set; }
         public DbSet<Account> Accounts { get; set; }
 
         public AvocadoContext(IOptions<ContextOptions<AvocadoContext>> options)
@@ -25,7 +25,7 @@ namespace Avocado.Infrastructure.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Invitee>()
+            modelBuilder.Entity<Member>()
                 .HasKey(i => new { i.AccountId, i.EventId });
         }
     }

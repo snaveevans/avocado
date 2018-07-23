@@ -3,43 +3,43 @@ using System.Collections.Generic;
 using System.Linq;
 using Avocado.Domain.Entities;
 using Avocado.Domain.Interfaces;
-using Avocado.Domain.Specifications.Invitees;
+using Avocado.Domain.Specifications.Members;
 
 namespace Avocado.Domain.Services
 {
-    public class InviteeService
+    public class MemberService
     {
         private readonly EventService _eventService;
-        private readonly IRepository<Invitee> _inviteeRepo;
+        private readonly IRepository<Member> _memberRepo;
         private readonly AuthorizationService _authorizationService;
         private readonly IAccountAccessor _accountAccessor;
 
-        public InviteeService(EventService eventService,
-            IRepository<Invitee> inviteeRepo,
+        public MemberService(EventService eventService,
+            IRepository<Member> memberRepo,
             AuthorizationService authorizationService,
             IAccountAccessor accountAccessor)
         {
             _eventService = eventService;
-            _inviteeRepo = inviteeRepo;
+            _memberRepo = memberRepo;
             _authorizationService = authorizationService;
             _accountAccessor = accountAccessor;
         }
 
-        public IEnumerable<Invitee> GetInvitees(Guid eventId)
+        public IEnumerable<Member> GetMembers(Guid eventId)
         {
             var evnt = _eventService.FindOne(eventId);
 
             if (evnt == null)
             {
-                return Enumerable.Empty<Invitee>();
+                return Enumerable.Empty<Member>();
             }
 
-            return _inviteeRepo.Query(new InviteesForEvent(evnt));
+            return _memberRepo.Query(new MembersForEvent(evnt));
         }
 
-        // get invitees
-        // add invitees
-        // remove invitees
-        // update invitee status
+        // get members
+        // add members
+        // remove members
+        // update member status
     }
 }

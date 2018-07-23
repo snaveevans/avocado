@@ -53,11 +53,11 @@ namespace Avocado.Web
             services.AddDbContext<IdentityContext>();
 
             services.AddScoped<IRepository<Event>, ContextRepository<Event, AvocadoContext>>();
-            services.AddScoped<IRepository<Invitee>, ContextRepository<Invitee, AvocadoContext>>();
+            services.AddScoped<IRepository<Member>, ContextRepository<Member, AvocadoContext>>();
             services.AddScoped<IRepository<Account>, ContextRepository<Account, AvocadoContext>>();
             services.AddScoped<IAccountAccessor,AccountAccessor>();
             services.AddScoped<EventService>();
-            services.AddScoped<InviteeService>();
+            services.AddScoped<MemberService>();
             services.AddScoped<AuthorizationService>();
 
             services.AddScoped<IRepository<Login>, ContextRepository<Login, IdentityContext>>();

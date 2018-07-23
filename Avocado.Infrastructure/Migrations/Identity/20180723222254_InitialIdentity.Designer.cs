@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Avocado.Infrastructure.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20180706001233_AddLogin")]
-    partial class AddLogin
+    [Migration("20180723222254_InitialIdentity")]
+    partial class InitialIdentity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

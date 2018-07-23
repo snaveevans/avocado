@@ -49,7 +49,7 @@ namespace Avocado.Infrastructure.Migrations
                     b.ToTable("Events");
                 });
 
-            modelBuilder.Entity("Avocado.Domain.Entities.Invitee", b =>
+            modelBuilder.Entity("Avocado.Domain.Entities.Member", b =>
                 {
                     b.Property<Guid>("AccountId");
 
@@ -57,9 +57,11 @@ namespace Avocado.Infrastructure.Migrations
 
                     b.Property<string>("AttendanceStatus");
 
+                    b.Property<string>("Role");
+
                     b.HasKey("AccountId", "EventId");
 
-                    b.ToTable("Invitees");
+                    b.ToTable("Members");
                 });
 #pragma warning restore 612, 618
         }

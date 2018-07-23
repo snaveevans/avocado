@@ -8,20 +8,20 @@ using Xunit;
 
 namespace Avocado.Test
 {
-    public class InviteeTest
+    public class MemberTest
     {
         private readonly EventService _eventService;
         private readonly TestRepo<Event> _eventRepo;
-        private readonly TestRepo<Invitee> _inviteeRepo;
+        private readonly TestRepo<Member> _memberRepo;
         private readonly IAccountAccessor _accountAccessor;
                 
-        public InviteeTest()
+        public MemberTest()
         {
             _eventRepo = new TestRepo<Event>();
-            _inviteeRepo = new TestRepo<Invitee>();
+            _memberRepo = new TestRepo<Member>();
             var account = new Account("tyler");
             _accountAccessor = new TestAccountAccessor(account);
-            _eventService = new EventService(_eventRepo, _inviteeRepo, null, _accountAccessor);
+            _eventService = new EventService(_eventRepo, _memberRepo, null, _accountAccessor);
         }
 
         [Fact]
@@ -30,14 +30,14 @@ namespace Avocado.Test
             var account = new Account("blah");
             var evnt = _eventService.Create("Foo", "Bar");
 
-            Assert.Throws<ArgumentNullException>(() => new Invitee(null, evnt));
-            Assert.Throws<ArgumentNullException>(() => new Invitee(account, null));
+            Assert.Throws<ArgumentNullException>(() => new Member(null, evnt, Roles.Guest));
+            Assert.Throws<ArgumentNullException>(() => new Member(account, null, Roles.Guest));
 
-            var invitee = new Invitee(account, evnt);
+            var member = new Member(account, evnt, Roles.Guest);
 
-            Assert.Equal(account.Id, invitee.AccountId);
-            Assert.Equal(evnt.Id, invitee.EventId);
-            Assert.Equal(AttendanceStatuses.NotResponded.ToString(), invitee.AttendanceStatus);
+            Assert.Equal(account.Id, member.AccountId);
+            Assert.Equal(evnt.Id, member.EventId);
+            Assert.Equal(AttendanceStatuses.NotResponded.ToString(), member.AttendanceStatus);
         }
 
         [Fact]
@@ -46,10 +46,10 @@ namespace Avocado.Test
             var account = new Account("blah");
             var evnt = _eventService.Create("Foo", "Bar");
 
-            var invitee = _inviteeRepo.List.First();
-            invitee.UpdateAttendanceStatus(AttendanceStatuses.Going);
+            var member = _memberRepo.List.First();
+            member.UpdateAttendanceStatus(AttendanceStatuses.Going);
 
-            Assert.Equal(AttendanceStatuses.Going.ToString(), invitee.AttendanceStatus);
+            Assert.Equal(AttendanceStatuses.Going.ToString(), member.AttendanceStatus);
         }
     }
 }

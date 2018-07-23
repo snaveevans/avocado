@@ -1,30 +1,32 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Avocado.Infrastructure.Migrations
+namespace Avocado.Infrastructure.Migrations.Identity
 {
-    public partial class AddInvitee : Migration
+    public partial class InitialIdentity : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Invitees",
+                name: "Logins",
                 columns: table => new
                 {
+                    Id = table.Column<Guid>(nullable: false),
                     AccountId = table.Column<Guid>(nullable: false),
-                    EventId = table.Column<Guid>(nullable: false),
-                    AttendanceStatus = table.Column<string>(nullable: true)
+                    Provider = table.Column<string>(nullable: true),
+                    ProviderId = table.Column<string>(nullable: true),
+                    ProviderKey = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Invitees", x => new { x.AccountId, x.EventId });
+                    table.PrimaryKey("PK_Logins", x => x.Id);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Invitees");
+                name: "Logins");
         }
     }
 }

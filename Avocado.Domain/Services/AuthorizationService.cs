@@ -1,18 +1,18 @@
 using Avocado.Domain.Entities;
 using Avocado.Domain.Interfaces;
-using Avocado.Domain.Specifications.Invitees;
+using Avocado.Domain.Specifications.Members;
 
 namespace Avocado.Domain.Services
 {
     public class AuthorizationService
     {
-        private readonly IRepository<Invitee> _inviteeRepo;
+        private readonly IRepository<Member> _memberRepo;
         private readonly IAccountAccessor _accountAccessor;
 
-        public AuthorizationService(IRepository<Invitee> inviteeRepo,
+        public AuthorizationService(IRepository<Member> memberRepo,
             IAccountAccessor accountAccessor)
         {
-            _inviteeRepo = inviteeRepo;
+            _memberRepo = memberRepo;
             _accountAccessor = accountAccessor;
         }
 
@@ -24,9 +24,9 @@ namespace Avocado.Domain.Services
                 return false;
             }
 
-            var invitee = _inviteeRepo.Find(new FindInvitee(account, evnt));
+            var member = _memberRepo.Find(new FindMember(account, evnt));
 
-            return invitee != null;
+            return member != null;
         }
     }
 }

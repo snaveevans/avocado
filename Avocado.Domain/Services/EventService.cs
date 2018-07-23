@@ -1,26 +1,27 @@
 using System;
 using System.Collections.Generic;
 using Avocado.Domain.Entities;
+using Avocado.Domain.Enumerations;
 using Avocado.Domain.Interfaces;
 using Avocado.Domain.Specifications.Events;
-using Avocado.Domain.Specifications.Invitees;
+using Avocado.Domain.Specifications.Members;
 
 namespace Avocado.Domain.Services
 {
     public class EventService
     {
         private readonly IRepository<Event> _eventRepo;
-        private readonly IRepository<Invitee> _inviteeRepo;
+        private readonly IRepository<Member> _memberRepo;
         private readonly AuthorizationService _authorizationService;
         private readonly IAccountAccessor _accountAccessor;
 
         public EventService(IRepository<Event> eventRepo,
-            IRepository<Invitee> inviteeRepo,
+            IRepository<Member> memberRepo,
             AuthorizationService authorizationService,
             IAccountAccessor accountAccessor)
         {
             _eventRepo = eventRepo;
-            _inviteeRepo = inviteeRepo;
+            _memberRepo = memberRepo;
             _authorizationService = authorizationService;
             _accountAccessor = accountAccessor;
         }
@@ -34,10 +35,10 @@ namespace Avocado.Domain.Services
             }
 
             var evnt = new Event(title, description);
-            var invitee = new Invitee(account, evnt);
+            var member = new Member(account, evnt, Roles.Host);
 
             _eventRepo.Add(evnt);
-            _inviteeRepo.Add(invitee);
+            _memberRepo.Add(member);
 
             return evnt;
         }
@@ -96,8 +97,8 @@ namespace Avocado.Domain.Services
                 return null;
             }
 
-            var invitees = _inviteeRepo.Query(new InviteesForAccount(account));
-            var events = _eventRepo.Query(new EventsForInvitees(invitees));
+            var members = _memberRepo.Query(new MembersForAccount(account));
+            var events = _eventRepo.Query(new EventsForMembers(members));
             return events;
         }
 

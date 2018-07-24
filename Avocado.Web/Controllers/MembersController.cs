@@ -1,5 +1,8 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using Avocado.Domain.Entities;
 using Avocado.Domain.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,9 +22,8 @@ namespace Avocado.Web.Controllers
         [HttpGet]
         public IActionResult Get(Guid eventId)
         {
-            var members = _memberService.GetMembers(eventId);
-
-            if (!members.Any())
+            IEnumerable<Member> members;
+            if (!_memberService.TryGetMembers(eventId, out members))
             {
                 return Unauthorized();
             }

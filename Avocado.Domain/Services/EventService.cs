@@ -26,29 +26,30 @@ namespace Avocado.Domain.Services
             _accountAccessor = accountAccessor;
         }
 
-        public Event Create(string title, string description)
+        public bool TryCreate(string title, string description, out Event evnt)
         {
             var account = _accountAccessor.Account;
             if (account == null)
             {
-                return null;
+                evnt = null;
+                return false;
             }
 
-            var evnt = new Event(title, description);
+            evnt = new Event(title, description);
             var member = new Member(account, evnt, Roles.Host);
 
             _eventRepo.Add(evnt);
             _memberRepo.Add(member);
 
-            return evnt;
+            return true;
         }
 
-        public Event Update(Guid id, string title, string description)
+        public bool TryUpdate(Guid id, string title, string description, out Event evnt)
         {
-            var evnt = FindOne(id);
-            if (evnt == null)
+            if (!TryFindOne(id, out evnt))
             {
-                return null;
+                evnt = null;
+                return false;
             }
 
             var hasChange = false;
@@ -70,23 +71,25 @@ namespace Avocado.Domain.Services
                 _eventRepo.Update(evnt);
             }
 
-            return evnt;
+            return true;
         }
 
-        public Event FindOne(Guid id)
+        public bool TryFindOne(Guid id, out Event evnt)
         {
-            var evnt = _eventRepo.Find(new EventById(id));
+            evnt = _eventRepo.Find(new EventById(id));
             if (evnt == null)
             {
-                return null;
+                evnt = null;
+                return false;
             }
 
             if (!_authorizationService.CanReadEvent(evnt))
             {
-                return null;
+                evnt = null;
+                return false;
             }
 
-            return evnt;
+            return true;
         }
 
         public IEnumerable<Event> FindAuthorized()
@@ -102,10 +105,9 @@ namespace Avocado.Domain.Services
             return events;
         }
 
-        public bool DeleteEvent(Guid id)
+        public bool TryDeleteEvent(Guid id)
         {
-            var evnt = FindOne(id);
-            if (evnt == null)
+            if (!TryFindOne(id, out Event evnt))
             {
                 return false;
             }

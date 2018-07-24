@@ -24,14 +24,15 @@ namespace Avocado.Test
         [Fact]
         public void Create()
         {
-            Assert.Null(_eventService.Create("Foo", "Bar")); // null account
+            Event evnt = null, failEvent = null;
+            Assert.False(_eventService.TryCreate("Foo", "Bar", out failEvent));
 
             var account = new Account("tyler");
             _accountAccessor.SetAccount(account);
-            Assert.Throws<ArgumentNullException>(() => _eventService.Create("", "Bar"));
-            Assert.Throws<ArgumentNullException>(() => _eventService.Create("Foo", ""));
+            Assert.Throws<ArgumentNullException>(() => _eventService.TryCreate("", "Bar", out failEvent));
+            Assert.Throws<ArgumentNullException>(() => _eventService.TryCreate("Foo", "", out failEvent));
 
-            var evnt = _eventService.Create("Foo", "Bar");
+            Assert.True(_eventService.TryCreate("Foo", "Bar", out evnt));
             Assert.NotEqual(Guid.Empty, evnt.Id);
             Assert.Equal("Foo", evnt.Title);
             Assert.Equal("Bar", evnt.Description);

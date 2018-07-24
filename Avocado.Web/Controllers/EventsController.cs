@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Avocado.Domain.Services;
+using Avocado.Domain.Entities;
 using Avocado.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,8 +27,7 @@ namespace Avocado.Web.Controllers
         [HttpGet("{id}")]
         public IActionResult GetEvent(Guid id)
         {
-            var evnt = _eventService.FindOne(id);
-            if (evnt == null)
+            if (!_eventService.TryFindOne(id, out Event evnt))
             {
                 return Unauthorized();
             }
@@ -42,7 +42,12 @@ namespace Avocado.Web.Controllers
             {
                 return BadRequest(errors);
             }
-            var evnt = _eventService.Create(model.Title, model.Description);
+
+            if (!_eventService.TryCreate(model.Title, model.Description, out Event evnt))
+            {
+                return Unauthorized();
+            }
+
             return Ok(evnt);
         }
 
@@ -54,8 +59,7 @@ namespace Avocado.Web.Controllers
             {
                 return BadRequest(errors);
             }
-            var evnt = _eventService.Update(id, model.Title, model.Description);
-            if (evnt == null)
+            if (!_eventService.TryUpdate(id, model.Title, model.Description, out Event evnt))
             {
                 return Unauthorized();
             }
@@ -65,9 +69,7 @@ namespace Avocado.Web.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteEvent(Guid id)
         {
-            var isDeleted = _eventService.DeleteEvent(id);
-
-            if (!isDeleted)
+            if (!_eventService.TryDeleteEvent(id))
             {
                 return Unauthorized();
             }

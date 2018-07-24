@@ -8,11 +8,11 @@ namespace Avocado.Domain.Entities
         public Guid AccountId { get; private set; }
         public Guid EventId { get; private set; }
         public string AttendanceStatus { get; private set; }
-        public string Role { get; set; }
+        public string Role { get; private set; }
         
         [Obsolete("system constructor")]
         protected Member() { }
-        public Member(Account account, Event evnt, Roles role)
+        internal Member(Account account, Event evnt, Roles role)
         {
             if (account == null) { throw new ArgumentNullException(nameof(account));}
             if (evnt == null) { throw new ArgumentNullException(nameof(evnt));}
@@ -23,12 +23,12 @@ namespace Avocado.Domain.Entities
             Role = role.ToString();
         }
 
-        public void UpdateAttendanceStatus(AttendanceStatuses status)
+        internal void UpdateAttendanceStatus(AttendanceStatuses status)
         {
             AttendanceStatus = status.ToString();
         }
 
-        public void UpdateRole(Roles role)
+        internal void UpdateRole(Roles role)
         {
             Role = role.ToString();
         }

@@ -35,7 +35,8 @@ namespace Avocado.Test
 
         public void Update(T item)
         {
-            throw new System.NotImplementedException();
+            Remove(item);
+            Add(item);
         }
     }
 }

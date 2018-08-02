@@ -20,11 +20,12 @@ namespace Avocado.Web
 {
     public class Startup
     {
+        private readonly IConfiguration _configuration;
+
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -34,19 +35,19 @@ namespace Avocado.Web
 
             services.Configure<ContextOptions<AvocadoContext>>(options =>
             {
-                options.ConnectionString = Configuration.GetConnectionString("AvocadoContext");
+                options.ConnectionString = _configuration.GetConnectionString("AvocadoContext");
             });
 
             services.Configure<ContextOptions<IdentityContext>>(options =>
             {
-                options.ConnectionString = Configuration.GetConnectionString("IdentityContext");
+                options.ConnectionString = _configuration.GetConnectionString("IdentityContext");
             });
 
             services.Configure<LoginOptions>(options =>
             {
-                options.Issuer = Configuration["JwtIssuer"];
-                options.MillisecondsUntilExpiration = long.Parse(Configuration["JwtExpireMilliseconds"]);
-                options.Key = Configuration["JwtKey"];
+                options.Issuer = _configuration["JwtIssuer"];
+                options.MillisecondsUntilExpiration = long.Parse(_configuration["JwtExpireMilliseconds"]);
+                options.Key = _configuration["JwtKey"];
             });
 
             services.AddDbContext<AvocadoContext>();
@@ -55,7 +56,7 @@ namespace Avocado.Web
             services.AddScoped<IRepository<Event>, ContextRepository<Event, AvocadoContext>>();
             services.AddScoped<IRepository<Member>, ContextRepository<Member, AvocadoContext>>();
             services.AddScoped<IRepository<Account>, ContextRepository<Account, AvocadoContext>>();
-            services.AddScoped<IAccountAccessor,AccountAccessor>();
+            services.AddScoped<IAccountAccessor, AccountAccessor>();
             services.AddScoped<EventService>();
             services.AddScoped<MemberService>();
             services.AddScoped<AuthorizationService>();
@@ -72,17 +73,11 @@ namespace Avocado.Web
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = Configuration["JwtIssuer"],
-                        ValidAudience = Configuration["JwtIssuer"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtKey"]))
+                        ValidIssuer = _configuration["JwtIssuer"],
+                        ValidAudience = _configuration["JwtIssuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtKey"]))
                     };
                 });
-
-            // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/build";
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -98,9 +93,8 @@ namespace Avocado.Web
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
 
             app.UseAuthentication();
 
@@ -109,16 +103,6 @@ namespace Avocado.Web
                 routes.MapRoute(
                     name: "default",
                     template: "{controller}/{action=Index}/{id?}");
-            });
-
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "ClientApp";
-
-                if (env.IsDevelopment())
-                {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                }
             });
         }
     }

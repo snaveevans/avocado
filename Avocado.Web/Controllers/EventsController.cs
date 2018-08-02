@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Avocado.Web.Controllers
 {
-    [Route("api/events"), Authorize]
+    [Route("events"), Authorize]
     public class EventsController : Controller
     {
         private readonly EventService _eventService;

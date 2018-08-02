@@ -1,7 +1,0 @@
-@model object
-
-<script>
-    var json = @Html.Raw(Json.Serialize(@Model));
-    window.opener.CallMeWhenYouAreDone(json);
-    window.close();
-</script>

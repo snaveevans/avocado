@@ -1,31 +1,43 @@
 using System;
 using System.Net;
+using Microsoft.Extensions.Primitives;
 using Avocado.Infrastructure.Authentication;
 using Avocado.Infrastructure.Enumerations;
 using Avocado.Web.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RestSharp;
+using System.Linq;
 
 namespace Avocado.Web.Controllers
 {
-    [Route("api/token")]
+    [Route("token")]
     public class TokenController : Controller
     {
         private readonly LoginService _loginService;
         private readonly IConfiguration _configuration;
+        private readonly IHostingEnvironment _environment;
 
-        public TokenController(LoginService loginService, IConfiguration configuration)
+        public TokenController(LoginService loginService,
+            IConfiguration configuration,
+            IHostingEnvironment environment)
         {
             _loginService = loginService;
             _configuration = configuration;
+            _environment = environment;
         }
 
-        [HttpPost("testtoken")]
+        [HttpPost("test-token")]
         public IActionResult TestToken([FromBody] LoginModel model)
         {
+            if (!_environment.IsDevelopment())
+            {
+                return NotFound();
+            }
+
             if (!_loginService.TryLogin(model, out string token))
             {
                 return BadRequest();
@@ -35,63 +47,71 @@ namespace Avocado.Web.Controllers
         }
 
         [HttpGet("google/{mode}"), AllowAnonymous]
-        public IActionResult Google(string mode, string code)
+        public IActionResult Google(string mode)
         {
-            if (mode != "login" && mode != "register")
+            if (!Request.Headers.TryGetValue("Access-Token", out StringValues accessTokens) || accessTokens.Count > 1)
             {
-                return View(new { error = "failed" });
+                return BadRequest();
             }
+            var accessToken = accessTokens.First();
 
-            // validate code + get access token
+            // validate access_token
             var client = new RestClient("https://www.googleapis.com");
-            var request = new RestRequest("oauth2/v4/token", Method.POST);
-            request.AddParameter("client_id", _configuration["Authentication:Google:ClientId"]);
-            request.AddParameter("client_secret", _configuration["Authentication:Google:ClientSecret"]);
-            request.AddParameter("redirect_uri", _configuration["Authentication:Google:RedirectURI"] + $"/{mode}");
-            request.AddParameter("grant_type", "authorization_code");
-            request.AddParameter("code", code);
-
+            var request = new RestRequest("oauth2/v3/tokeninfo", Method.GET);
             var response = client.Execute<GoogleResponse>(request);
+
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                return View(new { error = "failed" });
+                return BadRequest();
             }
-            var accessToken = response.Data.access_token;
 
-            // get user information
-            request = new RestRequest("oauth2/v3/userinfo", Method.GET);
-            request.AddParameter("access_token", accessToken);
-            var infoResponse = client.Execute<GoogleInformation>(request);
-            if (infoResponse.StatusCode != HttpStatusCode.OK)
+            var info = response.Data;
+
+            if (info.ClientId != _configuration["GoogleClientId"])
             {
-                return View(new { error = "failed" });
+                return BadRequest();
             }
-            var content = infoResponse.Data;
 
             var model = new RegisterModel
             {
-                Name = infoResponse.Data.name,
-                Picture = infoResponse.Data.picture,
                 Provider = Providers.Google.ToString(),
-                ProviderId = content.sub
+                ProviderId = info.GoogleId
             };
 
+            string token;
             if (mode == "login")
             {
-                if (_loginService.TryLogin(model, out string token))
+                if (!_loginService.TryLogin(model, out token))
                 {
-                    return View(new { token, accessToken });
+                    return BadRequest();
+                }
+            }
+            else if (mode == "register")
+            {
+                // get user information
+                request = new RestRequest("oauth2/v3/userinfo", Method.GET);
+                request.AddParameter("access_token", accessToken);
+                var infoResponse = client.Execute<GoogleInformation>(request);
+                if (infoResponse.StatusCode != HttpStatusCode.OK)
+                {
+                    return View(new { error = "failed" });
+                }
+                var content = infoResponse.Data;
+
+                model.Name = infoResponse.Data.name;
+                model.Picture = infoResponse.Data.picture;
+
+                if (!_loginService.TryRegister(model, out token))
+                {
+                    return BadRequest();
                 }
             }
             else
             {
-                if (_loginService.TryRegister(model, out string token))
-                {
-                    return View(new { token, accessToken });
-                }
+                return BadRequest();
             }
 
-            return View(new { error = "failed" });
+            return Ok(token);
         }
     }
 }

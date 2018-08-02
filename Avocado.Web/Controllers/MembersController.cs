@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Avocado.Web.Controllers
 {
-    [Route("api/events/{eventId}/members"), Authorize]
+    [Route("events/{eventId}/members"), Authorize]
     public class MembersController : Controller
     {
         private readonly MemberService _memberService;

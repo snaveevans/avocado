@@ -11,9 +11,9 @@ pipelines:
           - dotnet restore
           - dotnet build $PROJECT_NAME
           - dotnet test $TEST_NAME
-          - dotnet publish $PROJECT_NAME
+          - dotnet publish $PROJECT_NAME -c Release -o ../dist
         artifacts:
-          - Avocado.Web/bin/Release/**
+          - dist/**
     - step:
         name: Deploy to GCloud
         deployment: test   # set to test, staging or production
@@ -22,4 +22,4 @@ pipelines:
           - echo $GCLOUD_API_KEYFILE | base64 --decode --ignore-garbage > ./gcloud-api-key.json
           - gcloud auth activate-service-account --key-file gcloud-api-key.json
           - gcloud config set project $GCLOUD_PROJECT
-          - gcloud -q app deploy ./Avocado.Web/bin/Release/$DOTNET_VERSION/publish/gcp-app.yaml
+          - gcloud -q app deploy ./dist/gcp-app.yaml

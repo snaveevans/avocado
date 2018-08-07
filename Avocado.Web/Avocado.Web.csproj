@@ -18,4 +18,10 @@
     <ProjectReference Include="..\Avocado.Infrastructure\Avocado.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="gcp-app.yaml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

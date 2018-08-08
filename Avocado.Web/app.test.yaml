@@ -1,6 +1,6 @@
 runtime: aspnetcore
 env: flex
-service: test-api
+service: api-test
 
 manual_scaling:
   instances: 1

@@ -22,7 +22,7 @@
     <None Update="app.yaml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Update="test.app.yaml">
+    <None Update="app.test.yaml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
     <None Update="dispatch.yaml">

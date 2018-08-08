@@ -3,4 +3,4 @@ dispatch:
     service: api
 
   - url: "test.api.tylerevans.co/*"
-    service: test.api
+    service: api-test

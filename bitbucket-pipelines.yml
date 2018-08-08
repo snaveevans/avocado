@@ -23,4 +23,4 @@ pipelines:
           - echo $GCLOUD_API_KEYFILE | base64 --decode --ignore-garbage > ./gcloud-api-key.json
           - gcloud auth activate-service-account --key-file gcloud-api-key.json
           - gcloud config set project $GCLOUD_PROJECT
-          - gcloud -q app deploy ./dist/app-tes.yaml ./dist/dispatch.yaml
+          - gcloud -q app deploy ./dist/app-test.yaml ./dist/dispatch.yaml

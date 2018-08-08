@@ -1,6 +1,5 @@
 runtime: aspnetcore
 env: flex
-version: v0-0-1
 service: test-api
 
 manual_scaling:

@@ -3,6 +3,7 @@ image: microsoft/dotnet:sdk
 pipelines:
   default:
     - step:
+        name: Build and Test
         caches:
           - dotnetcore
         script:

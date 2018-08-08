@@ -1,0 +1,11 @@
+runtime: aspnetcore
+env: flex
+version: v0.0.1
+service: api
+
+manual_scaling:
+  instances: 1
+resources:
+  cpu: 1
+  memory_gb: 0.5
+  disk_size_gb: 10

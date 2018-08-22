@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Avocado.Web.Controllers
 {
-    [Route("account")]
+    [Route("api/account")]
     public class AccountController : Controller
     {
         private readonly LoginService _loginService;

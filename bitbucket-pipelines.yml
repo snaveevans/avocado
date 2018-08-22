@@ -1,26 +1,27 @@
 image: microsoft/dotnet:sdk
 
 pipelines:
-  default:
-    - step:
-        name: Build and Test
-        caches:
-          - dotnetcore
-        script:
-          - export PROJECT_NAME=Avocado.Web
-          - export TEST_NAME=Avocado.Test
-          - dotnet restore
-          - dotnet build $PROJECT_NAME
-          - dotnet test $TEST_NAME
-          - dotnet publish $PROJECT_NAME -c Release -o ../dist
-        artifacts:
-          - dist/**
-    - step:
-        name: Deploy to GCloud
-        deployment: test   # set to test, staging or production
-        image: google/cloud-sdk:latest
-        script:
-          - echo $GCLOUD_API_KEYFILE | base64 --decode --ignore-garbage > ./gcloud-api-key.json
-          - gcloud auth activate-service-account --key-file gcloud-api-key.json
-          - gcloud config set project $GCLOUD_PROJECT
-          - gcloud -q app deploy ./dist/app.test.yaml ./dist/dispatch.yaml
+  branches:
+    release-*:
+      - step:
+          name: Build and Test
+          caches:
+            - dotnetcore
+          script:
+            - export PROJECT_NAME=Avocado.Web
+            - export TEST_NAME=Avocado.Test
+            - dotnet restore
+            - dotnet build $PROJECT_NAME
+            - dotnet test $TEST_NAME
+            - dotnet publish $PROJECT_NAME -c Release -o ../dist
+          artifacts:
+            - dist/**
+      - step:
+          name: Deploy to GCloud
+          deployment: test # set to test, staging or production
+          image: google/cloud-sdk:latest
+          script:
+            - echo $GCLOUD_API_KEYFILE | base64 --decode --ignore-garbage > ./gcloud-api-key.json
+            - gcloud auth activate-service-account --key-file gcloud-api-key.json
+            - gcloud config set project $GCLOUD_PROJECT
+            - gcloud -q app deploy ./dist/app.test.yaml ./dist/dispatch.yaml

@@ -14,7 +14,7 @@ using System.Linq;
 
 namespace Avocado.Web.Controllers
 {
-    [Route("token")]
+    [Route("api/token")]
     public class TokenController : Controller
     {
         private readonly LoginService _loginService;

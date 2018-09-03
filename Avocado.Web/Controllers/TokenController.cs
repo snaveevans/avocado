@@ -58,6 +58,7 @@ namespace Avocado.Web.Controllers
             // validate access_token
             var client = new RestClient("https://www.googleapis.com");
             var request = new RestRequest("oauth2/v3/tokeninfo", Method.GET);
+            request.AddParameter("access_token", accessToken);
             var response = client.Execute<GoogleResponse>(request);
 
             if (response.StatusCode != HttpStatusCode.OK)
@@ -111,7 +112,7 @@ namespace Avocado.Web.Controllers
                 return BadRequest();
             }
 
-            return Ok(token);
+            return Ok(new { token });
         }
     }
 }

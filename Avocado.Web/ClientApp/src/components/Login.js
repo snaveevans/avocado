@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import firebase from "firebase/app";
 import "firebase/auth";
+import { testFetch } from "../lib/fetch";
 
 class Login extends Component {
   constructor() {
@@ -9,7 +10,7 @@ class Login extends Component {
     this.onLoginClick = this.onLoginClick.bind(this);
   }
 
-  onLoginClick = () => {
+  onLoginClick = (mode) => {
     const provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
     firebase.auth().useDeviceLanguage();
@@ -19,7 +20,7 @@ class Login extends Component {
       .then(result => {
         const token = result.credential.accessToken;
         const { user } = result;
-        // TODO: call token controller
+        testFetch("api/token/google/" + mode, "GET", token);
       })
       .catch(error => {
         const { errorCode, errorMessage, email, credential } = error;
@@ -31,8 +32,11 @@ class Login extends Component {
     return (
       <div>
         Login page
-        <button onClick={() => this.onLoginClick()} type="button">
-          Google Login
+        <button onClick={() => this.onLoginClick("register")} type="button">
+          Register
+        </button>
+        <button onClick={() => this.onLoginClick("login")} type="button">
+          Login
         </button>
       </div>
     );

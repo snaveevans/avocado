@@ -29,14 +29,12 @@ export default ({ dispatch, getState }) => next => action => {
         data: body
       })
       .then(r => {
-        console.log(r);
         dispatch({
           type: onSuccessType,
           payload: r.data
         });
       })
       .catch(r => {
-        console.log(r);
         dispatch({
           type: onErrorType,
           payload: r.data

@@ -30,7 +30,7 @@ namespace Avocado.Web.Controllers
             _environment = environment;
         }
 
-        [HttpPost("test-token")]
+        [HttpPost("test-token"), AllowAnonymous]
         public IActionResult TestToken([FromBody] LoginModel model)
         {
             if (!_environment.IsDevelopment())
@@ -43,7 +43,7 @@ namespace Avocado.Web.Controllers
                 return BadRequest();
             }
 
-            return Ok(token);
+            return Ok(new { token });
         }
 
         [HttpGet("google/{mode}"), AllowAnonymous]

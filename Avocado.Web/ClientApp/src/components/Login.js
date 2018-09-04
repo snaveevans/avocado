@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import firebase from "firebase/app";
 import "firebase/auth";
-import { testFetch } from "../lib/fetch";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { actionCreators as fetchActionCreators } from "../store/Fetch";
+import { actionCreators as accountActionCreators, receiveToken } from "../store/Account";
 
 class Login extends Component {
   constructor() {
@@ -10,7 +13,7 @@ class Login extends Component {
     this.onLoginClick = this.onLoginClick.bind(this);
   }
 
-  onLoginClick = (mode) => {
+  onLoginClick = mode => {
     const provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
     firebase.auth().useDeviceLanguage();
@@ -18,12 +21,18 @@ class Login extends Component {
       .auth()
       .signInWithPopup(provider)
       .then(result => {
-        const token = result.credential.accessToken;
-        const { user } = result;
-        testFetch("api/token/google/" + mode, "GET", token);
+        const providerToken = result.credential.accessToken;
+
+        this.props.receiveProviderToken({ providerToken });
+
+        this.props.fetch({
+          url: "token/google/" + mode,
+          method: "GET",
+          onSuccessType: receiveToken
+        });
       })
       .catch(error => {
-        const { errorCode, errorMessage, email, credential } = error;
+        // const { errorCode, errorMessage, email, credential } = error;
         // TODO: what do we do?
       });
   };
@@ -43,4 +52,11 @@ class Login extends Component {
   }
 }
 
-export default Login;
+export default connect(
+  state => state.account,
+  dispatch =>
+    bindActionCreators(
+      { ...fetchActionCreators, ...accountActionCreators },
+      dispatch
+    )
+)(Login);

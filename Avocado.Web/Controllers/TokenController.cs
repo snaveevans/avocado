@@ -49,16 +49,16 @@ namespace Avocado.Web.Controllers
         [HttpGet("google/{mode}"), AllowAnonymous]
         public IActionResult Google(string mode)
         {
-            if (!Request.Headers.TryGetValue("Access-Token", out StringValues accessTokens) || accessTokens.Count > 1)
+            if (!Request.Headers.TryGetValue("Provider-Token", out StringValues providerTokens) || providerTokens.Count > 1)
             {
                 return BadRequest();
             }
-            var accessToken = accessTokens.First();
+            var providerToken = providerTokens.First();
 
             // validate access_token
             var client = new RestClient("https://www.googleapis.com");
             var request = new RestRequest("oauth2/v3/tokeninfo", Method.GET);
-            request.AddParameter("access_token", accessToken);
+            request.AddParameter("access_token", providerToken);
             var response = client.Execute<GoogleResponse>(request);
 
             if (response.StatusCode != HttpStatusCode.OK)
@@ -91,7 +91,7 @@ namespace Avocado.Web.Controllers
             {
                 // get user information
                 request = new RestRequest("oauth2/v3/userinfo", Method.GET);
-                request.AddParameter("access_token", accessToken);
+                request.AddParameter("access_token", providerToken);
                 var infoResponse = client.Execute<GoogleInformation>(request);
                 if (infoResponse.StatusCode != HttpStatusCode.OK)
                 {

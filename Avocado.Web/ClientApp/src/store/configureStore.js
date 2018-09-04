@@ -4,6 +4,7 @@ import { routerReducer, routerMiddleware } from 'react-router-redux';
 import * as Events from "./Events";
 import * as Account from "./Account";
 import * as Navigation from "./Navigation";
+import Fetch from "../utilities/fetch";
 
 export default function configureStore(history, initialState) {
   const reducers = {
@@ -14,7 +15,8 @@ export default function configureStore(history, initialState) {
 
   const middleware = [
     thunk,
-    routerMiddleware(history)
+    routerMiddleware(history),
+    Fetch
   ];
 
   // In development, use the browser's Redux dev tools extension if installed

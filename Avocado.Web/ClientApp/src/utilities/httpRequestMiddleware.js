@@ -1,9 +1,8 @@
 import axios from "axios";
-
-export const httpRequest = "HTTP_REQUEST";
+import { httpRequestType } from "../store/HttpRequest";
 
 export default ({ dispatch, getState }) => next => action => {
-  if (action.type === httpRequest) {
+  if (action.type === httpRequestType) {
     const { url, method, body, onSuccessType, onErrorType } = action.payload;
 
     const providerToken = getState().account.providerToken;

@@ -3,8 +3,11 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { actionCreators as fetchActionCreators } from "../store/Fetch";
-import { actionCreators as accountActionCreators, receiveToken } from "../store/Account";
+import {
+  actionCreators as accountActionCreators,
+  receiveToken
+} from "../store/Account";
+import { httpRequest } from "../store/HttpRequest";
 
 class Login extends Component {
   constructor() {
@@ -25,7 +28,7 @@ class Login extends Component {
 
         this.props.receiveProviderToken({ providerToken });
 
-        this.props.fetch({
+        this.props.httpRequest({
           url: "token/google/" + mode,
           method: "GET",
           onSuccessType: receiveToken
@@ -55,8 +58,5 @@ class Login extends Component {
 export default connect(
   state => state.account,
   dispatch =>
-    bindActionCreators(
-      { ...fetchActionCreators, ...accountActionCreators },
-      dispatch
-    )
+    bindActionCreators({ httpRequest, ...accountActionCreators }, dispatch)
 )(Login);

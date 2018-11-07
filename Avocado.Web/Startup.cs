@@ -38,20 +38,15 @@ namespace Avocado.Web
                 options.ConnectionString = _configuration.GetConnectionString("AvocadoContext");
             });
 
-            services.Configure<ContextOptions<IdentityContext>>(options =>
-            {
-                options.ConnectionString = _configuration.GetConnectionString("IdentityContext");
-            });
-
             services.Configure<LoginOptions>(options =>
             {
                 options.Issuer = _configuration["JwtIssuer"];
                 options.MillisecondsUntilExpiration = long.Parse(_configuration["JwtExpireMilliseconds"]);
                 options.Key = _configuration["JwtKey"];
+                options.PathToCredentialsJson = _configuration["PathToCredentialsJson"];
             });
 
             services.AddDbContext<AvocadoContext>();
-            services.AddDbContext<IdentityContext>();
 
             services.AddScoped<IRepository<Event>, ContextRepository<Event, AvocadoContext>>();
             services.AddScoped<IRepository<Member>, ContextRepository<Member, AvocadoContext>>();
@@ -61,7 +56,7 @@ namespace Avocado.Web
             services.AddScoped<MemberService>();
             services.AddScoped<AuthorizationService>();
 
-            services.AddScoped<IRepository<Login>, ContextRepository<Login, IdentityContext>>();
+            services.AddScoped<IRepository<Login>, ContextRepository<Login, AvocadoContext>>();
             services.AddScoped<LoginService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

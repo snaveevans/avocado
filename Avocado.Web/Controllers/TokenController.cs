@@ -1,16 +1,12 @@
 using System;
-using System.Net;
-using Microsoft.Extensions.Primitives;
+using System.Linq;
+using System.Threading.Tasks;
 using Avocado.Infrastructure.Authentication;
-using Avocado.Infrastructure.Enumerations;
 using Avocado.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using RestSharp;
-using System.Linq;
+using Microsoft.Extensions.Primitives;
 
 namespace Avocado.Web.Controllers
 {
@@ -18,16 +14,61 @@ namespace Avocado.Web.Controllers
     public class TokenController : Controller
     {
         private readonly LoginService _loginService;
-        private readonly IConfiguration _configuration;
         private readonly IHostingEnvironment _environment;
 
         public TokenController(LoginService loginService,
-            IConfiguration configuration,
             IHostingEnvironment environment)
         {
             _loginService = loginService;
-            _configuration = configuration;
             _environment = environment;
+        }
+
+        private string GetIdToken()
+        {
+
+            if (!Request.Headers.TryGetValue("Id-Token", out StringValues idTokens) || idTokens.Count > 1)
+            {
+                return string.Empty;
+            }
+            var idToken = idTokens.First();
+            return idToken;
+        }
+
+        [HttpGet("login")]
+        public async Task<IActionResult> Login()
+        {
+            var idToken = GetIdToken();
+            if (string.IsNullOrEmpty(idToken))
+            {
+                return BadRequest();
+            }
+
+            var account = await _loginService.FindAccountViaToken(idToken);
+            if (account == null)
+            {
+                return BadRequest();
+            }
+
+            var jwt = _loginService.GenerateToken(account);
+            return Ok(new TokenModel(jwt));
+        }
+
+        [HttpGet("register")]
+        public async Task<IActionResult> Register()
+        {
+            var idToken = GetIdToken();
+            if (string.IsNullOrEmpty(idToken))
+            {
+                return BadRequest();
+            }
+
+            var account = await _loginService.RegisterViaToken(idToken);
+            if (account == null)
+            {
+                return BadRequest(new TokenModel(string.Empty, "exists"));
+            }
+            var jwt = _loginService.GenerateToken(account);
+            return Ok(new TokenModel(jwt));
         }
 
         [HttpPost("test-token"), AllowAnonymous]
@@ -38,81 +79,13 @@ namespace Avocado.Web.Controllers
                 return NotFound();
             }
 
-            if (!_loginService.TryLogin(model, out string token))
+            var account = _loginService.FindAccountViaLoginModel(model);
+            if (account == null)
             {
                 return BadRequest();
             }
-
-            return Ok(new { token });
-        }
-
-        [HttpGet("google/{mode}"), AllowAnonymous]
-        public IActionResult Google(string mode)
-        {
-            if (!Request.Headers.TryGetValue("Provider-Token", out StringValues providerTokens) || providerTokens.Count > 1)
-            {
-                return BadRequest();
-            }
-            var providerToken = providerTokens.First();
-
-            // validate access_token
-            var client = new RestClient("https://www.googleapis.com");
-            var request = new RestRequest("oauth2/v3/tokeninfo", Method.GET);
-            request.AddParameter("access_token", providerToken);
-            var response = client.Execute<GoogleResponse>(request);
-
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                return BadRequest();
-            }
-
-            var info = response.Data;
-
-            if (info.ClientId != _configuration["GoogleClientId"])
-            {
-                return BadRequest();
-            }
-
-            var model = new RegisterModel
-            {
-                Provider = Providers.Google.ToString(),
-                ProviderId = info.GoogleId
-            };
-
-            string token;
-            if (mode == "login")
-            {
-                if (!_loginService.TryLogin(model, out token))
-                {
-                    return BadRequest();
-                }
-            }
-            else if (mode == "register")
-            {
-                // get user information
-                request = new RestRequest("oauth2/v3/userinfo", Method.GET);
-                request.AddParameter("access_token", providerToken);
-                var infoResponse = client.Execute<GoogleInformation>(request);
-                if (infoResponse.StatusCode != HttpStatusCode.OK)
-                {
-                    return View(new { error = "failed" });
-                }
-                var content = infoResponse.Data;
-
-                model.Name = infoResponse.Data.name;
-                model.Picture = infoResponse.Data.picture;
-
-                if (!_loginService.TryRegister(model, out token))
-                {
-                    return BadRequest();
-                }
-            }
-            else
-            {
-                return BadRequest();
-            }
-
-            return Ok(new { token });
+            var jwt = _loginService.GenerateToken(account);
+            return Ok(new TokenModel(jwt));
         }
     }
 }

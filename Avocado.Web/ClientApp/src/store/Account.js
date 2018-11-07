@@ -1,11 +1,11 @@
 export const receiveToken = "RECEIVE_TOKEN";
-const receiveProviderToken = "RECEIVE_PROVIDER_TOKEN";
-const requestAccountInformation = "REQUEST_ACCOUNT_INFORMATION";
-const receiveAccountInformation = "RECEIVE_ACCOUNT_INFORMATION";
+const receiveIdToken = "RECEIVE_PROVIDER_TOKEN";
+// const requestAccountInformation = "REQUEST_ACCOUNT_INFORMATION";
+// const receiveAccountInformation = "RECEIVE_ACCOUNT_INFORMATION";
 const clearUserData = "CLEAR_USER_DATA";
 const initialState = {
   token: "",
-  providerToken: "",
+  idToken: "",
   information: {
     isLoading: false,
     name: "",
@@ -14,9 +14,9 @@ const initialState = {
 };
 
 export const actionCreators = {
-  receiveProviderToken: ({ providerToken }) => dispatch => {
-    localStorage.setItem("providerToken", providerToken);
-    dispatch({ type: receiveProviderToken, payload: { providerToken } });
+  receiveIdToken: ({ idToken }) => dispatch => {
+    localStorage.setItem("idToken", idToken);
+    dispatch({ type: receiveIdToken, payload: { idToken } });
   },
   receiveToken: ({ token }) => dispatch => {
     localStorage.setItem("token", token);
@@ -38,10 +38,10 @@ export const reducer = (state, action) => {
     };
   }
 
-  if (action.type === receiveProviderToken) {
+  if (action.type === receiveIdToken) {
     return {
       ...state,
-      providerToken: action.payload.providerToken
+      idToken: action.payload.idToken
     };
   }
 

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Avocado.Infrastructure.Migrations
 {
-    public partial class InitialAvocado : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -35,6 +35,21 @@ namespace Avocado.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Logins",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    AccountId = table.Column<Guid>(nullable: false),
+                    Provider = table.Column<string>(nullable: true),
+                    ProviderId = table.Column<string>(nullable: true),
+                    ProviderKey = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Logins", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Members",
                 columns: table => new
                 {
@@ -56,6 +71,9 @@ namespace Avocado.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Events");
+
+            migrationBuilder.DropTable(
+                name: "Logins");
 
             migrationBuilder.DropTable(
                 name: "Members");

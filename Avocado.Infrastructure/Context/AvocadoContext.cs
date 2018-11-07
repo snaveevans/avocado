@@ -1,5 +1,6 @@
 ﻿using System;
 using Avocado.Domain.Entities;
+using Avocado.Infrastructure.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -12,6 +13,7 @@ namespace Avocado.Infrastructure.Context
         public DbSet<Event> Events { get; set; }
         public DbSet<Member> Members { get; set; }
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<Login> Logins { get; set; }
 
         public AvocadoContext(IOptions<ContextOptions<AvocadoContext>> options)
         {

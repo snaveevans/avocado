@@ -10,15 +10,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Avocado.Infrastructure.Migrations
 {
     [DbContext(typeof(AvocadoContext))]
-    [Migration("20180723222104_InitialAvocado")]
-    partial class InitialAvocado
+    [Migration("20181107223640_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
-                .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
+                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("Avocado.Domain.Entities.Account", b =>
@@ -64,6 +64,24 @@ namespace Avocado.Infrastructure.Migrations
                     b.HasKey("AccountId", "EventId");
 
                     b.ToTable("Members");
+                });
+
+            modelBuilder.Entity("Avocado.Infrastructure.Authentication.Login", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("AccountId");
+
+                    b.Property<string>("Provider");
+
+                    b.Property<string>("ProviderId");
+
+                    b.Property<string>("ProviderKey");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Logins");
                 });
 #pragma warning restore 612, 618
         }

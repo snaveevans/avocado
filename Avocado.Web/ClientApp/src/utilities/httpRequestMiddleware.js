@@ -5,12 +5,12 @@ export default ({ dispatch, getState }) => next => action => {
   if (action.type === httpRequestType) {
     const { url, method, body, onSuccessType, onErrorType } = action.payload;
 
-    const providerToken = getState().account.providerToken;
+    const idToken = getState().account.idToken;
     const token = getState().account.token;
 
     let headers = {};
-    if (providerToken !== "") {
-      headers["Provider-Token"] = providerToken;
+    if (idToken !== "") {
+      headers["Id-Token"] = idToken;
     }
 
     if (token !== "") {

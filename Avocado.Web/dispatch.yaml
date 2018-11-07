@@ -1,6 +1,0 @@
-dispatch:
-  - url: "api.tylerevans.co/*"
-    service: api
-
-  - url: "test.api.tylerevans.co/*"
-    service: api-test

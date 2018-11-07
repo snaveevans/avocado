@@ -23,13 +23,14 @@ class Login extends Component {
     firebase
       .auth()
       .signInWithPopup(provider)
-      .then(result => {
-        const providerToken = result.credential.accessToken;
+      .then(() => firebase.auth().currentUser.getIdToken(false))
+      .then(idToken => {
+        const url = `token/${mode}`;
 
-        this.props.receiveProviderToken({ providerToken });
+        this.props.receiveIdToken({ idToken });
 
         this.props.httpRequest({
-          url: "token/google/" + mode,
+          url,
           method: "GET",
           onSuccessType: receiveToken
         });
@@ -41,6 +42,7 @@ class Login extends Component {
   };
 
   render() {
+    const { token } = this.props;
     return (
       <div>
         Login page
@@ -50,6 +52,7 @@ class Login extends Component {
         <button onClick={() => this.onLoginClick("login")} type="button">
           Login
         </button>
+        <div>Token: {token}</div>
       </div>
     );
   }

@@ -26,7 +26,7 @@
 ## Running
 
 1. start `avocado-db` if it's not running already `docker start avocado-db`
-2. run `npm run watch`
+2. run `npm run watch` to watch & rebuild while developing locally
 3. navigate to https://localhost:5001 or https://local.tylerevans.co:5001 (if you added the hosts entry)
 
 ## Infrastructure Notes

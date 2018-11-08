@@ -1,0 +1,22 @@
+{
+  "name": "avocado",
+  "version": "1.0.0",
+  "description": "event scheduler",
+  "scripts": {
+    "watch": "concurrently --kill-others \"nodemon Avocado.Web/Avocado.Web.csproj\" \"npm run start --prefix Avocado.Web/ClientApp\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/snaveevans/avocado.git"
+  },
+  "author": "tyler evans <tyler@tylerevans.co> (www.tylerevans.co)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/snaveevans/avocado/issues"
+  },
+  "homepage": "https://github.com/snaveevans/avocado#readme",
+  "devDependencies": {
+    "concurrently": "^4.0.1",
+    "nodemon": "^1.18.6"
+  }
+}

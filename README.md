@@ -19,16 +19,15 @@
 3. source your startup script (ie `source ~/.zshrc`)
    - you can also close your shell(s) and open new shell instances
 4. make init script executable `chmod +x init.sh`
-5. edit `hosts` file add entry for local development `127.0.0.1 local.tylerevans.co`
+5. (optional) edit `hosts` file add entry for local development `127.0.0.1 local.tylerevans.co`
 6. run init script `./init.sh`
 7. Follow [Running](#Running)
 
 ## Running
 
-1. make run.sh script executiable `chmod +x run.sh`
-2. start `avocado-db` if it's not running already `docker start avocado-db`
-3. run script `./run.sh` or use vscode `launch.json` configuration
-4. navigate to https://local.tylerevans.co:5001
+1. start `avocado-db` if it's not running already `docker start avocado-db`
+2. run `npm run watch`
+3. navigate to https://localhost:5001 or https://local.tylerevans.co:5001 (if you added the hosts entry)
 
 ## Infrastructure Notes
 

@@ -1,19 +1,16 @@
 import React, { Component } from "react";
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-import { actionCreators } from "../store/Events";
+import PropTypes from "prop-types";
 
 class EventList extends Component {
   componentWillMount() {
-    // This method runs when the component is first added to the page
-    this.props.requestEvents();
+    // TODO fetch events
   }
 
   render() {
     return (
       <div>
         <h1>Events</h1>
-        {renderEventsTable(this.props)}
+        {this.props.events ? renderEventsTable(this.props) : null}
       </div>
     );
   }
@@ -42,7 +39,12 @@ function renderEventsTable(props) {
   );
 }
 
-export default connect(
-  state => state.events,
-  dispatch => bindActionCreators(actionCreators, dispatch)
-)(EventList);
+EventList.propTypes = {
+  events: PropTypes.arrayOf({
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired
+  })
+};
+
+export default EventList;

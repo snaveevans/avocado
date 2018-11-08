@@ -11,9 +11,6 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import { Link } from "react-router-dom";
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-import { actionCreators } from "../../store/Navigation";
 import { login } from "../../Routes";
 
 const styles = {
@@ -29,7 +26,7 @@ const styles = {
   }
 };
 
-class MenuAppBar extends React.Component {
+class AvocadoAppBar extends React.Component {
   state = {
     auth: true,
     anchorEl: null
@@ -43,16 +40,8 @@ class MenuAppBar extends React.Component {
     this.setState({ anchorEl: null });
   };
 
-  toggleDrawer = () => {
-    if (this.props.isDrawerOpen) {
-      this.props.closeDrawer();
-    } else {
-      this.props.openDrawer();
-    }
-  };
-
   render() {
-    const { classes, isLoggedIn } = this.props;
+    const { classes, isLoggedIn, toggleDrawer } = this.props;
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
 
@@ -60,11 +49,10 @@ class MenuAppBar extends React.Component {
       <AppBar position="static" className={classes.root}>
         <Toolbar>
           <IconButton
-            onClick={() => this.toggleDrawer()}
+            onClick={() => toggleDrawer()}
             className={classes.menuButton}
             color="inherit"
-            aria-label="Menu"
-          >
+            aria-label="Menu">
             <MenuIcon />
           </IconButton>
           <Typography variant="title" color="inherit" className={classes.flex}>
@@ -76,8 +64,7 @@ class MenuAppBar extends React.Component {
                 aria-owns={open ? "menu-appbar" : null}
                 aria-haspopup="true"
                 onClick={this.handleMenu}
-                color="inherit"
-              >
+                color="inherit">
                 <AccountCircle />
               </IconButton>
               <Menu
@@ -92,8 +79,7 @@ class MenuAppBar extends React.Component {
                   horizontal: "right"
                 }}
                 open={open}
-                onClose={this.handleClose}
-              >
+                onClose={this.handleClose}>
                 <MenuItem onClick={this.handleClose}>Profile</MenuItem>
                 <MenuItem onClick={this.handleClose}>My account</MenuItem>
               </Menu>
@@ -109,14 +95,9 @@ class MenuAppBar extends React.Component {
   }
 }
 
-MenuAppBar.propTypes = {
-  classes: PropTypes.object.isRequired
+AvocadoAppBar.propTypes = {
+  classes: PropTypes.object.isRequired,
+  toggleDrawer: PropTypes.func.isRequired
 };
 
-export default connect(
-  state => ({
-    isDrawerOpen: state.navigation.isDrawerOpen,
-    isLoggedIn: state.account.token !== ""
-  }),
-  dispatch => bindActionCreators(actionCreators, dispatch)
-)(withStyles(styles)(MenuAppBar));
+export default withStyles(styles)(AvocadoAppBar);

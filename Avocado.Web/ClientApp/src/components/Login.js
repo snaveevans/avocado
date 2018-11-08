@@ -1,15 +1,12 @@
 import React, { Component } from "react";
 import firebase from "firebase/app";
 import "firebase/auth";
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-import {
-  actionCreators as accountActionCreators,
-  receiveToken
-} from "../store/Account";
-import { httpRequest } from "../store/HttpRequest";
 
-class Login extends Component {
+export default class Login extends Component {
+  state = {
+    token: ""
+  };
+
   constructor() {
     super();
 
@@ -25,24 +22,31 @@ class Login extends Component {
       .signInWithPopup(provider)
       .then(() => firebase.auth().currentUser.getIdToken(false))
       .then(idToken => {
-        const url = `token/${mode}`;
-
-        this.props.receiveIdToken({ idToken });
-
-        this.props.httpRequest({
-          url,
+        const url = `api/token/${mode}`;
+        localStorage.setItem("idToken", idToken);
+        fetch(url, {
           method: "GET",
-          onSuccessType: receiveToken
-        });
+          mode: "cors",
+          cache: "no-cache",
+          headers: {
+            "Id-Token": idToken
+          }
+        })
+          .then(r => r.json())
+          .then(json => {
+            this.setState({ token: json.token });
+            localStorage.setItem("token", json.token);
+          });
       })
       .catch(error => {
         // const { errorCode, errorMessage, email, credential } = error;
         // TODO: what do we do?
+        console.error(error);
       });
   };
 
   render() {
-    const { token } = this.props;
+    const { token } = this.state;
     return (
       <div>
         Login page
@@ -57,9 +61,3 @@ class Login extends Component {
     );
   }
 }
-
-export default connect(
-  state => state.account,
-  dispatch =>
-    bindActionCreators({ httpRequest, ...accountActionCreators }, dispatch)
-)(Login);

@@ -9,12 +9,8 @@
     "firebase": "^5.5.7",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
-    "react-redux": "^5.1.0",
     "react-router-dom": "^4.3.1",
-    "react-router-redux": "^5.0.0-alpha.8",
     "react-scripts": "2.1.0",
-    "redux": "^3.7.2",
-    "redux-thunk": "^2.3.0",
     "rimraf": "^2.6.2",
     "typeface-roboto": "0.0.54"
   },

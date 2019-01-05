@@ -10,8 +10,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "prettier": "prettier --write src/**/*",
-    "prettier:fix": "prettier --write",
-    "precommit": "run-s prettier:fix lint",
+    "precommit": "run-s prettier lint",
     "e2e": "ng e2e"
   },
   "private": true,

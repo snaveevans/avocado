@@ -23,4 +23,8 @@ export class SideNavigationComponent implements OnInit {
       this.close.emit();
     }
   }
+
+  handleLinkClick(): void {
+    this.isOpen = false;
+  }
 }

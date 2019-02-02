@@ -1,0 +1,14 @@
+mat-drawer-container {
+  display: flex;
+  height: calc(100vh - 95px);
+
+  .menu-items-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  a {
+    margin-top: 10px;
+    text-align: left;
+  }
+}

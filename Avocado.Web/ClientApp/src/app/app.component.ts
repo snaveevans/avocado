@@ -1,10 +1,18 @@
 import { Component } from "@angular/core";
 
 @Component({
-  selector: "app-root",
+  selector: "av-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"]
 })
 export class AppComponent {
-  title = "Tour of Heroes";
+  isSideNavOpen = false;
+
+  handleMenuClick(): void {
+    this.isSideNavOpen = !this.isSideNavOpen;
+  }
+
+  handleClose(): void {
+    this.isSideNavOpen = false;
+  }
 }

@@ -1,0 +1,16 @@
+<mat-drawer-container>
+  <mat-drawer
+    mode="over"
+    [opened]="isOpen"
+    position="end"
+    (openedChange)="handleChange($event)"
+  >
+    <div class="menu-items-container">
+      <a *ngFor="let route of menuRoutes" mat-button [routerLink]="route.path">
+        <mat-icon>{{ route.icon }}</mat-icon>
+        {{ route.text }}
+      </a>
+    </div>
+  </mat-drawer>
+  <mat-drawer-content><ng-content></ng-content></mat-drawer-content>
+</mat-drawer-container>

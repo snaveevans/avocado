@@ -3,7 +3,14 @@ import { Routes, RouterModule } from "@angular/router";
 
 const routes: Routes = [
   { path: "", redirectTo: "/events", pathMatch: "full" },
-  { path: "events", loadChildren: "@avocado/events/events.module#EventsModule" }
+  {
+    path: "events",
+    loadChildren: "@avocado/events/events.module#EventsModule"
+  },
+  {
+    path: "contacts",
+    loadChildren: "@avocado/contacts/contacts.module#ContactsModule"
+  }
 ];
 
 @NgModule({

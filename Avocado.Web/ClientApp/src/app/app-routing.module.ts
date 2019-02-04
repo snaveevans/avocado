@@ -1,7 +1,8 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
+import { AuthGuard } from "./auth/services/auth.guard";
 
-const routes: Routes = [
+const authenticatedRoutes: Routes = [
   { path: "", redirectTo: "/events", pathMatch: "full" },
   {
     path: "events",
@@ -10,6 +11,14 @@ const routes: Routes = [
   {
     path: "contacts",
     loadChildren: "@avocado/contacts/contacts.module#ContactsModule"
+  }
+];
+
+const routes: Routes = [
+  {
+    path: "",
+    canActivate: [AuthGuard],
+    children: authenticatedRoutes
   }
 ];
 

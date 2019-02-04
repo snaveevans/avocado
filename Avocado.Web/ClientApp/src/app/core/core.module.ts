@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
+import { HttpClientModule } from "@angular/common/http";
 
 import { MaterialModule } from "@avocado/material/material.module";
 import { ToolbarComponent } from "@avocado/core/components/toolbar/toolbar.component";
@@ -14,7 +15,7 @@ const COMPONENTS = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule, MaterialModule],
+  imports: [CommonModule, RouterModule, MaterialModule, HttpClientModule],
   declarations: COMPONENTS,
   exports: COMPONENTS
 })

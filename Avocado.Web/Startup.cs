@@ -94,10 +94,9 @@ namespace Avocado.Web
                 app.UseHsts();
             }
 
-            // app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
-
             app.UseAuthentication();
 
             app.UseMvc(routes =>

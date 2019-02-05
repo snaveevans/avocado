@@ -1,29 +1,39 @@
 import { AppRoute } from "./app-route";
+import {
+  faSignInAlt,
+  faSignOutAlt,
+  faQuestionCircle,
+  faPlusCircle,
+  faUsers,
+  faCalendarCheck,
+  faCalendarAlt,
+  faHome
+} from "@fortawesome/free-solid-svg-icons";
 
 enum RouteName {
   Home = "[RouteName] Home",
-  Upcoming = "[RouteName] upcoming",
-  MyEvents = "[RouteName] myEvents",
-  Contacts = "[RouteName] contacts",
-  NewEvent = "[RouteName] newEvent",
-  Help = "[RouteName] help"
+  Upcoming = "[RouteName] Upcoming",
+  MyEvents = "[RouteName] MyEvents",
+  Contacts = "[RouteName] Contacts",
+  NewEvent = "[RouteName] NewEvent",
+  Help = "[RouteName] Help",
+  Login = "[RouteName] Login",
+  Logout = "[RouteName] Logout"
 }
 
 const allRoutes: { [P in RouteName]: AppRoute } = {
-  [RouteName.Home]: new AppRoute("Home", "home", ""),
+  [RouteName.Home]: new AppRoute("Home", faHome, ""),
   [RouteName.Upcoming]: new AppRoute(
     "Upcoming Events",
-    "event_available",
+    faCalendarCheck,
     "events"
   ),
-  [RouteName.MyEvents]: new AppRoute("My Events", "events", "events"),
-  [RouteName.Contacts]: new AppRoute("Contacts", "person", "contacts"),
-  [RouteName.NewEvent]: new AppRoute(
-    "New Event",
-    "add_circle_outline",
-    "events/new"
-  ),
-  [RouteName.Help]: new AppRoute("Help", "help_outline", "help")
+  [RouteName.MyEvents]: new AppRoute("My Events", faCalendarAlt, "events"),
+  [RouteName.Contacts]: new AppRoute("Contacts", faUsers, "contacts"),
+  [RouteName.NewEvent]: new AppRoute("New Event", faPlusCircle, "events/new"),
+  [RouteName.Help]: new AppRoute("Help", faQuestionCircle, "help"),
+  [RouteName.Login]: new AppRoute("Login", faSignInAlt, "login"),
+  [RouteName.Logout]: new AppRoute("Logout", faSignOutAlt, "login?logout=true")
 };
 
 export const menuRoutes: RouteName[] = [...Object.values(RouteName)];

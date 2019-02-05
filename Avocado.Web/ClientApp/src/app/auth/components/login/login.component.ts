@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { AuthService } from "@avocado/auth/services/auth.service";
 import { ActivatedRoute, Router } from "@angular/router";
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 
 @Component({
   selector: "av-login",
@@ -9,6 +10,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 })
 export class LoginComponent implements OnInit {
   isLoggingIn = false;
+  googleIcon = faGoogle;
 
   constructor(
     private authService: AuthService,

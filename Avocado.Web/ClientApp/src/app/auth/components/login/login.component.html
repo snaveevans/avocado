@@ -1,8 +1,10 @@
 <div>
-  <p>Register</p>
-  <button mat-button (click)="handleRegisterClick()">Google</button>
-</div>
-<div>
-  <p>Login</p>
-  <button mat-button (click)="handleLoginClick()">Google</button>
+  <button mat-raised-button color="accent" (click)="handleRegisterClick()">
+    <fa-icon [icon]="googleIcon" size="lg"></fa-icon>
+    Sign-up with Google
+  </button>
+  <button mat-raised-button color="primary" (click)="handleLoginClick()">
+    <fa-icon [icon]="googleIcon" size="lg"></fa-icon>
+    Login with Google
+  </button>
 </div>

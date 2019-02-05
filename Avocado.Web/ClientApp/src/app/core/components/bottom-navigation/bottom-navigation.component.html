@@ -1,7 +1,7 @@
 <mat-toolbar color="primary">
   <div class="button-row">
     <a *ngFor="let route of routes" [routerLink]="route.path">
-      <mat-icon> {{ route.icon }} </mat-icon>
+      <fa-icon [icon]="route.icon" size="lg"></fa-icon>
       <div>{{ route.text }}</div>
     </a>
   </div>

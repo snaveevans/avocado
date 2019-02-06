@@ -1,10 +1,10 @@
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { JwtData } from "@avocado/auth/models/JwtData";
 import * as firebase from "firebase/app";
 import "firebase/auth";
-import { Observable, of, from } from "rxjs";
-import { switchMap, map } from "rxjs/operators";
-import { HttpClient } from "@angular/common/http";
-import { JwtData } from "@avocado/auth/models/JwtData";
+import { BehaviorSubject, from, Observable, of } from "rxjs";
+import { map, switchMap, tap, share, shareReplay } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
@@ -12,7 +12,15 @@ import { JwtData } from "@avocado/auth/models/JwtData";
 export class AuthService {
   private isInitialized = false;
   private token?: string;
-  private jwtData?: JwtData;
+  private jwtData$ = new BehaviorSubject<JwtData>(null);
+
+  isAuthenticated$ = this.jwtData$.pipe(
+    tap(_ => setTimeout(this.initializeIfNeeded.bind(this), 1)),
+    map((jwtData?: JwtData) => {
+      return Boolean(jwtData) && !jwtData.isExpired();
+    }),
+    shareReplay(1)
+  );
 
   constructor(private http: HttpClient) {
     const config = {
@@ -41,18 +49,13 @@ export class AuthService {
   private setToken(token: string): void {
     this.isInitialized = true;
     this.token = token;
-    this.jwtData = new JwtData(token);
+    this.jwtData$.next(new JwtData(token));
     localStorage.setItem("token", token);
   }
 
   getToken(): string {
     this.initializeIfNeeded();
     return this.token;
-  }
-
-  isAuthenticated(): boolean {
-    this.initializeIfNeeded();
-    return this.jwtData && !this.jwtData.isExpired();
   }
 
   authenticate(mode: "login" | "register"): Observable<boolean> {
@@ -98,8 +101,9 @@ export class AuthService {
   }
 
   repudiate(): void {
-    this.token = undefined;
-    this.jwtData = undefined;
+    this.token = null;
+    this.jwtData$.next(null);
+    localStorage.setItem("token", "");
   }
 }
 

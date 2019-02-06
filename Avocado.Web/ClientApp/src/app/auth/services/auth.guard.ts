@@ -7,6 +7,7 @@ import {
 } from "@angular/router";
 import { Observable } from "rxjs";
 import { AuthService } from "./auth.service";
+import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
@@ -17,13 +18,17 @@ export class AuthGuard implements CanActivate {
     _route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
-    if (this.authService.isAuthenticated()) {
-      return true;
-    }
-    const redirectUrl = encodeURIComponent(state.url);
-    this.router.navigate(["login"], {
-      queryParams: { redirectUrl }
-    });
-    return false;
+    return this.authService.isAuthenticated$.pipe(
+      map((isAuthenticated: boolean) => {
+        if (isAuthenticated) {
+          return true;
+        }
+        const redirectUrl = encodeURIComponent(state.url);
+        this.router.navigate(["login"], {
+          queryParams: { redirectUrl }
+        });
+        return false;
+      })
+    );
   }
 }

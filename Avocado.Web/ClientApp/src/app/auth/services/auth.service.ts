@@ -58,7 +58,10 @@ export class AuthService {
     return this.token;
   }
 
-  authenticate(mode: "login" | "register"): Observable<boolean> {
+  login = () => this.authenticate("login");
+  register = () => this.authenticate("register");
+
+  private authenticate(mode: "login" | "register"): Observable<boolean> {
     const provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
     const firebaseAuth = firebase.auth();
@@ -100,7 +103,7 @@ export class AuthService {
     );
   }
 
-  repudiate(): void {
+  logout(): void {
     this.token = null;
     this.jwtData$.next(null);
     localStorage.setItem("token", "");

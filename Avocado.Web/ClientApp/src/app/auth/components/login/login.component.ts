@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
       this.route.snapshot.queryParamMap.get("logout")
     );
     if (shouldLogout) {
-      this.authService.repudiate();
+      this.authService.logout();
       this.isLoggedOut = true;
     }
   }
@@ -39,7 +39,9 @@ export class LoginComponent implements OnInit {
 
   private authenticate(mode: "login" | "register"): void {
     this.isLoggingIn = true;
-    this.authService.authenticate(mode).subscribe((isLoggedIn: boolean) => {
+    const authenticationMethod =
+      mode === "login" ? this.authService.login : this.authService.register;
+    authenticationMethod().subscribe((isLoggedIn: boolean) => {
       this.isLoggingIn = false;
       if (!isLoggedIn) {
         return;

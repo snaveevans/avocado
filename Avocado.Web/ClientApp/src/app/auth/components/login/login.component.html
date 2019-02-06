@@ -1,3 +1,6 @@
+<div *ngIf="isLoggedOut" class="logout-message">
+  You have successfully been logged out.
+</div>
 <div>
   <button mat-raised-button color="accent" (click)="handleRegisterClick()">
     <fa-icon [icon]="googleIcon" size="lg"></fa-icon>

@@ -11,6 +11,7 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 export class LoginComponent implements OnInit {
   isLoggingIn = false;
   googleIcon = faGoogle;
+  isLoggedOut = false;
 
   constructor(
     private authService: AuthService,
@@ -24,6 +25,7 @@ export class LoginComponent implements OnInit {
     );
     if (shouldLogout) {
       this.authService.repudiate();
+      this.isLoggedOut = true;
     }
   }
 

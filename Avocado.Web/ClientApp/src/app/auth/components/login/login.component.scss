@@ -13,7 +13,7 @@ div {
 
 button {
   min-width: 300px;
-  ~ button {
+  + button {
     margin-top: 10px;
   }
 }

@@ -13,7 +13,7 @@
         [queryParams]="route.queryParams"
         (click)="handleLinkClick()"
       >
-        <fa-icon [icon]="route.icon" size="lg"></fa-icon>
+        <fa-icon [icon]="route.icon" size="lg" [fixedWidth]="true"></fa-icon>
         {{ route.text }}
       </a>
     </div>

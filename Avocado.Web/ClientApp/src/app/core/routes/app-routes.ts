@@ -33,7 +33,9 @@ const allRoutes: { [P in RouteName]: AppRoute } = {
   [RouteName.NewEvent]: new AppRoute("New Event", faPlusCircle, "events/new"),
   [RouteName.Help]: new AppRoute("Help", faQuestionCircle, "help"),
   [RouteName.Login]: new AppRoute("Login", faSignInAlt, "login"),
-  [RouteName.Logout]: new AppRoute("Logout", faSignOutAlt, "login?logout=true")
+  [RouteName.Logout]: new AppRoute("Logout", faSignOutAlt, "login", {
+    logout: true
+  })
 };
 
 export const menuRoutes: RouteName[] = [...Object.values(RouteName)];

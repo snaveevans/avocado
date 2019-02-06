@@ -4,6 +4,7 @@ export class AppRoute {
   constructor(
     public text: string,
     public icon: IconDefinition,
-    public path: string
+    public path: string,
+    public queryParams?: any
   ) {}
 }

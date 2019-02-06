@@ -18,7 +18,14 @@ export class LoginComponent implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    const shouldLogout = Boolean(
+      this.route.snapshot.queryParamMap.get("logout")
+    );
+    if (shouldLogout) {
+      this.authService.repudiate();
+    }
+  }
 
   handleLoginClick(): void {
     this.authenticate("login");

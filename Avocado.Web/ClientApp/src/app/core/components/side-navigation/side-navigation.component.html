@@ -10,6 +10,7 @@
         *ngFor="let route of menuRoutes"
         mat-button
         [routerLink]="route.path"
+        [queryParams]="route.queryParams"
         (click)="handleLinkClick()"
       >
         <fa-icon [icon]="route.icon" size="lg"></fa-icon>

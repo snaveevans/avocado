@@ -10,7 +10,7 @@ import {
   faHome
 } from "@fortawesome/free-solid-svg-icons";
 
-enum RouteName {
+export enum RouteName {
   Home = "[RouteName] Home",
   Upcoming = "[RouteName] Upcoming",
   MyEvents = "[RouteName] MyEvents",
@@ -21,7 +21,7 @@ enum RouteName {
   Logout = "[RouteName] Logout"
 }
 
-const allRoutes: { [P in RouteName]: AppRoute } = {
+export const allRoutes: { [P in RouteName]: AppRoute } = {
   [RouteName.Home]: new AppRoute("Home", faHome, ""),
   [RouteName.Upcoming]: new AppRoute(
     "Upcoming Events",

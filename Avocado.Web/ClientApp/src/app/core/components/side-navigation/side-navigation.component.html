@@ -7,7 +7,7 @@
   >
     <div class="menu-items-container">
       <a
-        *ngFor="let route of menuRoutes"
+        *ngFor="let route of (menuRoutes$ | async)"
         mat-button
         [routerLink]="route.path"
         [queryParams]="route.queryParams"

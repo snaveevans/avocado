@@ -1,44 +1,28 @@
-<p>event-list works!</p>
-<p>
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas ornare
-  porttitor efficitur. Morbi porta viverra facilisis. Nulla justo mauris,
-  aliquam at semper at, vulputate sit amet sem. Nam nec arcu in ligula viverra
-  ultrices eget eget felis. Quisque in lorem vestibulum tellus imperdiet mattis
-  id a massa. Mauris ultricies consectetur semper. Mauris placerat felis a
-  mattis vestibulum. Praesent sit amet enim erat. Aliquam eu ipsum eros. Nulla
-  facilisi. Aliquam pretium, quam sed eleifend laoreet, orci arcu faucibus est,
-  ac gravida tortor quam ut mi. Ut ullamcorper ullamcorper risus, varius iaculis
-  mauris. Proin consectetur suscipit dui eget luctus. Sed leo diam, placerat et
-  egestas ac, lobortis et massa. Vestibulum imperdiet laoreet vestibulum. Proin
-  vehicula nibh at tortor pellentesque faucibus. Nam euismod enim dapibus odio
-  iaculis, a finibus velit sodales. Suspendisse hendrerit id justo sit amet
-  fringilla. Ut lobortis lectus sed arcu finibus posuere. Sed eleifend arcu ut
-  ultrices placerat. Cras ullamcorper pharetra tortor id pulvinar. Pellentesque
-  rutrum lacus quis nunc imperdiet tristique. Pellentesque placerat eget ligula
-  a venenatis. Donec auctor tempor tellus, quis sollicitudin urna lacinia ut.
-  Morbi tempus eget massa quis varius. Donec malesuada vitae sem ut tempor. Duis
-  vitae turpis non arcu lobortis auctor. Fusce nisi lacus, consequat ut massa
-  eu, aliquet fermentum est. Interdum et malesuada fames ac ante ipsum primis in
-  faucibus. Curabitur non purus consequat, dignissim metus eu, tempus turpis.
-  Fusce interdum suscipit diam sit amet aliquam. Maecenas gravida egestas tortor
-  ac dictum. Cras risus massa, eleifend ac dapibus eget, iaculis pharetra velit.
-  Pellentesque elementum dolor id enim eleifend dictum. Curabitur laoreet
-  iaculis lacus, rutrum euismod tortor consequat et. Duis ex nibh, congue sit
-  amet lacinia porttitor, efficitur vitae orci. Cras odio velit, accumsan ut
-  nunc eu, congue lobortis odio. Suspendisse felis massa, ullamcorper suscipit
-  turpis a, tempor accumsan eros. Proin at metus eget ipsum lobortis viverra vel
-  eget urna. Donec iaculis, dui auctor convallis placerat, metus libero lobortis
-  lorem, mollis eleifend massa tellus laoreet massa. Nam congue egestas
-  placerat. Donec sem orci, ultrices nec tempus tincidunt, rhoncus quis eros.
-  Sed arcu purus, commodo vel velit in, mattis euismod ex. Nulla varius eu eros
-  at interdum. In sit amet dictum massa. Sed rhoncus magna eget felis egestas
-  tincidunt. Nam sollicitudin sem a orci scelerisque, scelerisque vulputate mi
-  venenatis. Nullam ac facilisis magna, nec eleifend orci. Integer quam tortor,
-  faucibus ac lacus et, ultricies aliquet risus. Morbi ultrices sodales
-  interdum. Suspendisse sed lectus condimentum, pretium leo in, ultricies
-  mauris. Aenean viverra maximus tellus et efficitur. Vivamus consequat diam vel
-  gravida consectetur. Maecenas vulputate sagittis libero ac sagittis. Aenean
-  ullamcorper justo in quam eleifend euismod. In ut ante quis urna mollis
-  convallis sit amet vitae enim. Aliquam vestibulum sollicitudin erat, at luctus
-  quam blandit et. Ut imperdiet risus lorem, ac lacinia urna tincidunt ac.
-</p>
+<div class="card-container">
+  <mat-card
+    *ngFor="let card of cards"
+    class="example-card"
+    [class.selected]="card === 1"
+  >
+    <mat-card-header>
+      <div mat-card-avatar class="example-header-image"></div>
+      <mat-card-title>Shiba Inu</mat-card-title>
+      <mat-card-subtitle>Dog Breed</mat-card-subtitle>
+    </mat-card-header>
+    <img
+      mat-card-image
+      src="https://material.angular.io/assets/img/examples/shiba2.jpg"
+      alt="Photo of a Shiba Inu"
+    />
+    <mat-card-content>
+      <p>
+        The Shiba Inu is the smallest of the six original and distinct spitz
+        breeds of dog from Japan. A small, agile dog that copes very well with
+        mountainous terrain, the Shiba Inu was originally bred for hunting.
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button>LIKE</button> <button mat-button>SHARE</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

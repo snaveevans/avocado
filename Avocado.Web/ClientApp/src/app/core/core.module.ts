@@ -8,11 +8,13 @@ import { MaterialModule } from "@avocado/material/material.module";
 import { ToolbarComponent } from "@avocado/core/components/toolbar/toolbar.component";
 import { BottomNavigationComponent } from "@avocado/core/components/bottom-navigation/bottom-navigation.component";
 import { SideNavigationComponent } from "@avocado/core/components/side-navigation/side-navigation.component";
+import { ScrollDirective } from "@avocado/core/directives/scroll.directive";
 
 const COMPONENTS = [
   ToolbarComponent,
   BottomNavigationComponent,
-  SideNavigationComponent
+  SideNavigationComponent,
+  ScrollDirective
 ];
 
 @NgModule({

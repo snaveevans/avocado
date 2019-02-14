@@ -1,7 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { ScrollService } from "@avocado/core/services/scroll.service";
+import { BehaviorSubject, Subject } from "rxjs";
 import { debounceTime, map } from "rxjs/operators";
-import { Subject } from "rxjs";
 
 @Component({
   selector: "av-event-list",
@@ -11,18 +10,24 @@ import { Subject } from "rxjs";
 export class EventListComponent implements OnInit {
   cards = [1, 2, 3, 4, 5, 6];
   selectedIndex = 0;
+  horizontalScrollPosition = 0;
 
   private cardPositions: number[] = [];
-
-  constructor(private scrollService: ScrollService) {}
+  private horizontalScroll$ = new BehaviorSubject<number>(0);
 
   ngOnInit() {
     const selectedIndex$ = new Subject();
+
+    // after scroll finishes center on card
     selectedIndex$
       .pipe(debounceTime(500))
       .subscribe(_ => this.focusCard(this.selectedIndex));
+
+    // calculate card positions ahead of time so determining selected card is quick
     this.calculateCardPositions();
-    this.scrollService.horizontalScroll$
+
+    // while scrolling determine selected card
+    this.horizontalScroll$
       .pipe(
         debounceTime(10),
         map((leftScroll: number) => leftScroll + window.outerWidth / 2)
@@ -35,14 +40,8 @@ export class EventListComponent implements OnInit {
   }
 
   calculateCardPositions(): void {
-    // see flex basis
-    // .75 for the 75vw
-    // 32 for padding (16px on left and right sides)
-    const cardWidth = window.outerWidth * 0.75 + 32;
-    // see at padding-left/right calc
-    // .125 for the 12.5vw
-    // 15 for the -15px
-    const edgePadding = window.outerWidth * 0.125 - 15;
+    const cardWidth = window.outerWidth * 0.8;
+    const edgePadding = window.outerWidth * 0.1;
     this.cardPositions = this.cards.map(
       (_value: number, index: number, arr: number[]) => {
         const first = cardWidth + edgePadding;
@@ -61,6 +60,10 @@ export class EventListComponent implements OnInit {
     );
   }
 
+  handleScroll(event: UIEvent): void {
+    this.horizontalScroll$.next(event.srcElement.scrollLeft);
+  }
+
   handleClick(index: number): void {
     if (this.selectedIndex !== index) {
       this.focusCard(index);
@@ -75,6 +78,6 @@ export class EventListComponent implements OnInit {
     const elementPosition = this.cardPositions[index];
     const center = (previousPosition + elementPosition) / 2;
     const left = center - window.outerWidth / 2;
-    this.scrollService.scrollToHorizontal(left);
+    this.horizontalScrollPosition = left;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { AuthService } from "@avocado/auth/services/auth.service";
 import { AppRoute } from "@avocado/core/routes/app-route";
 import {
@@ -7,7 +7,6 @@ import {
   menuRoutes,
   RouteName
 } from "@avocado/core/routes/app-routes";
-import { ScrollService } from "@avocado/core/services/scroll.service";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
@@ -16,16 +15,14 @@ import { map } from "rxjs/operators";
   templateUrl: "./side-navigation.component.html",
   styleUrls: ["./side-navigation.component.scss"]
 })
-export class SideNavigationComponent implements OnInit {
+export class SideNavigationComponent {
   @Input()
   isOpen = false;
   @Output()
   close = new EventEmitter();
-  horizontalScrollPosition = 0;
-
   menuRoutes$: Observable<AppRoute[]>;
 
-  constructor(authService: AuthService, private scrollService: ScrollService) {
+  constructor(authService: AuthService) {
     this.menuRoutes$ = authService.isAuthenticated$.pipe(
       map((isAuthenticated: boolean) => {
         const loginRoute = allRoutes[RouteName.Login];
@@ -39,12 +36,6 @@ export class SideNavigationComponent implements OnInit {
     );
   }
 
-  ngOnInit() {
-    this.scrollService.horizontalListener$.subscribe(
-      (position: number) => (this.horizontalScrollPosition = position)
-    );
-  }
-
   handleChange(isOpen: boolean): void {
     if (!isOpen) {
       this.close.emit();
@@ -53,9 +44,5 @@ export class SideNavigationComponent implements OnInit {
 
   handleLinkClick(): void {
     this.isOpen = false;
-  }
-
-  handleScroll(event: UIEvent): void {
-    this.scrollService.registerScrollEvent(event);
   }
 }

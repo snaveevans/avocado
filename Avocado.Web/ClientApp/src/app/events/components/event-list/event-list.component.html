@@ -1,4 +1,8 @@
-<div class="card-container">
+<div
+  class="card-container"
+  (avScroll)="handleScroll($event)"
+  [avScrollPosition]="horizontalScrollPosition"
+>
   <mat-card
     *ngFor="let card of cards; let i = index"
     class="example-card"

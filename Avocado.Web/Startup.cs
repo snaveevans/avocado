@@ -20,6 +20,9 @@ using Swashbuckle.AspNetCore.Swagger;
 using System.Reflection;
 using System;
 using System.IO;
+using System.Linq;
+using System.Collections.Generic;
+using Avocado.Web.Swagger;
 
 namespace Avocado.Web
 {
@@ -39,8 +42,16 @@ namespace Avocado.Web
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "Honey-Dos API", Version = "v1" });
+                c.SwaggerDoc("v1", new Info { Title = "Avocado API", Version = "v1" });
                 c.EnableAnnotations();
+                c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                {
+                    In = "header",
+                    Description = "Please enter JWT with Bearer into field",
+                    Name = "Authorization",
+                    Type = "apiKey"
+                });
+                c.OperationFilter<AuthResponsesOperationFilter>();
                 // Set the comments path for the Swagger JSON and UI.
                 var domainInfo = Assembly.GetAssembly(typeof(Event));
                 var domainXmlFile = $"{domainInfo.GetName().Name}.xml";
@@ -124,6 +135,7 @@ namespace Avocado.Web
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Avocado API v1");
+                c.DisplayOperationId();
             });
 
             app.UseMvc(routes =>

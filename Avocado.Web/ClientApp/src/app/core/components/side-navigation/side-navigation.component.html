@@ -1,0 +1,22 @@
+<mat-drawer-container>
+  <mat-drawer
+    mode="over"
+    [opened]="isOpen"
+    position="end"
+    (openedChange)="handleChange($event)"
+  >
+    <div class="menu-items-container">
+      <a
+        *ngFor="let route of (menuRoutes$ | async)"
+        mat-button
+        [routerLink]="route.path"
+        [queryParams]="route.queryParams"
+        (click)="handleLinkClick()"
+      >
+        <fa-icon [icon]="route.icon" size="lg" [fixedWidth]="true"></fa-icon>
+        {{ route.text }}
+      </a>
+    </div>
+  </mat-drawer>
+  <mat-drawer-content><ng-content></ng-content></mat-drawer-content>
+</mat-drawer-container>

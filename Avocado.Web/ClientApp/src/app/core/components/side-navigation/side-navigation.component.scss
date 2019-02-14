@@ -1,0 +1,19 @@
+mat-drawer-container {
+  display: flex;
+  height: calc(100vh - 95px);
+
+  .menu-items-container {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+  }
+
+  a {
+    margin-top: 10px;
+    text-align: left;
+  }
+  mat-drawer-content {
+    scroll-behavior: smooth;
+    width: 100%;
+  }
+}

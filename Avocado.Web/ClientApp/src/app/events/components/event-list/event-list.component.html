@@ -1,8 +1,9 @@
 <div class="card-container">
   <mat-card
-    *ngFor="let card of cards"
+    *ngFor="let card of cards; let i = index"
     class="example-card"
-    [class.selected]="card === 1"
+    [class.selected]="i === selectedIndex"
+    (click)="handleClick(i)"
   >
     <mat-card-header>
       <div mat-card-avatar class="example-header-image"></div>

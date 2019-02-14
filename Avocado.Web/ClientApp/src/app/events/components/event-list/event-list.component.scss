@@ -1,14 +1,13 @@
 :host {
   display: inline-flex;
   height: 100%;
-  // width: 100vw;
+  width: 100vw;
 }
 
 .card-container {
   height: calc(100vh - 255px);
   display: flex;
   flex-wrap: nowrap;
-  overflow-x: auto;
   padding-top: 10px;
   padding-bottom: 10px;
   padding-left: calc(12.5vw - 15px);
@@ -18,18 +17,12 @@
 }
 
 .example-card {
-  width: 75vw;
   flex: 0 0 75vw;
+  transition: all 0.2s ease-in-out;
 
-  + .example-card {
-    margin-left: 10px;
+  &:not(.selected) {
+    transform: scale(0.9);
   }
-
-  // &:not(.selected) {
-  //   height: 85%;
-  //   margin-top: auto;
-  //   margin-bottom: auto;
-  // }
 }
 
 .example-header-image {

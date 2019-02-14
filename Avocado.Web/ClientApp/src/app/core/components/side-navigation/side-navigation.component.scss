@@ -13,6 +13,7 @@ mat-drawer-container {
     text-align: left;
   }
   mat-drawer-content {
+    scroll-behavior: smooth;
     width: 100%;
   }
 }

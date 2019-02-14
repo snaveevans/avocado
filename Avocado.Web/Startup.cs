@@ -52,6 +52,7 @@ namespace Avocado.Web
                     Type = "apiKey"
                 });
                 c.OperationFilter<AuthResponsesOperationFilter>();
+                c.DocumentFilter<EnumDocumentFilter>();
                 // Set the comments path for the Swagger JSON and UI.
                 var domainInfo = Assembly.GetAssembly(typeof(Event));
                 var domainXmlFile = $"{domainInfo.GetName().Name}.xml";

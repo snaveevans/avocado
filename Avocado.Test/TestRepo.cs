@@ -23,9 +23,9 @@ namespace Avocado.Test
             return List.AsQueryable().FirstOrDefault(spec.BuildExpression());
         }
 
-        public IEnumerable<T> Query(ISpecification<T> spec)
+        public List<T> Query(ISpecification<T> spec)
         {
-            return List.AsQueryable().Where(spec.BuildExpression());
+            return List.AsQueryable().Where(spec.BuildExpression()).ToList();
         }
 
         public bool Remove(T item)

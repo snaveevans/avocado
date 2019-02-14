@@ -25,7 +25,7 @@ namespace Avocado.Infrastructure.Context
 
         public T Find(ISpecification<T> spec) => _dbset.FirstOrDefault(spec.BuildExpression());
 
-        public IEnumerable<T> Query(ISpecification<T> spec) => _dbset.Where(spec.BuildExpression());
+        public List<T> Query(ISpecification<T> spec) => _dbset.Where(spec.BuildExpression()).ToList();
 
         public bool Remove(T item)
         {

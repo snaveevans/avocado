@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Avocado.Domain.Entities;
 using Avocado.Domain.Interfaces;
 
@@ -13,9 +14,7 @@ namespace Avocado.Infrastructure.Specifications
         {
             _accountId = accountId;
         }
-        public IEnumerable<Account> Filter(IEnumerable<Account> items)
-        {
-            return items.Where(a => a.Id == _accountId);
-        }
+
+        public Expression<Func<Account, bool>> BuildExpression() => account => account.Id == _accountId;
     }
 }

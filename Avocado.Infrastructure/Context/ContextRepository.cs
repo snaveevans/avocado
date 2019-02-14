@@ -23,15 +23,9 @@ namespace Avocado.Infrastructure.Context
             _save();
         }
 
-        public T Find(ISpecification<T> spec)
-        {
-            return spec.Filter(_dbset).FirstOrDefault();
-        }
+        public T Find(ISpecification<T> spec) => _dbset.FirstOrDefault(spec.BuildExpression());
 
-        public IEnumerable<T> Query(ISpecification<T> spec)
-        {
-            return spec.Filter(_dbset);
-        }
+        public IEnumerable<T> Query(ISpecification<T> spec) => _dbset.Where(spec.BuildExpression());
 
         public bool Remove(T item)
         {
@@ -42,7 +36,7 @@ namespace Avocado.Infrastructure.Context
 
         public void Update(T item)
         {
-            var changeTracker =_dbset.Update(item);
+            var changeTracker = _dbset.Update(item);
             _save();
         }
     }

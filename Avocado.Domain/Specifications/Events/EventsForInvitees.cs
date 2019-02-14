@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Avocado.Domain.Entities;
 using Avocado.Domain.Interfaces;
 
@@ -7,16 +9,13 @@ namespace Avocado.Domain.Specifications.Events
 {
     public class EventsForMembers : ISpecification<Event>
     {
-        private readonly IEnumerable<Member> _members;
-        
+        private readonly IEnumerable<Guid> _eventIds;
+
         public EventsForMembers(IEnumerable<Member> members)
         {
-            _members = members;
+            _eventIds = members.Select(m => m.EventId);
         }
-        public IEnumerable<Event> Filter(IEnumerable<Event> items)
-        {
-            var eventIds = _members.Select(i => i.EventId);
-            return items.Where(e => eventIds.Contains(e.Id));
-        }
+
+        public Expression<Func<Event, bool>> BuildExpression() => evnt => _eventIds.Contains(evnt.Id);
     }
 }

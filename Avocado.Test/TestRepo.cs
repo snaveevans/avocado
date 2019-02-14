@@ -8,7 +8,7 @@ namespace Avocado.Test
     public class TestRepo<T> : IRepository<T>
     {
         public List<T> List { get; set; }
-        
+
         public TestRepo()
         {
             List = new List<T>();
@@ -20,12 +20,12 @@ namespace Avocado.Test
 
         public T Find(ISpecification<T> spec)
         {
-            return spec.Filter(List).FirstOrDefault();
+            return List.AsQueryable().FirstOrDefault(spec.BuildExpression());
         }
 
         public IEnumerable<T> Query(ISpecification<T> spec)
         {
-            return spec.Filter(List);
+            return List.AsQueryable().Where(spec.BuildExpression());
         }
 
         public bool Remove(T item)

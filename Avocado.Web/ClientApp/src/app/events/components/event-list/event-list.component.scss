@@ -1,15 +1,29 @@
+@import "../../../styles/colors";
+
 :host {
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   height: 100%;
-  width: 100vw;
+  width: 100%;
+  @include gradient-background;
+}
+
+.header {
+  flex: 0 1 auto;
+  color: $color8;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 12px;
+  margin-bottom: 13px;
+}
+
+.content {
+  flex: 1 1 auto;
+  padding-bottom: 20px;
 }
 
 .card-container {
-  height: calc(100vh - 255px);
-  padding-top: 10px;
-  padding-bottom: 10px;
-  margin-top: auto;
-  margin-bottom: auto;
+  height: 100%;
   display: grid;
   grid-gap: 0;
   grid-template-columns: calc(10%);
@@ -19,6 +33,7 @@
   overflow-x: scroll;
   scroll-snap-type: x proximity;
   scroll-behavior: smooth;
+  padding-bottom: 10px;
 
   &:before,
   &:after {

@@ -6,3 +6,7 @@ $color5: #187cd8;
 $color6: #aaaaaa;
 $color7: #f0f5fb;
 $color8: #ffffff;
+
+@mixin gradient-background {
+  background-image: linear-gradient(-135deg, $color4, $color2);
+}

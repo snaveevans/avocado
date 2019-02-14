@@ -4,7 +4,7 @@ import { JwtData } from "@avocado/auth/models/JwtData";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import { BehaviorSubject, from, Observable, of } from "rxjs";
-import { map, switchMap, tap, share, shareReplay } from "rxjs/operators";
+import { map, shareReplay, switchMap, tap } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"

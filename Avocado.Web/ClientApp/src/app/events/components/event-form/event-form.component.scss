@@ -1,0 +1,30 @@
+@import "../../../styles/fonts";
+
+:host {
+  display: flex;
+  flex-direction: column;
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 100%;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  > :first-child {
+    margin-top: 10px;
+  }
+  > * {
+    width: 100%;
+    &:not(mat-form-field) {
+      margin-top: 15px;
+    }
+  }
+  > button {
+    height: 45px;
+    font-size: $font-size-h4;
+    margin-top: auto;
+    margin-bottom: 10px;
+  }
+}

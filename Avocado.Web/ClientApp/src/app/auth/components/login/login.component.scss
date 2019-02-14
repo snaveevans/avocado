@@ -1,0 +1,27 @@
+:host {
+  display: flex;
+  flex: 1 1 100px;
+  flex-direction: column;
+  padding: 10px;
+}
+
+div {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+}
+
+button {
+  min-width: 300px;
+  + button {
+    margin-top: 10px;
+  }
+}
+
+fa-icon {
+  margin-right: 2px;
+}
+
+.logout-message {
+  margin-bottom: 10px;
+}

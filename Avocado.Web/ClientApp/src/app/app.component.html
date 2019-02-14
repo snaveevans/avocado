@@ -1,0 +1,5 @@
+<av-toolbar (menuClick)="handleMenuClick()"></av-toolbar>
+<av-side-navigation [isOpen]="isSideNavOpen" (close)="handleClose()">
+  <router-outlet></router-outlet>
+</av-side-navigation>
+<av-bottom-navigation></av-bottom-navigation>

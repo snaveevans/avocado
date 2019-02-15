@@ -40,7 +40,7 @@ namespace Avocado.Domain.Services
         }
 
         // add members
-        public bool TryAddMember(Guid eventId, Account account, out Member member)
+        public bool TryAddMember(Guid eventId, IAccount account, out Member member)
         {
             if (!_eventService.TryFindOne(eventId, out Event evnt))
             {
@@ -54,7 +54,7 @@ namespace Avocado.Domain.Services
         }
 
         // remove members
-        public bool TryRemoveMember(Guid eventId, Account account)
+        public bool TryRemoveMember(Guid eventId, IAccount account)
         {
             if (!_eventService.TryFindOne(eventId, out Event evnt))
             {

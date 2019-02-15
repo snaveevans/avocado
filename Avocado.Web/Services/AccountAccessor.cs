@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Avocado.Domain.Entities;
 using Avocado.Domain.Interfaces;
+using Avocado.Infrastructure.Authentication;
 using Avocado.Infrastructure.Specifications;
 using Microsoft.AspNetCore.Http;
 
@@ -11,7 +12,7 @@ namespace Avocado.Web.Services
     {
         private readonly IHttpContextAccessor _httpAccessor;
         private readonly IRepository<Account> _accountRepo;
-        private Account _account;
+        private IAccount _account;
 
         public AccountAccessor(IHttpContextAccessor httpAccessor, IRepository<Account> accountRepo)
         {
@@ -19,7 +20,7 @@ namespace Avocado.Web.Services
             _accountRepo = accountRepo;
         }
 
-        public Account Account
+        public IAccount Account
         {
             get
             {
@@ -31,7 +32,7 @@ namespace Avocado.Web.Services
             }
         }
 
-        private Account GetAccount()
+        private IAccount GetAccount()
         {
             var user = _httpAccessor.HttpContext.User;
             if (user == null)

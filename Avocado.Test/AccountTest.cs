@@ -1,5 +1,6 @@
 using System;
 using Avocado.Domain.Entities;
+using Avocado.Infrastructure.Authentication;
 using Xunit;
 
 namespace Avocado.Test
@@ -23,7 +24,7 @@ namespace Avocado.Test
         public void Disable()
         {
             var account = new Account("tyler evans");
-            
+
             account.Disable();
 
             Assert.False(account.IsEnabled);
@@ -33,7 +34,7 @@ namespace Avocado.Test
         public void Enable()
         {
             var account = new Account("tyler evans");
-            
+
             account.Disable();
             account.Enable();
 
@@ -44,7 +45,7 @@ namespace Avocado.Test
         public void UpdateAvatar()
         {
             var account = new Account("tyler evans");
-            
+
             account.UpdatePicture("foobar");
 
             Assert.Equal("foobar", account.Picture);
@@ -54,7 +55,7 @@ namespace Avocado.Test
         public void UpdateName()
         {
             var account = new Account("tyler evans");
-            
+
             account.UpdateName("blah");
 
             Assert.Equal("blah", account.Name);

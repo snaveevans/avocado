@@ -92,7 +92,7 @@ namespace Avocado.Infrastructure.Authentication
             return account;
         }
 
-        public async Task<Account> FindAccountViaToken(string firebaseToken)
+        public async Task<IAccount> FindAccountViaToken(string firebaseToken)
         {
             FirebaseToken token = await DecodeToken(firebaseToken);
             if (token == null)
@@ -106,11 +106,11 @@ namespace Avocado.Infrastructure.Authentication
                 return null;
             }
 
-            Account account = _accountRepo.Find(new AccountById(login.AccountId));
+            IAccount account = _accountRepo.Find(new AccountById(login.AccountId));
             return account;
         }
 
-        public Account FindAccountViaLoginModel(LoginModel model)
+        public IAccount FindAccountViaLoginModel(LoginModel model)
         {
             var login = FindLogin(Providers.Google, model.ProviderId);
             if (login == null)
@@ -118,11 +118,11 @@ namespace Avocado.Infrastructure.Authentication
                 return null;
             }
 
-            var account = _accountRepo.Find(new AccountById(login.AccountId));
+            IAccount account = _accountRepo.Find(new AccountById(login.AccountId));
             return account;
         }
 
-        public string GenerateToken(Account account)
+        public string GenerateToken(IAccount account)
         {
             if (account == null)
             {

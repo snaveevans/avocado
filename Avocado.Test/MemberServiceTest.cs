@@ -4,6 +4,7 @@ using Avocado.Domain.Entities;
 using Avocado.Domain.Enumerations;
 using Avocado.Domain.Interfaces;
 using Avocado.Domain.Services;
+using Avocado.Infrastructure.Authentication;
 using Xunit;
 
 namespace Avocado.Test

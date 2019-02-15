@@ -1,27 +1,16 @@
 using System;
+using Avocado.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
-namespace Avocado.Domain.Entities
+namespace Avocado.Infrastructure.Authentication
 {
-    /// <summary>
-    /// Avocado User Account.
-    /// </summary>
-    public class Account
+    public class Account : IdentityUser<Guid>, IAccount
     {
-        /// <summary>
-        /// Id of the account.
-        /// </summary>
-        public Guid Id { get; private set; }
-        /// <summary>
-        /// User's given name.
-        /// </summary>
+        /// <inheritdoc />
         public string Name { get; private set; }
-        /// <summary>
-        /// True if the account is enabled, false if disabled.
-        /// </summary>
+        /// <inheritdoc />
         public bool IsEnabled { get; private set; }
-        /// <summary>
-        /// Url to user's picture.
-        /// </summary>
+        /// <inheritdoc />
         public string Picture { get; private set; }
 
         /// <summary>

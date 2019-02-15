@@ -5,14 +5,14 @@ namespace Avocado.Test
 {
     public class TestAccountAccessor : IAccountAccessor
     {
-        public Account Account => _account;
-        private Account _account;
-        public TestAccountAccessor(Account account)
+        public IAccount Account => _account;
+        private IAccount _account;
+        public TestAccountAccessor(IAccount account)
         {
             _account = account;
         }
 
-        public void SetAccount(Account account)
+        public void SetAccount(IAccount account)
         {
             _account = account;
         }

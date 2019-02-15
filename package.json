@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "event scheduler",
   "scripts": {
-    "watch": "concurrently --kill-others \"nodemon Avocado.Web/Avocado.Web.csproj\" \"npm run start --prefix Avocado.Web/ClientApp\""
+    "watch": "concurrently --kill-others --handle-input \"npm run start --prefix Avocado.Web/ClientApp\" \"nodemon Avocado.Web/Avocado.Web.csproj\""
   },
   "repository": {
     "type": "git",

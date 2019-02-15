@@ -67,22 +67,26 @@ namespace Avocado.Infrastructure.Authentication
 
         public async Task<Account> RegisterViaToken(string firebaseToken)
         {
-            var token = await DecodeToken(firebaseToken);
-            var providerId = token.Uid;
+            FirebaseToken token = await DecodeToken(firebaseToken);
+            if (token == null)
+            {
+                return null;
+            }
+            string providerId = token.Uid;
             var name = token.Claims.FirstOrDefault(claim => claim.Key == "name");
             var picture = token.Claims.FirstOrDefault(claim => claim.Key == "picture");
 
-            var existingLogin = FindLogin(Providers.Google, providerId);
+            Login existingLogin = FindLogin(Providers.Google, providerId);
             if (existingLogin != null)
             {
                 return null;
             }
 
-            var account = new Account(name.Value.ToString());
+            Account account = new Account(name.Value.ToString());
             account.UpdatePicture(picture.Value.ToString());
             _accountRepo.Add(account);
 
-            var login = new Login(account, Providers.Google, providerId, string.Empty);
+            Login login = new Login(account, Providers.Google, providerId, string.Empty);
             _loginRepo.Add(login);
 
             return account;
@@ -90,15 +94,19 @@ namespace Avocado.Infrastructure.Authentication
 
         public async Task<Account> FindAccountViaToken(string firebaseToken)
         {
-            var token = await DecodeToken(firebaseToken);
-            var providerId = token.Uid;
-            var login = FindLogin(Providers.Google, providerId);
+            FirebaseToken token = await DecodeToken(firebaseToken);
+            if (token == null)
+            {
+                return null;
+            }
+            string providerId = token.Uid;
+            Login login = FindLogin(Providers.Google, providerId);
             if (login == null)
             {
                 return null;
             }
 
-            var account = _accountRepo.Find(new AccountById(login.AccountId));
+            Account account = _accountRepo.Find(new AccountById(login.AccountId));
             return account;
         }
 

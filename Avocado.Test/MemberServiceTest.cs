@@ -15,10 +15,10 @@ namespace Avocado.Test
         private readonly TestRepo<Event> _eventRepo;
         private readonly TestRepo<Member> _memberRepo;
         private readonly IAccountAccessor _accountAccessor;
-                
+
         public MemberServiceTest()
         {
-            _eventRepo = new TestRepo<Event>(); 
+            _eventRepo = new TestRepo<Event>();
             _memberRepo = new TestRepo<Member>();
             var account = new Account("tyler");
             _accountAccessor = new TestAccountAccessor(account);
@@ -43,8 +43,8 @@ namespace Avocado.Test
 
             Assert.Equal(account.Id, member.AccountId);
             Assert.Equal(evnt.Id, member.EventId);
-            Assert.Equal(AttendanceStatuses.NotResponded.ToString(), member.AttendanceStatus);
-            Assert.Equal(Roles.Guest.ToString(), member.Role);
+            Assert.Equal(AttendanceStatuses.NotResponded, member.AttendanceStatus);
+            Assert.Equal(Roles.Guest, member.Role);
         }
 
         [Fact]
@@ -55,7 +55,7 @@ namespace Avocado.Test
 
             Assert.False(_memberService.TryUpdateStatus(Guid.NewGuid(), AttendanceStatuses.Going, out member));
             Assert.True(_memberService.TryUpdateStatus(evnt.Id, AttendanceStatuses.Going, out member));
-            Assert.Equal(AttendanceStatuses.Going.ToString(), member.AttendanceStatus);
+            Assert.Equal(AttendanceStatuses.Going, member.AttendanceStatus);
         }
     }
 }

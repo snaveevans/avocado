@@ -9,9 +9,6 @@ namespace Avocado.Domain.Entities
         public bool IsEnabled { get; private set; }
         public string Picture { get; private set; }
 
-        [Obsolete("system constructor")]
-        protected Account() { }
-
         public Account(string name)
         {
             if (string.IsNullOrWhiteSpace(name))

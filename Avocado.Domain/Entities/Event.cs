@@ -8,9 +8,6 @@ namespace Avocado.Domain.Entities
         public string Title { get; private set; }
         public string Description { get; private set; }
 
-        [Obsolete("system constructor")]
-        protected Event() { }
-
         internal Event(string title, string description)
         {
             if (string.IsNullOrWhiteSpace(title))

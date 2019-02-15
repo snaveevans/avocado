@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Avocado.Web.Controllers
 {
-    [Route("api/events"), Authorize]
+    [Route("api/events"), Authorize, ApiController]
     public class EventsController : Controller
     {
         private readonly EventService _eventService;
@@ -37,12 +37,6 @@ namespace Avocado.Web.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] EventModel model)
         {
-            var errors = model.GetValidationErrors();
-            if (errors.Any())
-            {
-                return BadRequest(errors);
-            }
-
             if (!_eventService.TryCreate(model.Title, model.Description, out Event evnt))
             {
                 return Unauthorized();
@@ -54,11 +48,6 @@ namespace Avocado.Web.Controllers
         [HttpPut("{id}")]
         public IActionResult Update(Guid id, [FromBody] EventModel model)
         {
-            var errors = model.GetValidationErrors();
-            if (errors.Any())
-            {
-                return BadRequest(errors);
-            }
             if (!_eventService.TryUpdate(id, model.Title, model.Description, out Event evnt))
             {
                 return Unauthorized();

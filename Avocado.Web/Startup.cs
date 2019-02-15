@@ -15,6 +15,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Swagger;
+using System.Reflection;
+using System;
+using System.IO;
+using System.Linq;
+using System.Collections.Generic;
+using Avocado.Web.Swagger;
 
 namespace Avocado.Web
 {
@@ -31,7 +39,33 @@ namespace Avocado.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddMvc();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "Avocado API", Version = "v1" });
+                c.EnableAnnotations();
+                c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                {
+                    In = "header",
+                    Description = "Please enter JWT with Bearer into field",
+                    Name = "Authorization",
+                    Type = "apiKey"
+                });
+                c.OperationFilter<AuthResponsesOperationFilter>();
+                c.DocumentFilter<EnumDocumentFilter>();
+                // Set the comments path for the Swagger JSON and UI.
+                var domainInfo = Assembly.GetAssembly(typeof(Event));
+                var domainXmlFile = $"{domainInfo.GetName().Name}.xml";
+                var domainXmlPath = Path.Combine(AppContext.BaseDirectory, domainXmlFile);
+                c.IncludeXmlComments(domainXmlPath);
+                var infrastructureInfo = Assembly.GetAssembly(typeof(LoginModel));
+                var infrastructureXmlFile = $"{infrastructureInfo.GetName().Name}.xml";
+                var infrastructureXmlPath = Path.Combine(AppContext.BaseDirectory, infrastructureXmlFile);
+                c.IncludeXmlComments(infrastructureXmlPath);
+                var webXmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var webXmlPath = Path.Combine(AppContext.BaseDirectory, webXmlFile);
+                c.IncludeXmlComments(webXmlPath);
+            });
 
             services.Configure<ContextOptions<AvocadoContext>>(options =>
             {
@@ -98,6 +132,12 @@ namespace Avocado.Web
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseAuthentication();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Avocado API v1");
+                c.DisplayOperationId();
+            });
 
             app.UseMvc(routes =>
             {

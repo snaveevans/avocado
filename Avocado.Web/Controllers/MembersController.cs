@@ -6,10 +6,13 @@ using Avocado.Domain.Entities;
 using Avocado.Domain.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Avocado.Web.Controllers
 {
-    [Route("api/events/{eventId}/members"), Authorize]
+    [Route("api/events/{eventId}/members"), Authorize, ApiController]
+    [Produces("application/json")]
+    [SwaggerTag("Create, read, update, and delete event members.")]
     public class MembersController : Controller
     {
         private readonly MemberService _memberService;
@@ -20,7 +23,9 @@ namespace Avocado.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get(Guid eventId)
+        [SwaggerOperation(Summary = "Gets all the events that the user has access to.", OperationId = "GetEventMembers")]
+        [SwaggerResponse(200, "All events for the user.", typeof(List<Member>))]
+        public IActionResult Get([SwaggerParameter("Event Id")] Guid eventId)
         {
             IEnumerable<Member> members;
             if (!_memberService.TryGetMembers(eventId, out members))

@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Avocado.Domain.Entities;
 using Avocado.Domain.Interfaces;
 
@@ -13,9 +15,8 @@ namespace Avocado.Domain.Specifications.Members
         {
             _event = evnt;
         }
-        public IEnumerable<Member> Filter(IEnumerable<Member> items)
-        {
-            return items.Where(member => member.EventId == _event.Id);
-        }
+
+        public Expression<Func<Member, bool>> BuildExpression() => member => member.EventId == _event.Id;
     }
 }
+

@@ -1,15 +1,17 @@
-using Avocado.Domain.Entities;
-
 namespace Avocado.Web.Models
 {
+    /// <summary>
+    /// Structure for returning JWT
+    /// </summary>
     public class TokenModel
     {
+        /// <summary>
+        /// JWT
+        /// </summary>
         public string Token { get; set; }
-        public string Error { get; set; }
-        public TokenModel(string token, string error = "")
+        public TokenModel(string token)
         {
             Token = token;
-            Error = error;
         }
     }
 }

@@ -5,13 +5,17 @@
     position="end"
     (openedChange)="handleChange($event)"
   >
-    <div class="menu-items-container">
+    <div
+      class="menu-items-container"
+      *ngIf="(menuRoutes$ | async) as menuRoutes"
+    >
       <a
-        *ngFor="let route of (menuRoutes$ | async)"
+        *ngFor="let route of menuRoutes"
         mat-button
         [routerLink]="route.path"
         [queryParams]="route.queryParams"
         (click)="handleLinkClick()"
+        [class.last]="route.path === 'login'"
       >
         <fa-icon [icon]="route.icon" size="lg" [fixedWidth]="true"></fa-icon>
         {{ route.text }}

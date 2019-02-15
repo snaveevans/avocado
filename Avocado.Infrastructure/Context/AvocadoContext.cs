@@ -1,5 +1,6 @@
 ﻿using System;
 using Avocado.Domain.Entities;
+using Avocado.Domain.Enumerations;
 using Avocado.Infrastructure.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -29,6 +30,18 @@ namespace Avocado.Infrastructure.Context
         {
             modelBuilder.Entity<Member>()
                 .HasKey(i => new { i.AccountId, i.EventId });
+            modelBuilder.Entity<Member>()
+                .Property(m => m.AttendanceStatus)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => Enum.Parse<AttendanceStatuses>(v)
+                );
+            modelBuilder.Entity<Member>()
+                .Property(m => m.Role)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => Enum.Parse<Roles>(v)
+                );
         }
     }
 }

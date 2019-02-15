@@ -2,14 +2,23 @@ using System;
 
 namespace Avocado.Domain.Entities
 {
+    /// <summary>
+    /// Avocado event item
+    /// </summary>
     public class Event
     {
+        /// <summary>
+        /// App unique id of event.
+        /// </summary>
         public Guid Id { get; private set; }
+        /// <summary>
+        /// String by which the event item is known by.
+        /// </summary>
         public string Title { get; private set; }
+        /// <summary>
+        /// Additional text about the event
+        /// </summary>
         public string Description { get; private set; }
-
-        [Obsolete("system constructor")]
-        protected Event() { }
 
         internal Event(string title, string description)
         {

@@ -1,9 +1,10 @@
-using System.Collections.Generic;
+using System;
+using System.Linq.Expressions;
 
 namespace Avocado.Domain.Interfaces
 {
     public interface ISpecification<T>
     {
-        IEnumerable<T> Filter(IEnumerable<T> items);
+        Expression<System.Func<T, bool>> BuildExpression();
     }
 }

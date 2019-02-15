@@ -8,6 +8,6 @@ namespace Avocado.Domain.Interfaces
         void Update(T item);
         bool Remove(T item);
         T Find(ISpecification<T> spec);
-        IEnumerable<T> Query(ISpecification<T> spec);
+        List<T> Query(ISpecification<T> spec);
     }
 }

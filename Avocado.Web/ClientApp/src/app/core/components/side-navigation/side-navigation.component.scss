@@ -6,6 +6,7 @@ mat-drawer-container {
     display: flex;
     flex-direction: column;
     width: 200px;
+    height: 100%;
   }
 
   a {
@@ -15,5 +16,9 @@ mat-drawer-container {
   mat-drawer-content {
     scroll-behavior: smooth;
     width: 100%;
+  }
+  .last {
+    order: 99;
+    margin-top: auto;
   }
 }

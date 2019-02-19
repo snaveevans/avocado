@@ -1,10 +1,10 @@
 
 using System;
 using System.Linq.Expressions;
+using Avocado.Domain.Entities;
 using Avocado.Domain.Interfaces;
-using Avocado.Infrastructure.Authentication;
 
-namespace Avocado.Infrastructure.Specifications
+namespace Avocado.Domain.Specifications.Accounts
 {
     public class AccountById : ISpecification<Account>
     {

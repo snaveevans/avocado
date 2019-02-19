@@ -9,9 +9,9 @@ namespace Avocado.Domain.Specifications.Members
 {
     public class MembersForAccount : ISpecification<Member>
     {
-        private readonly IAccount _account;
+        private readonly Account _account;
 
-        public MembersForAccount(IAccount account)
+        public MembersForAccount(Account account)
         {
             _account = account;
         }

@@ -27,7 +27,7 @@ namespace Avocado.Domain.Entities
 
         [Obsolete("system constructor")]
         protected Member() { }
-        internal Member(IAccount account, Event evnt, Roles role)
+        internal Member(Account account, Event evnt, Roles role)
         {
             if (account == null) { throw new ArgumentNullException(nameof(account)); }
             if (evnt == null) { throw new ArgumentNullException(nameof(evnt)); }

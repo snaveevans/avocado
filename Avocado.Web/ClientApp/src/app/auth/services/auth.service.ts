@@ -81,17 +81,14 @@ export class AuthService {
 
         const getToken = from(firebaseAuth.currentUser.getIdToken(false));
         return getToken.pipe(
-          switchMap((idToken: string) => {
-            const url = `api/token/${mode}`;
-            const options = {
-              method: "GET",
-              mode: "cors",
-              cache: "no-cache",
-              headers: {
-                "Id-Token": idToken
-              }
+          switchMap((accessToken: string) => {
+            const url = mode === "login" ? `api/auth/` : `api/account/register`;
+            // TODO: refactor for registering
+            const body = {
+              provider: "GOOGLE",
+              accessToken
             };
-            return this.http.get<TokenResult>(url, options).pipe(
+            return this.http.post<TokenResult>(url, body).pipe(
               map(({ token }) => {
                 this.setToken(token);
                 return true;

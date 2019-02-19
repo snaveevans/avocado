@@ -1,9 +1,9 @@
+
 using System;
 using System.Linq;
 using Avocado.Domain.Entities;
 using Avocado.Domain.Interfaces;
-using Avocado.Infrastructure.Authentication;
-using Avocado.Infrastructure.Specifications;
+using Avocado.Domain.Specifications.Accounts;
 using Microsoft.AspNetCore.Http;
 
 namespace Avocado.Web.Services
@@ -12,7 +12,7 @@ namespace Avocado.Web.Services
     {
         private readonly IHttpContextAccessor _httpAccessor;
         private readonly IRepository<Account> _accountRepo;
-        private IAccount _account;
+        private Account _account;
 
         public AccountAccessor(IHttpContextAccessor httpAccessor, IRepository<Account> accountRepo)
         {
@@ -20,7 +20,7 @@ namespace Avocado.Web.Services
             _accountRepo = accountRepo;
         }
 
-        public IAccount Account
+        public Account Account
         {
             get
             {
@@ -32,7 +32,7 @@ namespace Avocado.Web.Services
             }
         }
 
-        private IAccount GetAccount()
+        private Account GetAccount()
         {
             var user = _httpAccessor.HttpContext.User;
             if (user == null)
@@ -41,13 +41,13 @@ namespace Avocado.Web.Services
             };
 
             var claims = user.Claims;
-            var jtiClaim = claims.FirstOrDefault(c => c.Type == "jti");
-            if (jtiClaim == null)
+            var idClaim = claims.FirstOrDefault(c => c.Type == "id");
+            if (idClaim == null)
             {
                 return null;
             };
 
-            if (!Guid.TryParse(jtiClaim.Value, out Guid accountId))
+            if (!Guid.TryParse(idClaim.Value, out Guid accountId))
             {
                 return null;
             };

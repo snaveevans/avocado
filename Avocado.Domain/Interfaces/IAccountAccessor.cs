@@ -4,6 +4,6 @@ namespace Avocado.Domain.Interfaces
 {
     public interface IAccountAccessor
     {
-        IAccount Account { get; }
+        Account Account { get; }
     }
 }

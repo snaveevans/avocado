@@ -1,6 +1,5 @@
 using System;
 using Avocado.Domain.Entities;
-using Avocado.Infrastructure.Enumerations;
 
 namespace Avocado.Infrastructure.Authentication
 {
@@ -9,17 +8,15 @@ namespace Avocado.Infrastructure.Authentication
         public Guid Id { get; private set; }
         public Guid AccountId { get; private set; }
         public string Provider { get; private set; }
-        public string ProviderId { get; private set; }  
         public string ProviderKey { get; private set; }
-        
+
         [Obsolete("system constructor")]
         protected Login() { }
-        internal Login(Account account, Providers provider, string providerId, string providerKey)
+        internal Login(Account account, string provider, string providerKey)
         {
             Id = Guid.NewGuid();
             AccountId = account.Id;
             Provider = provider.ToString();
-            ProviderId = providerId;
             ProviderKey = providerKey;
         }
     }

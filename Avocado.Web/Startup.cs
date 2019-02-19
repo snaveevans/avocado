@@ -23,6 +23,10 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using Avocado.Web.Swagger;
+using Microsoft.AspNetCore.Identity;
+using Avocado.Infrastructure.Identity;
+using Avocado.Infrastructure;
+using Avocado.Infrastructure.Providers;
 
 namespace Avocado.Web
 {
@@ -40,6 +44,7 @@ namespace Avocado.Web
         {
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddIdentityCore<Account>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "Avocado API", Version = "v1" });
@@ -58,7 +63,7 @@ namespace Avocado.Web
                 var domainXmlFile = $"{domainInfo.GetName().Name}.xml";
                 var domainXmlPath = Path.Combine(AppContext.BaseDirectory, domainXmlFile);
                 c.IncludeXmlComments(domainXmlPath);
-                var infrastructureInfo = Assembly.GetAssembly(typeof(LoginModel));
+                var infrastructureInfo = Assembly.GetAssembly(typeof(Login));
                 var infrastructureXmlFile = $"{infrastructureInfo.GetName().Name}.xml";
                 var infrastructureXmlPath = Path.Combine(AppContext.BaseDirectory, infrastructureXmlFile);
                 c.IncludeXmlComments(infrastructureXmlPath);
@@ -72,12 +77,21 @@ namespace Avocado.Web
                 options.ConnectionString = _configuration.GetConnectionString("AvocadoContext");
             });
 
-            services.Configure<LoginOptions>(options =>
+            // Get options from app settings
+            var jwtAppSettingOptions = _configuration.GetSection(nameof(JwtIssuerOptions));
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JwtKey"])); var validFor = long.Parse(jwtAppSettingOptions[nameof(JwtIssuerOptions.ValidFor)]);
+            // Configure JwtIssuerOptions
+            services.Configure<JwtIssuerOptions>(options =>
             {
-                options.Issuer = _configuration["JwtIssuer"];
-                options.MillisecondsUntilExpiration = long.Parse(_configuration["JwtExpireMilliseconds"]);
-                options.Key = _configuration["JwtKey"];
-                options.PathToCredentialsJson = _configuration["PathToCredentialsJson"];
+                options.Issuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
+                options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
+                options.ValidFor = TimeSpan.FromMilliseconds(validFor);
+                options.SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
+            });
+
+            services.Configure<GoogleOptions>(options =>
+            {
+                options.FirebaseJson = _configuration["FirebaseJson"];
             });
 
             services.AddDbContext<AvocadoContext>();
@@ -86,27 +100,39 @@ namespace Avocado.Web
             services.AddScoped<IRepository<Member>, ContextRepository<Member, AvocadoContext>>();
             services.AddScoped<IRepository<Account>, ContextRepository<Account, AvocadoContext>>();
             services.AddScoped<IAccountAccessor, AccountAccessor>();
+            services.AddScoped<IJwtFactory, JwtFactory>();
             services.AddScoped<EventService>();
             services.AddScoped<MemberService>();
             services.AddScoped<AuthorizationService>();
-
             services.AddScoped<IRepository<Login>, ContextRepository<Login, AvocadoContext>>();
-            services.AddScoped<LoginService>();
+            services.AddScoped<IProvider, GoogleProvider>();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = _configuration["JwtIssuer"],
-                        ValidAudience = _configuration["JwtIssuer"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtKey"]))
-                    };
-                });
+            services.AddTransient<IUserStore<Account>, AvocadoUserStore>();
+            services.AddTransient<IUserLoginStore<Account>, AvocadoUserStore>();
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)],
+                ValidateAudience = true,
+                ValidAudience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)],
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = signingKey,
+                RequireExpirationTime = false,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(configureOptions =>
+            {
+                configureOptions.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
+                configureOptions.TokenValidationParameters = tokenValidationParameters;
+                configureOptions.SaveToken = true;
+            });
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

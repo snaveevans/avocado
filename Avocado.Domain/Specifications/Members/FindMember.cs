@@ -9,10 +9,10 @@ namespace Avocado.Domain.Specifications.Members
 {
     public class FindMember : ISpecification<Member>
     {
-        private readonly IAccount _account;
+        private readonly Account _account;
         private readonly Event _evnt;
 
-        public FindMember(IAccount account, Event evnt)
+        public FindMember(Account account, Event evnt)
         {
             _account = account;
             _evnt = evnt;

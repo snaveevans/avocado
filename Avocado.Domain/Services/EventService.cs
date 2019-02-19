@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Avocado.Domain.Entities;
 using Avocado.Domain.Enumerations;
 using Avocado.Domain.Interfaces;
@@ -26,34 +27,32 @@ namespace Avocado.Domain.Services
             _accountAccessor = accountAccessor;
         }
 
-        public bool TryCreate(string title, string description, out Event evnt)
+        public async Task<Event> Create(string title, string description)
         {
-            var account = _accountAccessor.Account;
+            Account account = await _accountAccessor.GetAccount();
             if (account == null)
             {
-                evnt = null;
-                return false;
+                return null;
             }
 
-            evnt = new Event(title, description);
+            Event evnt = new Event(title, description);
             var member = new Member(account, evnt, Roles.Host);
 
-            _eventRepo.Add(evnt);
-            _memberRepo.Add(member);
+            await _eventRepo.Add(evnt);
+            await _memberRepo.Add(member);
 
-            return true;
+            return evnt;
         }
 
-        public bool TryUpdate(Guid id, string title, string description, out Event evnt)
+        public async Task<Event> Update(Guid id, string title, string description)
         {
-            if (!TryFindOne(id, out evnt))
+            Event evnt = await FindOne(id);
+            if (evnt == null)
             {
-                evnt = null;
-                return false;
+                return evnt;
             }
 
             var hasChange = false;
-
             if (!string.IsNullOrWhiteSpace(title) && evnt.Title != title)
             {
                 evnt.UpdateTitle(title);
@@ -68,51 +67,55 @@ namespace Avocado.Domain.Services
 
             if (hasChange)
             {
-                _eventRepo.Update(evnt);
+                bool isUpdated = await _eventRepo.Update(evnt);
+                if (!isUpdated)
+                {
+                    // TODO: report error
+                }
             }
 
-            return true;
+            return evnt;
         }
 
-        public bool TryFindOne(Guid id, out Event evnt)
+        public async Task<Event> FindOne(Guid id)
         {
-            evnt = _eventRepo.Find(new EventById(id));
+            Event evnt = await _eventRepo.Find(new EventById(id));
             if (evnt == null)
             {
-                evnt = null;
-                return false;
+                return evnt;
             }
 
-            if (!_authorizationService.CanReadEvent(evnt))
+            if (!await _authorizationService.CanReadEvent(evnt))
             {
                 evnt = null;
-                return false;
+                return evnt;
             }
 
-            return true;
+            return evnt;
         }
 
-        public IEnumerable<Event> FindAuthorized()
+        public async Task<List<Event>> FindAuthorized()
         {
-            var account = _accountAccessor.Account;
+            Account account = await _accountAccessor.GetAccount();
             if (account == null)
             {
                 return null;
             }
 
-            var members = _memberRepo.Query(new MembersForAccount(account));
-            var events = _eventRepo.Query(new EventsForMembers(members));
+            var members = await _memberRepo.Query(new MembersForAccount(account));
+            var events = await _eventRepo.Query(new EventsForMembers(members));
             return events;
         }
 
-        public bool TryDeleteEvent(Guid id)
+        public async Task<bool> DeleteEvent(Guid id)
         {
-            if (!TryFindOne(id, out Event evnt))
+            Event evnt = await FindOne(id);
+            if (evnt == null)
             {
                 return false;
             }
 
-            return _eventRepo.Remove(evnt);
+            return await _eventRepo.Remove(evnt);
         }
     }
 }

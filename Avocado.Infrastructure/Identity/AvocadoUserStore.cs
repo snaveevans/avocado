@@ -24,20 +24,20 @@ namespace Avocado.Infrastructure.Identity
 
         public async Task AddLoginAsync(Account user, UserLoginInfo login, CancellationToken cancellationToken)
         {
-            var avocadoLogin = new Login(user, login.LoginProvider, login.ProviderKey);
-            _loginRepo.Add(avocadoLogin);
+            Login avocadoLogin = new Login(user, login.LoginProvider, login.ProviderKey);
+            await _loginRepo.Add(avocadoLogin);
         }
 
         public async Task<IdentityResult> CreateAsync(Account user, CancellationToken cancellationToken)
         {
-            _accountRepo.Add(user);
+            await _accountRepo.Add(user);
 
             return IdentityResult.Success;
         }
 
         public async Task<IdentityResult> DeleteAsync(Account user, CancellationToken cancellationToken)
         {
-            var isDeleted = _accountRepo.Remove(user);
+            bool isDeleted = await _accountRepo.Remove(user);
             if (isDeleted)
             {
                 return IdentityResult.Success;
@@ -58,66 +58,71 @@ namespace Avocado.Infrastructure.Identity
                 return null;
             }
 
-            Account account = _accountRepo.Find(new AccountById(id));
+            Account account = await _accountRepo.Find(new AccountById(id));
             return account;
         }
 
         public async Task<Account> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
         {
-            Login login = _loginRepo.Find(new LoginByProvider(loginProvider, providerKey));
+            Login login = await _loginRepo.Find(new LoginByProvider(loginProvider, providerKey));
             if (login == null)
             {
                 return null;
             }
-            Account account = _accountRepo.Find(new AccountById(login.AccountId));
+            Account account = await _accountRepo.Find(new AccountById(login.AccountId));
             return account;
         }
 
         public async Task<Account> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
-            return _accountRepo.Find(new AccountByUserName(normalizedUserName));
+            return await _accountRepo.Find(new AccountByUserName(normalizedUserName));
         }
 
         public async Task<IList<UserLoginInfo>> GetLoginsAsync(Account user, CancellationToken cancellationToken)
         {
-            var logins = _loginRepo.Query(new LoginsForAccount(user));
+            List<Login> logins = await _loginRepo.Query(new LoginsForAccount(user));
             var userLoginInfos = logins.Select(l => new UserLoginInfo(l.Provider, l.ProviderKey, string.Empty));
             return userLoginInfos.ToList(); ;
         }
 
         public async Task<string> GetNormalizedUserNameAsync(Account user, CancellationToken cancellationToken)
         {
-            return user.NormalizedUserName;
+            return await Task.Run(() => user.NormalizedUserName);
         }
 
         public async Task<string> GetUserIdAsync(Account user, CancellationToken cancellationToken)
         {
-            return user.Id.ToString();
+            return await Task.Run(() => user.Id.ToString());
         }
 
         public async Task<string> GetUserNameAsync(Account user, CancellationToken cancellationToken)
         {
-            return user.UserName;
+            return await Task.Run(() => user.UserName);
         }
 
-        public Task RemoveLoginAsync(Account user, string loginProvider, string providerKey, CancellationToken cancellationToken)
+        public async Task RemoveLoginAsync(Account user, string loginProvider, string providerKey, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            Login login = await _loginRepo.Find(new LoginByProvider(loginProvider, providerKey));
+            if (login == null)
+            {
+                return;
+            }
+            await _loginRepo.Remove(login);
         }
 
         public async Task SetNormalizedUserNameAsync(Account user, string normalizedName, CancellationToken cancellationToken)
         {
-            user.UpdateNormalizedUserName(normalizedName);
+            await Task.Run(() => user.UpdateNormalizedUserName(normalizedName));
         }
 
         public async Task SetUserNameAsync(Account user, string userName, CancellationToken cancellationToken)
         {
-            user.UpdateUserName(userName);
+            await Task.Run(() => user.UpdateUserName(userName));
         }
 
         public async Task<IdentityResult> UpdateAsync(Account user, CancellationToken cancellationToken)
         {
-            _accountRepo.Update(user);
+            await _accountRepo.Update(user);
 
             return IdentityResult.Success;
         }

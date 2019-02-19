@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Avocado.Domain.Entities;
 using Avocado.Domain.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -25,10 +26,10 @@ namespace Avocado.Web.Controllers
         [HttpGet]
         [SwaggerOperation(Summary = "Gets all the events that the user has access to.", OperationId = "GetEventMembers")]
         [SwaggerResponse(200, "All events for the user.", typeof(List<Member>))]
-        public IActionResult Get([SwaggerParameter("Event Id")] Guid eventId)
+        public async Task<ActionResult> Get([SwaggerParameter("Event Id")] Guid eventId)
         {
-            IEnumerable<Member> members;
-            if (!_memberService.TryGetMembers(eventId, out members))
+            List<Member> members = await _memberService.GetMembers(eventId);
+            if (members == null)
             {
                 return Unauthorized();
             }

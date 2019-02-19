@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Avocado.Domain.Entities;
 using Avocado.Domain.Enumerations;
 using Avocado.Domain.Interfaces;
@@ -27,57 +28,60 @@ namespace Avocado.Domain.Services
         }
 
         // get members
-        public bool TryGetMembers(Guid eventId, out IEnumerable<Member> members)
+        public async Task<List<Member>> GetMembers(Guid eventId)
         {
-            if (!_eventService.TryFindOne(eventId, out Event evnt))
+            Event evnt = await _eventService.FindOne(eventId);
+            if (evnt == null)
             {
-                members = Enumerable.Empty<Member>();
-                return false;
+                return new List<Member>();
             }
 
-            members = _memberRepo.Query(new MembersForEvent(evnt));
-            return true;
+            var members = await _memberRepo.Query(new MembersForEvent(evnt));
+            return members;
         }
 
         // add members
-        public bool TryAddMember(Guid eventId, Account account, out Member member)
+        public async Task<Member> AddMember(Guid eventId, Account account)
         {
-            if (!_eventService.TryFindOne(eventId, out Event evnt))
+            Event evnt = await _eventService.FindOne(eventId);
+            if (evnt == null)
             {
-                member = null;
-                return false;
+                return null;
             }
 
-            member = new Member(account, evnt, Roles.Guest);
-            _memberRepo.Add(member);
-            return true;
+            Member member = new Member(account, evnt, Roles.Guest);
+            await _memberRepo.Add(member);
+            return member;
         }
 
         // remove members
-        public bool TryRemoveMember(Guid eventId, Account account)
+        public async Task<bool> RemoveMember(Guid eventId, Account account)
         {
-            if (!_eventService.TryFindOne(eventId, out Event evnt))
+            Event evnt = await _eventService.FindOne(eventId);
+            if (evnt == null)
             {
                 return false;
             }
 
-            var member = _memberRepo.Find(new FindMember(account, evnt));
-            return _memberRepo.Remove(member);
+            Member member = await _memberRepo.Find(new FindMember(account, evnt));
+            return await _memberRepo.Remove(member);
         }
 
         // update member status
-        public bool TryUpdateStatus(Guid eventId, AttendanceStatuses status, out Member member)
+        public async Task<Member> UpdateStatus(Guid eventId, AttendanceStatuses status)
         {
-            if (!_eventService.TryFindOne(eventId, out Event evnt))
+            Event evnt = await _eventService.FindOne(eventId);
+            if (evnt == null)
             {
-                member = null;
-                return false;
+                return null;
             }
 
-            member = _memberRepo.Find(new FindMember(_accountAccessor.Account, evnt));
+            Account account = await _accountAccessor.GetAccount();
+            Member member = await _memberRepo.Find(new FindMember(account, evnt));
             member.UpdateAttendanceStatus(status);
-            _memberRepo.Update(member);
-            return true;
+            bool isUpdated = await _memberRepo.Update(member);
+            // TODO: check for error
+            return member;
         }
     }
 }

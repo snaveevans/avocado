@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace Avocado.Web.Controllers
 {
@@ -26,18 +27,20 @@ namespace Avocado.Web.Controllers
         [HttpGet]
         [SwaggerOperation(Summary = "Gets all the events that the user has access to.", OperationId = "GetEvents")]
         [SwaggerResponse(200, "All events for the user.", typeof(List<Event>))]
-        public IActionResult GetAllEvents()
+        public async Task<ActionResult> GetAllEvents()
         {
-            return Ok(_eventService.FindAuthorized());
+            List<Event> evnts = await _eventService.FindAuthorized();
+            return Ok(evnts);
         }
 
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Gets a specific event.", OperationId = "GetEvent")]
         [SwaggerResponse(200, "Returns the specified event.", typeof(Event))]
         [SwaggerResponse(403, "Event not found or no access to specific event.")]
-        public IActionResult GetEvent([SwaggerParameter("Event Id")] Guid id)
+        public async Task<ActionResult> GetEvent([SwaggerParameter("Event Id")] Guid id)
         {
-            if (!_eventService.TryFindOne(id, out Event evnt))
+            Event evnt = await _eventService.FindOne(id);
+            if (evnt == null)
             {
                 return Unauthorized();
             }
@@ -60,12 +63,13 @@ namespace Avocado.Web.Controllers
             Consumes = new[] { "application/json" })]
         [SwaggerResponse(201, "The event was created.", typeof(Event))]
         [SwaggerResponse(403, "User account was not found.")]
-        public IActionResult Create(
+        public async Task<ActionResult> Create(
             [FromBody, Required]
             [SwaggerParameter("Event values")]
                 EventModel model)
         {
-            if (!_eventService.TryCreate(model.Title, model.Description, out Event evnt))
+            Event evnt = await _eventService.Create(model.Title, model.Description);
+            if (evnt == null)
             {
                 return Unauthorized();
             }
@@ -89,14 +93,16 @@ namespace Avocado.Web.Controllers
             Consumes = new[] { "application/json" })]
         [SwaggerResponse(200, "Returns successfully updated event.", typeof(Event))]
         [SwaggerResponse(403, "No event found or no access to specific event.")]
-        public IActionResult Update(
+        public async Task<ActionResult> Update(
             [SwaggerParameter("Event Id")] Guid id,
             [FromBody] EventModel model)
         {
-            if (!_eventService.TryUpdate(id, model.Title, model.Description, out Event evnt))
+            Event evnt = await _eventService.Update(id, model.Title, model.Description);
+            if (evnt == null)
             {
                 return Unauthorized();
             }
+
             return Ok(evnt);
         }
 
@@ -104,9 +110,10 @@ namespace Avocado.Web.Controllers
         [SwaggerOperation(Summary = "Deletes a specific event.", OperationId = "DeleteEvent")]
         [SwaggerResponse(204, "Event was successfully deleted.")]
         [SwaggerResponse(403, "No event found or no access to specific event.")]
-        public IActionResult DeleteEvent([SwaggerParameter("Event Id")] Guid id)
+        public async Task<ActionResult> DeleteEvent([SwaggerParameter("Event Id")] Guid id)
         {
-            if (!_eventService.TryDeleteEvent(id))
+            bool isDeleted = await _eventService.DeleteEvent(id);
+            if (!isDeleted)
             {
                 return Unauthorized();
             }

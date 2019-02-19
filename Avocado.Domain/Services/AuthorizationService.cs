@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Avocado.Domain.Entities;
 using Avocado.Domain.Interfaces;
 using Avocado.Domain.Specifications.Members;
@@ -16,16 +17,15 @@ namespace Avocado.Domain.Services
             _accountAccessor = accountAccessor;
         }
 
-        public bool CanReadEvent(Event evnt)
+        public async Task<bool> CanReadEvent(Event evnt)
         {
-            var account = _accountAccessor.Account; ;
+            Account account = await _accountAccessor.GetAccount();
             if (account == null || evnt == null)
             {
                 return false;
             }
 
-            var member = _memberRepo.Find(new FindMember(account, evnt));
-
+            Member member = await _memberRepo.Find(new FindMember(account, evnt));
             return member != null;
         }
     }

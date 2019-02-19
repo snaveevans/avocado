@@ -29,17 +29,18 @@ namespace Avocado.Test
         }
 
         [Fact]
-        public void AddMember()
+        public async void AddMember()
         {
             var account = new Account("blah", "foobar");
-            _eventService.TryCreate("Foo", "Bar", out Event evnt);
+            Event evnt = await _eventService.Create("Foo", "Bar");
             Member failMember = null, member = null;
 
-            Assert.Throws<ArgumentNullException>(() => _memberService.TryAddMember(evnt.Id, null, out failMember));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _memberService.AddMember(evnt.Id, null));
             Assert.Null(failMember);
-            Assert.False(_memberService.TryAddMember(Guid.NewGuid(), account, out member));
+            failMember = await _memberService.AddMember(Guid.NewGuid(), account);
+            Assert.Null(failMember);
 
-            Assert.True(_memberService.TryAddMember(evnt.Id, account, out member));
+            member = await _memberService.AddMember(evnt.Id, account);
             Assert.NotNull(member);
 
             Assert.Equal(account.Id, member.AccountId);
@@ -49,13 +50,15 @@ namespace Avocado.Test
         }
 
         [Fact]
-        public void UpdateStatus()
+        public async void UpdateStatus()
         {
-            _eventService.TryCreate("Foo", "Bar", out Event evnt);
+            Event evnt = await _eventService.Create("Foo", "Bar");
             Member member = null;
 
-            Assert.False(_memberService.TryUpdateStatus(Guid.NewGuid(), AttendanceStatuses.Going, out member));
-            Assert.True(_memberService.TryUpdateStatus(evnt.Id, AttendanceStatuses.Going, out member));
+            member = await _memberService.UpdateStatus(Guid.NewGuid(), AttendanceStatuses.Going);
+            Assert.Null(member);
+            member = await _memberService.UpdateStatus(evnt.Id, AttendanceStatuses.Going);
+            Assert.NotNull(member);
             Assert.Equal(AttendanceStatuses.Going, member.AttendanceStatus);
         }
     }

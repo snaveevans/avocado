@@ -1,6 +1,7 @@
 
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Avocado.Domain.Entities;
 using Avocado.Domain.Interfaces;
 using Avocado.Domain.Specifications.Accounts;
@@ -20,20 +21,13 @@ namespace Avocado.Web.Services
             _accountRepo = accountRepo;
         }
 
-        public Account Account
+        public async Task<Account> GetAccount()
         {
-            get
+            if (_account != null)
             {
-                if (_account == null)
-                {
-                    _account = GetAccount();
-                }
                 return _account;
             }
-        }
 
-        private Account GetAccount()
-        {
             var user = _httpAccessor.HttpContext.User;
             if (user == null)
             {
@@ -52,7 +46,8 @@ namespace Avocado.Web.Services
                 return null;
             };
 
-            return _accountRepo.Find(new AccountById(accountId));
+            _account = await _accountRepo.Find(new AccountById(accountId));
+            return _account;
         }
     }
 }

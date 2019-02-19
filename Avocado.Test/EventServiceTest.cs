@@ -23,17 +23,18 @@ namespace Avocado.Test
         }
 
         [Fact]
-        public void Create()
+        public async void Create()
         {
-            Event evnt = null, failEvent = null;
-            Assert.False(_eventService.TryCreate("Foo", "Bar", out failEvent));
+            Event evnt = null;
+            Event failedEvent = await _eventService.Create("Foo", "Bar");
+            Assert.Null(failedEvent);
 
             var account = new Account("tyler", "foobar");
             _accountAccessor.SetAccount(account);
-            Assert.Throws<ArgumentNullException>(() => _eventService.TryCreate("", "Bar", out failEvent));
-            Assert.Throws<ArgumentNullException>(() => _eventService.TryCreate("Foo", "", out failEvent));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _eventService.Create("", "Bar"));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _eventService.Create("Foo", ""));
 
-            Assert.True(_eventService.TryCreate("Foo", "Bar", out evnt));
+            evnt = await _eventService.Create("Foo", "Bar");
             Assert.NotEqual(Guid.Empty, evnt.Id);
             Assert.Equal("Foo", evnt.Title);
             Assert.Equal("Bar", evnt.Description);

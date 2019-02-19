@@ -1,9 +1,10 @@
+using System.Threading.Tasks;
 using Avocado.Domain.Entities;
 
 namespace Avocado.Domain.Interfaces
 {
     public interface IAccountAccessor
     {
-        Account Account { get; }
+        Task<Account> GetAccount();
     }
 }

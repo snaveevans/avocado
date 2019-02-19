@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Avocado.Domain.Entities;
 using Avocado.Domain.Interfaces;
 
@@ -13,30 +14,31 @@ namespace Avocado.Test
         {
             List = new List<T>();
         }
-        public void Add(T item)
+        public async Task Add(T item)
         {
-            List.Add(item);
+            await Task.Run(() => List.Add(item));
         }
 
-        public T Find(ISpecification<T> spec)
+        public async Task<bool> Update(T item)
         {
-            return List.AsQueryable().FirstOrDefault(spec.BuildExpression());
+            await Remove(item);
+            await Add(item);
+            return true;
         }
 
-        public List<T> Query(ISpecification<T> spec)
+        public async Task<bool> Remove(T item)
         {
-            return List.AsQueryable().Where(spec.BuildExpression()).ToList();
+            return await Task.Run(() => List.Remove(item));
         }
 
-        public bool Remove(T item)
+        public async Task<T> Find(ISpecification<T> spec)
         {
-            return List.Remove(item);
+            return await Task.Run(() => List.AsQueryable().FirstOrDefault(spec.BuildExpression()));
         }
 
-        public void Update(T item)
+        public async Task<List<T>> Query(ISpecification<T> spec)
         {
-            Remove(item);
-            Add(item);
+            return await Task.Run(() => List.AsQueryable().Where(spec.BuildExpression()).ToList());
         }
     }
 }

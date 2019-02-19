@@ -3,8 +3,7 @@ import { Injectable } from "@angular/core";
 import { JwtData } from "@avocado/auth/models/JwtData";
 import * as firebase from "firebase/app";
 import "firebase/auth";
-import { BehaviorSubject, from, Observable, of } from "rxjs";
-import { map, shareReplay, switchMap, tap } from "rxjs/operators";
+import { FirebaseConfig } from "@avocado/auth/models/FirebaseConfig";
 
 @Injectable({
   providedIn: "root"
@@ -13,6 +12,7 @@ export class AuthService {
   private isInitialized = false;
   private token?: string;
   private jwtData$ = new BehaviorSubject<JwtData>(null);
+  private fetchFirebaseConfig = new Subject();
 
   isAuthenticated$ = this.jwtData$.pipe(
     tap(_ => setTimeout(this.initializeIfNeeded.bind(this), 1)),
@@ -23,13 +23,14 @@ export class AuthService {
   );
 
   constructor(private http: HttpClient) {
-    const config = {
-      apiKey: "AIzaSyA8ywmoMF2iSp0TX4Z1D9IIYbCPkP-Ho30",
-      authDomain: "avocado-208414.firebaseapp.com",
-      databaseURL: "https://avocado-208414.firebaseio.com",
-      projectId: "avocado-208414"
-    };
+    this.fetchFirebaseConfig.subscribe(_ =>
+      this.http
+        .get<FirebaseConfig>("api/auth/firebase-config")
+        .subscribe((config: FirebaseConfig) => {
     firebase.initializeApp(config);
+          this.fetchFirebaseConfig.complete();
+        })
+    );
   }
 
   private initializeIfNeeded(): void {
@@ -39,11 +40,11 @@ export class AuthService {
     this.isInitialized = true;
 
     const token = localStorage.getItem("token");
-    if (!token || token.length <= 0) {
-      return;
+    if (token && token.length > 0) {
+      this.setToken(token);
     }
 
-    this.setToken(token);
+    this.fetchFirebaseConfig.next();
   }
 
   private setToken(token: string): void {

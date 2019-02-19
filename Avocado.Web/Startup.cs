@@ -27,6 +27,7 @@ using Microsoft.AspNetCore.Identity;
 using Avocado.Infrastructure.Identity;
 using Avocado.Infrastructure;
 using Avocado.Infrastructure.Providers;
+using Avocado.Web.Models;
 
 namespace Avocado.Web
 {
@@ -94,6 +95,15 @@ namespace Avocado.Web
             services.Configure<GoogleOptions>(options =>
             {
                 options.FirebaseJson = _configuration["FirebaseJson"];
+            });
+
+            var firebaseConfig = _configuration.GetSection(nameof(FirebaseConfig));
+            services.Configure<FirebaseConfig>(config =>
+            {
+                config.ApiKey = firebaseConfig[nameof(FirebaseConfig.ApiKey)];
+                config.AuthDomain = firebaseConfig[nameof(FirebaseConfig.AuthDomain)];
+                config.DatabaseURL = firebaseConfig[nameof(FirebaseConfig.DatabaseURL)];
+                config.ProjectId = firebaseConfig[nameof(FirebaseConfig.ProjectId)];
             });
 
             services.AddDbContext<AvocadoContext>();

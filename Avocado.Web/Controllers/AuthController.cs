@@ -9,6 +9,8 @@ using Avocado.Infrastructure.Providers;
 using Avocado.Web.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Avocado.Web.Controllers
 {
@@ -18,14 +20,17 @@ namespace Avocado.Web.Controllers
         private readonly IJwtFactory _jwtFactory;
         private readonly UserManager<Account> _userManager;
         private readonly IEnumerable<IProvider> _providers;
+        private readonly FirebaseConfig _firebaseConfig;
 
         public AuthController(IJwtFactory jwtFactory,
             UserManager<Account> userManager,
-            IEnumerable<IProvider> providers)
+            IEnumerable<IProvider> providers,
+            IOptions<FirebaseConfig> firebaseConfig)
         {
             _jwtFactory = jwtFactory;
             _userManager = userManager;
             _providers = providers;
+            _firebaseConfig = firebaseConfig.Value;
         }
 
         [HttpPost]
@@ -56,6 +61,14 @@ namespace Avocado.Web.Controllers
             // generate token
             string token = _jwtFactory.GenerateToken(account);
             return Ok(new TokenModel(token));
+        }
+
+        [HttpGet("firebase-config")]
+        [SwaggerOperation(Summary = "Gets firebase service account configuration.", OperationId = "FirebaseConfig")]
+        [SwaggerResponse(200, "Firebase service account configuration.", typeof(FirebaseConfig))]
+        public ActionResult FirebaseConfig()
+        {
+            return Ok(_firebaseConfig);
         }
     }
 }

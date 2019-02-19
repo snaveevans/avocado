@@ -28,6 +28,11 @@ namespace Avocado.Infrastructure.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Account>(a =>
+            {
+                a.HasIndex(i => i.NormalizedUserName)
+                    .IsUnique();
+            });
             modelBuilder.Entity<Member>(m =>
             {
                 m.HasKey(i => new { i.AccountId, i.EventId });

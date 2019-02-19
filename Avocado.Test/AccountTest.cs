@@ -22,6 +22,17 @@ namespace Avocado.Test
         }
 
         [Fact]
+        public void SecondaryConstructor()
+        {
+            var account = new Account("tyler evans", "foobar", "some picture");
+
+            Assert.NotEqual(Guid.Empty, account.Id);
+            Assert.Equal("tyler evans", account.Name);
+            Assert.True(account.IsEnabled);
+            Assert.Equal("some picture", account.Picture);
+        }
+
+        [Fact]
         public void Disable()
         {
             var account = new Account("tyler evans", "foobar");

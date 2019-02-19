@@ -41,6 +41,11 @@ namespace Avocado.Infrastructure
         public TimeSpan ValidFor { get; set; } = TimeSpan.FromMinutes(120);
 
         /// <summary>
+        /// Signature secret
+        /// </summary>
+        public string Secret { get; set; }
+
+        /// <summary>
         /// The signing key to use when generating tokens.
         /// </summary>
         public SigningCredentials SigningCredentials { get; set; }

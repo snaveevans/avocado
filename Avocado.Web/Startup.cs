@@ -79,7 +79,9 @@ namespace Avocado.Web
 
             // Get options from app settings
             var jwtAppSettingOptions = _configuration.GetSection(nameof(JwtIssuerOptions));
-            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JwtKey"])); var validFor = long.Parse(jwtAppSettingOptions[nameof(JwtIssuerOptions.ValidFor)]);
+            var secret = jwtAppSettingOptions[nameof(JwtIssuerOptions.Secret)];
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret));
+            var validFor = long.Parse(jwtAppSettingOptions[nameof(JwtIssuerOptions.ValidFor)]);
             // Configure JwtIssuerOptions
             services.Configure<JwtIssuerOptions>(options =>
             {

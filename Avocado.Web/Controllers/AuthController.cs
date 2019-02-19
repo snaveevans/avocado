@@ -15,6 +15,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Avocado.Web.Controllers
 {
     [Route("api/auth"), ApiController]
+    [SwaggerTag("Generates JWTs and auth configuration.")]
     public class AuthController : Controller
     {
         private readonly IJwtFactory _jwtFactory;
@@ -34,6 +35,9 @@ namespace Avocado.Web.Controllers
         }
 
         [HttpPost]
+        [SwaggerOperation(Summary = "Generates a new JWT.", OperationId = "GenerateToken")]
+        [SwaggerResponse(201, "The token was created.", typeof(TokenModel))]
+        [SwaggerResponse(400, "Unable to create token.")]
         public async Task<ActionResult> Token([FromBody, Required] LoginModel model)
         {
             // get provider

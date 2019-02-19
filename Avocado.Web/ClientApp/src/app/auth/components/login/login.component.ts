@@ -3,9 +3,9 @@ import { AuthService } from "@avocado/auth/services/auth.service";
 import { ActivatedRoute, Router, ParamMap } from "@angular/router";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { Observable } from "rxjs";
-import { map, take } from "rxjs/operators";
+import { map } from "rxjs/operators";
 import { FormBuilder, Validators } from "@angular/forms";
-import { AuthResult } from "@avocado/auth/models/AuthResult";
+import { IdentityError } from "@avocado/auth/models/IdentityError";
 
 @Component({
   selector: "av-login",
@@ -14,15 +14,15 @@ import { AuthResult } from "@avocado/auth/models/AuthResult";
 })
 export class LoginComponent implements OnInit {
   isLoggingIn = false;
+  errors: IdentityError[] = [];
   googleIcon = faGoogle;
   isLoggedOut = false;
+  isLoggingOut$: Observable<boolean>;
   showForm$: Observable<boolean>;
   registrationForm = this.formBuilder.group({
     name: ["", [Validators.required]],
     userName: ["", [Validators.required]]
   });
-
-  private isLoggingOut$: Observable<boolean>;
 
   constructor(
     private authService: AuthService,
@@ -49,6 +49,7 @@ export class LoginComponent implements OnInit {
 
   login(): void {
     this.isLoggingIn = true;
+    this.errors = [];
     this.authService.login().subscribe(this.postAuthentication);
   }
 
@@ -71,8 +72,9 @@ export class LoginComponent implements OnInit {
       return;
     }
     this.isLoggingIn = true;
+    this.errors = [];
     const name = this.registrationForm.get("name").value;
-    const userName = this.registrationForm.get("name").value;
+    const userName = this.registrationForm.get("userName").value;
     this.authService
       .register(name, userName)
       .subscribe(this.postAuthentication);
@@ -90,11 +92,10 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  private postAuthentication = (result: AuthResult): void => {
+  private postAuthentication = (errors: IdentityError[]): void => {
     this.isLoggingIn = false;
-    if (result !== AuthResult.Success) {
-      console.log(`AuthResult ${result}`);
-      // TODO: display some sort of error
+    if (errors.length) {
+      this.errors = errors;
       return;
     }
 

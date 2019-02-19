@@ -1,9 +1,9 @@
 export enum AuthResult {
-  Success = "Success",
   InvalidAccessToken = "InvalidAccessToken",
   FetchTokenFailed = "FetchTokenFailed",
+  DuplicateUserName = "DuplicateUserName",
   RegistrationFailed = "RegistrationFailed",
-  Unknown = "Unknown",
+  ProviderTokenFailed = "ProviderTokenFailed",
   FirebaseAuthError = "FirebaseAuthError",
   FirebaseUserError = "FirebaseUserError ",
   FirebaseCancel = "FirebaseCancel"

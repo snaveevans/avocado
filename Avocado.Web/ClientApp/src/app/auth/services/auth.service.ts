@@ -9,8 +9,8 @@ import { FirebaseConfig } from "@avocado/auth/models/FirebaseConfig";
 import { RegisterModel } from "@avocado/auth/models/RegisterModel";
 import { LoginModel } from "@avocado/auth/models/LoginModel";
 import { TokenResult } from "@avocado/auth/models/TokenResult";
-import { AuthResult } from "@avocado/auth/models/AuthResult";
 import { AccessTokenResult } from "@avocado/auth/models/AccessTokenResult";
+import { IdentityError } from "@avocado/auth/models/IdentityError";
 
 @Injectable({
   providedIn: "root"
@@ -67,27 +67,27 @@ export class AuthService {
     return this.token;
   }
 
-  login = (): Observable<AuthResult> =>
+  login = (): Observable<IdentityError[]> =>
     from(this.getProviderToken()).pipe(
       switchMap(
-        (tokenResult: AccessTokenResult): Observable<AuthResult> => {
-          if (tokenResult.authResult !== AuthResult.Success) {
-            return of(tokenResult.authResult);
+        (tokenResult: AccessTokenResult): Observable<IdentityError[]> => {
+          if (tokenResult.errors.length) {
+            return of(tokenResult.errors);
           }
           return this.fetchToken(
             new LoginModel("GOOGLE", tokenResult.accessToken)
           );
         }
       ),
-      catchError(() => of(AuthResult.Unknown))
+      catchError(_ => of([IdentityError.providerTokenFailed()]))
     );
 
-  register = (name: string, userName: string): Observable<AuthResult> =>
+  register = (name: string, userName: string): Observable<IdentityError[]> =>
     from(this.getProviderToken()).pipe(
       switchMap(
-        (tokenResult: AccessTokenResult): Observable<AuthResult> => {
-          if (tokenResult.authResult !== AuthResult.Success) {
-            return of(tokenResult.authResult);
+        (tokenResult: AccessTokenResult): Observable<IdentityError[]> => {
+          if (tokenResult.errors.length) {
+            return of(tokenResult.errors);
           }
           const url = `api/account/register`;
           const registerModel = new RegisterModel(
@@ -98,26 +98,27 @@ export class AuthService {
           );
           return this.http.post<Account>(url, registerModel).pipe(
             switchMap(
-              (account: Account): Observable<AuthResult> => {
+              (account: Account): Observable<IdentityError[]> => {
                 if (!account) {
-                  return of(AuthResult.RegistrationFailed);
+                  return of([IdentityError.registrationFailed()]);
                 }
 
                 return this.fetchToken(registerModel);
               }
             ),
-            catchError(() => of(AuthResult.RegistrationFailed))
+            catchError(result => of(result.error as IdentityError[]))
           );
         }
-      )
+      ),
+      catchError(_ => of([IdentityError.providerTokenFailed()]))
     );
 
-  private getProviderToken = async () => {
+  private getProviderToken = async (): Promise<AccessTokenResult> => {
     const provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
     const firebaseAuth = firebase.auth();
     if (!firebaseAuth) {
-      return new AccessTokenResult(AuthResult.FirebaseAuthError);
+      return AccessTokenResult.failed([IdentityError.firebaseAuthError()]);
     }
 
     firebaseAuth.useDeviceLanguage();
@@ -125,24 +126,24 @@ export class AuthService {
     try {
       await firebaseAuth.signInWithPopup(provider);
       if (!firebaseAuth.currentUser) {
-        return new AccessTokenResult(AuthResult.FirebaseUserError);
+        return AccessTokenResult.failed([IdentityError.firebaseUserError()]);
       }
       const accessToken = await firebaseAuth.currentUser.getIdToken(false);
-      return new AccessTokenResult(AuthResult.Success, accessToken);
+      return AccessTokenResult.succeeded(accessToken);
     } catch (error) {
-      return new AccessTokenResult(AuthResult.FirebaseCancel);
+      return AccessTokenResult.failed([IdentityError.firebaseCancel()]);
     }
   };
 
-  private fetchToken = (model: LoginModel): Observable<AuthResult> =>
+  private fetchToken = (model: LoginModel): Observable<IdentityError[]> =>
     !model.accessToken.length
-      ? of(AuthResult.InvalidAccessToken)
+      ? of([IdentityError.invalidAccessToken()])
       : this.http.post<TokenResult>("api/auth", model).pipe(
           map(({ token }) => {
             this.setToken(token);
-            return AuthResult.Success;
+            return [];
           }),
-          catchError(() => of(AuthResult.Unknown))
+          catchError(result => of(result.error as IdentityError[]))
         );
 
   logout(): void {

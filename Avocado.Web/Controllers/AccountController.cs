@@ -39,16 +39,16 @@ namespace Avocado.Web.Controllers
         {
             Account account = new Account(model.Name, model.UserName, model.Picture);
             IdentityResult result = await _userManager.CreateAsync(account);
-            if (result != IdentityResult.Success)
+            if (!result.Succeeded)
             {
-                return BadRequest();
+                return BadRequest(result.Errors);
             }
 
-            bool isSuccessful = await AddLogin(account, model);
-            if (!isSuccessful)
+            var loginResult = await AddLogin(account, model);
+            if (!loginResult.Succeeded)
             {
                 await _userManager.DeleteAsync(account);
-                return BadRequest();
+                return BadRequest(loginResult.Errors);
             }
 
             return Created("api/account/", account);
@@ -61,36 +61,46 @@ namespace Avocado.Web.Controllers
         public async Task<ActionResult> AddLogin([FromBody, Required] LoginModel model)
         {
             Account account = await _userManager.GetUserAsync(User);
-            bool isSuccessful = await AddLogin(account, model);
-            if (!isSuccessful)
+            var result = await AddLogin(account, model);
+            if (!result.Succeeded)
             {
-                return BadRequest();
+                return BadRequest(result.Errors);
             }
 
             return Ok();
         }
 
-        private async Task<bool> AddLogin(Account account, LoginModel model)
+        private async Task<IdentityResult> AddLogin(Account account, LoginModel model)
         {
             // get provider
             IProvider provider = _providers.FirstOrDefault(p =>
                 p.Provider.Equals(model.Provider, StringComparison.InvariantCultureIgnoreCase));
             if (provider == null)
             {
-                return false;
+                IdentityError error = new IdentityError
+                {
+                    Code = "InvalidProvider",
+                    Description = $@"Invalid or unsupported provider ""${model.Provider}"""
+                };
+                return IdentityResult.Failed(error);
             }
 
             // get provider key
             string providerKey = await provider.GetProviderKey(model.AccessToken);
             if (string.IsNullOrWhiteSpace(providerKey))
             {
-                return false;
+                IdentityError error = new IdentityError
+                {
+                    Code = "InvalidAccessToken",
+                    Description = $@"Unable to validate token with provider ""${provider.Provider}"""
+                };
+                return IdentityResult.Failed(error);
             }
 
             // add login
             var login = new UserLoginInfo(provider.Provider, providerKey, string.Empty);
             var result = await _userManager.AddLoginAsync(account, login);
-            return result == IdentityResult.Success;
+            return result;
         }
     }
 }

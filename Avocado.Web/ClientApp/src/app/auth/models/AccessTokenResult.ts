@@ -1,5 +1,11 @@
-import { AuthResult } from "@avocado/auth/models/AuthResult";
+import { IdentityError } from "@avocado/auth/models/IdentityError";
 
 export class AccessTokenResult {
-  constructor(public authResult: AuthResult, public accessToken?: string) {}
+  constructor(public accessToken = "", public errors: IdentityError[] = []) {}
+  static failed(errors: IdentityError[]): AccessTokenResult {
+    return new AccessTokenResult(undefined, errors);
+  }
+  static succeeded(accessToken: string): AccessTokenResult {
+    return new AccessTokenResult(accessToken);
+  }
 }

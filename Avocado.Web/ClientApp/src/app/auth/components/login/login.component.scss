@@ -3,6 +3,10 @@
   flex: 1 1 100px;
   flex-direction: column;
   padding: 10px;
+
+  > div {
+    margin-bottom: 10px;
+  }
 }
 
 div {
@@ -20,8 +24,4 @@ button {
 
 fa-icon {
   margin-right: 2px;
-}
-
-.logout-message {
-  margin-bottom: 10px;
 }

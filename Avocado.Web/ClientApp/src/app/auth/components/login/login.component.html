@@ -1,5 +1,15 @@
-<div *ngIf="isLoggedOut" class="logout-message">
+<div *ngIf="isLoggedOut && (isLoggingOut$ | async)">
   You have successfully been logged out.
+</div>
+
+<div *ngIf="errors.length">
+  <mat-list>
+    <h3 mat-subheader>Errors</h3>
+    <mat-list-item *ngFor="let error of errors">
+      <h4 mat-line>Code: {{ error.code }}</h4>
+      <p mat-line>{{ error.description }}</p>
+    </mat-list-item>
+  </mat-list>
 </div>
 
 <div *ngIf="!(showForm$ | async)">

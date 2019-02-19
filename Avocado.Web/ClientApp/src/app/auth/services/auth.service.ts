@@ -3,7 +3,14 @@ import { Injectable } from "@angular/core";
 import { JwtData } from "@avocado/auth/models/JwtData";
 import * as firebase from "firebase/app";
 import "firebase/auth";
+import { BehaviorSubject, from, Observable, of, Subject } from "rxjs";
+import { map, shareReplay, switchMap, tap, catchError } from "rxjs/operators";
 import { FirebaseConfig } from "@avocado/auth/models/FirebaseConfig";
+import { RegisterModel } from "@avocado/auth/models/RegisterModel";
+import { LoginModel } from "@avocado/auth/models/LoginModel";
+import { TokenResult } from "@avocado/auth/models/TokenResult";
+import { AuthResult } from "@avocado/auth/models/AuthResult";
+import { AccessTokenResult } from "@avocado/auth/models/AccessTokenResult";
 
 @Injectable({
   providedIn: "root"
@@ -27,7 +34,7 @@ export class AuthService {
       this.http
         .get<FirebaseConfig>("api/auth/firebase-config")
         .subscribe((config: FirebaseConfig) => {
-    firebase.initializeApp(config);
+          firebase.initializeApp(config);
           this.fetchFirebaseConfig.complete();
         })
     );
@@ -48,6 +55,7 @@ export class AuthService {
   }
 
   private setToken(token: string): void {
+    // TODO: set account
     this.isInitialized = true;
     this.token = token;
     this.jwtData$.next(new JwtData(token));
@@ -59,55 +67,87 @@ export class AuthService {
     return this.token;
   }
 
-  login = () => this.authenticate("login");
-  register = () => this.authenticate("register");
+  login = (): Observable<AuthResult> =>
+    from(this.getProviderToken()).pipe(
+      switchMap(
+        (tokenResult: AccessTokenResult): Observable<AuthResult> => {
+          if (tokenResult.authResult !== AuthResult.Success) {
+            return of(tokenResult.authResult);
+          }
+          return this.fetchToken(
+            new LoginModel("GOOGLE", tokenResult.accessToken)
+          );
+        }
+      ),
+      catchError(() => of(AuthResult.Unknown))
+    );
 
-  private authenticate(mode: "login" | "register"): Observable<boolean> {
+  register = (name: string, userName: string): Observable<AuthResult> =>
+    from(this.getProviderToken()).pipe(
+      switchMap(
+        (tokenResult: AccessTokenResult): Observable<AuthResult> => {
+          if (tokenResult.authResult !== AuthResult.Success) {
+            return of(tokenResult.authResult);
+          }
+          const url = `api/account/register`;
+          const registerModel = new RegisterModel(
+            name,
+            userName,
+            "GOOGLE",
+            tokenResult.accessToken
+          );
+          return this.http.post<Account>(url, registerModel).pipe(
+            switchMap(
+              (account: Account): Observable<AuthResult> => {
+                if (!account) {
+                  return of(AuthResult.RegistrationFailed);
+                }
+
+                return this.fetchToken(registerModel);
+              }
+            ),
+            catchError(() => of(AuthResult.RegistrationFailed))
+          );
+        }
+      )
+    );
+
+  private getProviderToken = async () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
     const firebaseAuth = firebase.auth();
     if (!firebaseAuth) {
-      return of(false);
+      return new AccessTokenResult(AuthResult.FirebaseAuthError);
     }
 
     firebaseAuth.useDeviceLanguage();
 
-    const signIn = from(firebaseAuth.signInWithPopup(provider));
+    try {
+      await firebaseAuth.signInWithPopup(provider);
+      if (!firebaseAuth.currentUser) {
+        return new AccessTokenResult(AuthResult.FirebaseUserError);
+      }
+      const accessToken = await firebaseAuth.currentUser.getIdToken(false);
+      return new AccessTokenResult(AuthResult.Success, accessToken);
+    } catch (error) {
+      return new AccessTokenResult(AuthResult.FirebaseCancel);
+    }
+  };
 
-    return signIn.pipe(
-      switchMap((result: firebase.auth.UserCredential) => {
-        if (!firebaseAuth.currentUser) {
-          return of(false);
-        }
-
-        const getToken = from(firebaseAuth.currentUser.getIdToken(false));
-        return getToken.pipe(
-          switchMap((accessToken: string) => {
-            const url = mode === "login" ? `api/auth/` : `api/account/register`;
-            // TODO: refactor for registering
-            const body = {
-              provider: "GOOGLE",
-              accessToken
-            };
-            return this.http.post<TokenResult>(url, body).pipe(
-              map(({ token }) => {
-                this.setToken(token);
-                return true;
-              })
-            );
-          })
+  private fetchToken = (model: LoginModel): Observable<AuthResult> =>
+    !model.accessToken.length
+      ? of(AuthResult.InvalidAccessToken)
+      : this.http.post<TokenResult>("api/auth", model).pipe(
+          map(({ token }) => {
+            this.setToken(token);
+            return AuthResult.Success;
+          }),
+          catchError(() => of(AuthResult.Unknown))
         );
-      })
-    );
-  }
 
   logout(): void {
     this.token = null;
     this.jwtData$.next(null);
     localStorage.setItem("token", "");
   }
-}
-
-interface TokenResult {
-  token: string;
 }

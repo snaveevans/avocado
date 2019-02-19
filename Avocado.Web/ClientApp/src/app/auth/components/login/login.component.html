@@ -1,13 +1,36 @@
 <div *ngIf="isLoggedOut" class="logout-message">
   You have successfully been logged out.
 </div>
-<div>
-  <button mat-raised-button color="accent" (click)="handleRegisterClick()">
+
+<div *ngIf="!(showForm$ | async)">
+  <button mat-raised-button color="accent" (click)="startRegistration()">
     <fa-icon [icon]="googleIcon" size="lg"></fa-icon>
     Sign-up with Google
   </button>
-  <button mat-raised-button color="primary" (click)="handleLoginClick()">
+  <button mat-raised-button color="primary" (click)="login()">
     <fa-icon [icon]="googleIcon" size="lg"></fa-icon>
     Login with Google
   </button>
+</div>
+
+<div *ngIf="(showForm$ | async)">
+  <form
+    [formGroup]="registrationForm"
+    (ngSubmit)="register()"
+    #formInstance="ngForm"
+    [ngClass]="{ submitted: formInstance.submitted }"
+  >
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+      <mat-error>Required</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>User Name</mat-label>
+      <input matInput formControlName="userName" />
+      <mat-error>Required</mat-error>
+    </mat-form-field>
+    <button type="submit" mat-raised-button color="primary">Register</button>
+    <button mat-raised-button (click)="cancelRegistration()">Cancel</button>
+  </form>
 </div>

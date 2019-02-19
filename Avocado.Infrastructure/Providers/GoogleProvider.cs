@@ -19,6 +19,7 @@ namespace Avocado.Infrastructure.Providers
             ILogger<GoogleProvider> logger)
         {
             _options = options.Value;
+            _logger = logger;
         }
 
         private void InitializeIfNeeded()

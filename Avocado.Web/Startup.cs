@@ -52,7 +52,7 @@ namespace Avocado.Web
                 c.AddSecurityDefinition("Bearer", new ApiKeyScheme
                 {
                     In = "header",
-                    Description = "Please enter JWT with Bearer into field",
+                    Description = @"Please enter JWT with Bearer, ""Bearer {jwt}""",
                     Name = "Authorization",
                     Type = "apiKey"
                 });

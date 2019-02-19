@@ -37,7 +37,7 @@ namespace Avocado.Web.Controllers
             [SwaggerParameter("Account and login values.")]
                 RegisterModel model)
         {
-            Account account = new Account(model.Name, model.Picture);
+            Account account = new Account(model.Name, model.UserName, model.Picture);
             IdentityResult result = await _userManager.CreateAsync(account);
             if (result != IdentityResult.Success)
             {

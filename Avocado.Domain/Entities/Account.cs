@@ -37,18 +37,21 @@ namespace Avocado.Domain.Entities
         /// Create new account.
         /// </summary>
         /// <param name="name">User's given name.</param>
+        /// <param name="userName">User's app name, app unique.</param>
         /// <param name="picture">User's picture (optional).</param>
-        public Account(string name, string picture = "")
+        public Account(string name, string userName, string picture = "")
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name));
+            if (string.IsNullOrWhiteSpace(userName))
+                throw new ArgumentNullException(nameof(userName));
 
             Id = Guid.NewGuid();
             Name = name.Trim();
             IsEnabled = true;
             Picture = picture;
-            UserName = Id.ToString();
-            NormalizedUserName = Id.ToString().ToUpper();
+            UserName = userName;
+            NormalizedUserName = userName.ToUpper();
         }
 
         /// <summary>

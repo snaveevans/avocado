@@ -10,9 +10,10 @@ namespace Avocado.Test
         [Fact]
         public void Constructor()
         {
-            var account = new Account("tyler evans");
+            var account = new Account("tyler evans", "foobar");
 
-            Assert.Throws<ArgumentNullException>(() => new Account(""));
+            Assert.Throws<ArgumentNullException>(() => new Account("", "foobar"));
+            Assert.Throws<ArgumentNullException>(() => new Account("foobar", ""));
 
             Assert.NotEqual(Guid.Empty, account.Id);
             Assert.Equal("tyler evans", account.Name);
@@ -23,7 +24,7 @@ namespace Avocado.Test
         [Fact]
         public void Disable()
         {
-            var account = new Account("tyler evans");
+            var account = new Account("tyler evans", "foobar");
 
             account.Disable();
 
@@ -33,7 +34,7 @@ namespace Avocado.Test
         [Fact]
         public void Enable()
         {
-            var account = new Account("tyler evans");
+            var account = new Account("tyler evans", "foobar");
 
             account.Disable();
             account.Enable();
@@ -44,7 +45,7 @@ namespace Avocado.Test
         [Fact]
         public void UpdateAvatar()
         {
-            var account = new Account("tyler evans");
+            var account = new Account("tyler evans", "foobar");
 
             account.UpdatePicture("foobar");
 
@@ -54,7 +55,7 @@ namespace Avocado.Test
         [Fact]
         public void UpdateName()
         {
-            var account = new Account("tyler evans");
+            var account = new Account("tyler evans", "foobar");
 
             account.UpdateName("blah");
 

@@ -28,7 +28,7 @@ namespace Avocado.Test
             Event evnt = null, failEvent = null;
             Assert.False(_eventService.TryCreate("Foo", "Bar", out failEvent));
 
-            var account = new Account("tyler");
+            var account = new Account("tyler", "foobar");
             _accountAccessor.SetAccount(account);
             Assert.Throws<ArgumentNullException>(() => _eventService.TryCreate("", "Bar", out failEvent));
             Assert.Throws<ArgumentNullException>(() => _eventService.TryCreate("Foo", "", out failEvent));

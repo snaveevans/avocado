@@ -1,8 +1,9 @@
+
 using System;
 using System.Linq;
 using Avocado.Domain.Entities;
 using Avocado.Domain.Interfaces;
-using Avocado.Infrastructure.Specifications;
+using Avocado.Domain.Specifications.Accounts;
 using Microsoft.AspNetCore.Http;
 
 namespace Avocado.Web.Services
@@ -40,13 +41,13 @@ namespace Avocado.Web.Services
             };
 
             var claims = user.Claims;
-            var jtiClaim = claims.FirstOrDefault(c => c.Type == "jti");
-            if (jtiClaim == null)
+            var idClaim = claims.FirstOrDefault(c => c.Type == "id");
+            if (idClaim == null)
             {
                 return null;
             };
 
-            if (!Guid.TryParse(jtiClaim.Value, out Guid accountId))
+            if (!Guid.TryParse(idClaim.Value, out Guid accountId))
             {
                 return null;
             };

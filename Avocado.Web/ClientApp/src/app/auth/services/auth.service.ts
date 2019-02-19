@@ -3,8 +3,14 @@ import { Injectable } from "@angular/core";
 import { JwtData } from "@avocado/auth/models/JwtData";
 import * as firebase from "firebase/app";
 import "firebase/auth";
-import { BehaviorSubject, from, Observable, of } from "rxjs";
-import { map, shareReplay, switchMap, tap } from "rxjs/operators";
+import { BehaviorSubject, from, Observable, of, Subject } from "rxjs";
+import { map, shareReplay, switchMap, tap, catchError } from "rxjs/operators";
+import { FirebaseConfig } from "@avocado/auth/models/FirebaseConfig";
+import { RegisterModel } from "@avocado/auth/models/RegisterModel";
+import { LoginModel } from "@avocado/auth/models/LoginModel";
+import { TokenResult } from "@avocado/auth/models/TokenResult";
+import { AccessTokenResult } from "@avocado/auth/models/AccessTokenResult";
+import { IdentityError } from "@avocado/auth/models/IdentityError";
 
 @Injectable({
   providedIn: "root"
@@ -13,6 +19,7 @@ export class AuthService {
   private isInitialized = false;
   private token?: string;
   private jwtData$ = new BehaviorSubject<JwtData>(null);
+  private fetchFirebaseConfig = new Subject();
 
   isAuthenticated$ = this.jwtData$.pipe(
     tap(_ => setTimeout(this.initializeIfNeeded.bind(this), 1)),
@@ -23,13 +30,14 @@ export class AuthService {
   );
 
   constructor(private http: HttpClient) {
-    const config = {
-      apiKey: "AIzaSyA8ywmoMF2iSp0TX4Z1D9IIYbCPkP-Ho30",
-      authDomain: "avocado-208414.firebaseapp.com",
-      databaseURL: "https://avocado-208414.firebaseio.com",
-      projectId: "avocado-208414"
-    };
-    firebase.initializeApp(config);
+    this.fetchFirebaseConfig.subscribe(_ =>
+      this.http
+        .get<FirebaseConfig>("api/auth/firebase-config")
+        .subscribe((config: FirebaseConfig) => {
+          firebase.initializeApp(config);
+          this.fetchFirebaseConfig.complete();
+        })
+    );
   }
 
   private initializeIfNeeded(): void {
@@ -39,14 +47,15 @@ export class AuthService {
     this.isInitialized = true;
 
     const token = localStorage.getItem("token");
-    if (!token || token.length <= 0) {
-      return;
+    if (token && token.length > 0) {
+      this.setToken(token);
     }
 
-    this.setToken(token);
+    this.fetchFirebaseConfig.next();
   }
 
   private setToken(token: string): void {
+    // TODO: set account
     this.isInitialized = true;
     this.token = token;
     this.jwtData$.next(new JwtData(token));
@@ -58,58 +67,88 @@ export class AuthService {
     return this.token;
   }
 
-  login = () => this.authenticate("login");
-  register = () => this.authenticate("register");
+  login = (): Observable<IdentityError[]> =>
+    from(this.getProviderToken()).pipe(
+      switchMap(
+        (tokenResult: AccessTokenResult): Observable<IdentityError[]> => {
+          if (tokenResult.errors.length) {
+            return of(tokenResult.errors);
+          }
+          return this.fetchToken(
+            new LoginModel("GOOGLE", tokenResult.accessToken)
+          );
+        }
+      ),
+      catchError(_ => of([IdentityError.providerTokenFailed()]))
+    );
 
-  private authenticate(mode: "login" | "register"): Observable<boolean> {
+  register = (name: string, userName: string): Observable<IdentityError[]> =>
+    from(this.getProviderToken()).pipe(
+      switchMap(
+        (tokenResult: AccessTokenResult): Observable<IdentityError[]> => {
+          if (tokenResult.errors.length) {
+            return of(tokenResult.errors);
+          }
+          const url = `api/account/register`;
+          const registerModel = new RegisterModel(
+            name,
+            userName,
+            "GOOGLE",
+            tokenResult.accessToken
+          );
+          return this.http.post<Account>(url, registerModel).pipe(
+            switchMap(
+              (account: Account): Observable<IdentityError[]> => {
+                if (!account) {
+                  return of([IdentityError.registrationFailed()]);
+                }
+
+                return this.fetchToken(registerModel);
+              }
+            ),
+            catchError(result => of(result.error as IdentityError[]))
+          );
+        }
+      ),
+      catchError(_ => of([IdentityError.providerTokenFailed()]))
+    );
+
+  private getProviderToken = async (): Promise<AccessTokenResult> => {
     const provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
     const firebaseAuth = firebase.auth();
     if (!firebaseAuth) {
-      return of(false);
+      return AccessTokenResult.failed([IdentityError.firebaseAuthError()]);
     }
 
     firebaseAuth.useDeviceLanguage();
 
-    const signIn = from(firebaseAuth.signInWithPopup(provider));
+    try {
+      await firebaseAuth.signInWithPopup(provider);
+      if (!firebaseAuth.currentUser) {
+        return AccessTokenResult.failed([IdentityError.firebaseUserError()]);
+      }
+      const accessToken = await firebaseAuth.currentUser.getIdToken(false);
+      return AccessTokenResult.succeeded(accessToken);
+    } catch (error) {
+      return AccessTokenResult.failed([IdentityError.firebaseCancel()]);
+    }
+  };
 
-    return signIn.pipe(
-      switchMap((result: firebase.auth.UserCredential) => {
-        if (!firebaseAuth.currentUser) {
-          return of(false);
-        }
-
-        const getToken = from(firebaseAuth.currentUser.getIdToken(false));
-        return getToken.pipe(
-          switchMap((idToken: string) => {
-            const url = `api/token/${mode}`;
-            const options = {
-              method: "GET",
-              mode: "cors",
-              cache: "no-cache",
-              headers: {
-                "Id-Token": idToken
-              }
-            };
-            return this.http.get<TokenResult>(url, options).pipe(
-              map(({ token }) => {
-                this.setToken(token);
-                return true;
-              })
-            );
-          })
+  private fetchToken = (model: LoginModel): Observable<IdentityError[]> =>
+    !model.accessToken.length
+      ? of([IdentityError.invalidAccessToken()])
+      : this.http.post<TokenResult>("api/auth", model).pipe(
+          map(({ token }) => {
+            this.setToken(token);
+            return [];
+          }),
+          catchError(result => of(result.error as IdentityError[]))
         );
-      })
-    );
-  }
 
   logout(): void {
     this.token = null;
     this.jwtData$.next(null);
     localStorage.setItem("token", "");
   }
-}
-
-interface TokenResult {
-  token: string;
 }

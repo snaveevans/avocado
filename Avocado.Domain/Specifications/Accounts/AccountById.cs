@@ -1,11 +1,10 @@
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using Avocado.Domain.Entities;
 using Avocado.Domain.Interfaces;
 
-namespace Avocado.Infrastructure.Specifications
+namespace Avocado.Domain.Specifications.Accounts
 {
     public class AccountById : ISpecification<Account>
     {

@@ -28,20 +28,34 @@ namespace Avocado.Infrastructure.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Member>()
-                .HasKey(i => new { i.AccountId, i.EventId });
-            modelBuilder.Entity<Member>()
-                .Property(m => m.AttendanceStatus)
+            modelBuilder.Entity<Account>(a =>
+            {
+                a.HasIndex(i => i.NormalizedUserName)
+                    .IsUnique();
+            });
+            modelBuilder.Entity<Member>(m =>
+            {
+                m.HasKey(i => new { i.AccountId, i.EventId });
+                m.Property(i => i.AttendanceStatus)
                 .HasConversion(
                     v => v.ToString(),
                     v => Enum.Parse<AttendanceStatuses>(v)
                 );
-            modelBuilder.Entity<Member>()
-                .Property(m => m.Role)
+                m.Property(i => i.Role)
                 .HasConversion(
                     v => v.ToString(),
                     v => Enum.Parse<Roles>(v)
                 );
+                m.HasOne<Event>()
+                    .WithMany()
+                    .HasForeignKey(i => i.EventId)
+                    .IsRequired();
+            });
+            modelBuilder.Entity<Event>(e =>
+            {
+                e.HasMany<Member>()
+                    .WithOne();
+            });
         }
     }
 }

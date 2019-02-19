@@ -3,44 +3,23 @@ using System;
 using Avocado.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Avocado.Infrastructure.Migrations
 {
     [DbContext(typeof(AvocadoContext))]
-    partial class AvocadoContextModelSnapshot : ModelSnapshot
+    [Migration("20190219045838_LoginProviderKeyRefactor2")]
+    partial class LoginProviderKeyRefactor2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
                 .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
-
-            modelBuilder.Entity("Avocado.Domain.Entities.Account", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<bool>("IsEnabled");
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("NormalizedUserName");
-
-                    b.Property<string>("Picture");
-
-                    b.Property<string>("UserName");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique();
-
-                    b.ToTable("Accounts");
-                });
 
             modelBuilder.Entity("Avocado.Domain.Entities.Event", b =>
                 {
@@ -77,6 +56,26 @@ namespace Avocado.Infrastructure.Migrations
                     b.HasIndex("EventId1");
 
                     b.ToTable("Members");
+                });
+
+            modelBuilder.Entity("Avocado.Infrastructure.Authentication.Account", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("IsEnabled");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("NormalizedUserName");
+
+                    b.Property<string>("Picture");
+
+                    b.Property<string>("UserName");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Accounts");
                 });
 
             modelBuilder.Entity("Avocado.Infrastructure.Authentication.Login", b =>

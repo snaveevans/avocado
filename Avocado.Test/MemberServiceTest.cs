@@ -4,6 +4,7 @@ using Avocado.Domain.Entities;
 using Avocado.Domain.Enumerations;
 using Avocado.Domain.Interfaces;
 using Avocado.Domain.Services;
+using Avocado.Infrastructure.Authentication;
 using Xunit;
 
 namespace Avocado.Test
@@ -20,7 +21,7 @@ namespace Avocado.Test
         {
             _eventRepo = new TestRepo<Event>();
             _memberRepo = new TestRepo<Member>();
-            var account = new Account("tyler");
+            var account = new Account("tyler", "foobar2");
             _accountAccessor = new TestAccountAccessor(account);
             var authService = new AuthorizationService(_memberRepo, _accountAccessor);
             _eventService = new EventService(_eventRepo, _memberRepo, authService, _accountAccessor);
@@ -30,7 +31,7 @@ namespace Avocado.Test
         [Fact]
         public void AddMember()
         {
-            var account = new Account("blah");
+            var account = new Account("blah", "foobar");
             _eventService.TryCreate("Foo", "Bar", out Event evnt);
             Member failMember = null, member = null;
 

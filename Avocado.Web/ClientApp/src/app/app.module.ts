@@ -7,6 +7,8 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 import { CoreModule } from "@avocado/core/core.module";
 import { AuthModule } from "./auth/auth.module";
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { TokenInterceptor } from "@avocado/auth/services/token.interceptor";
 
 @NgModule({
   declarations: [AppComponent],
@@ -17,7 +19,13 @@ import { AuthModule } from "./auth/auth.module";
     CoreModule,
     AuthModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

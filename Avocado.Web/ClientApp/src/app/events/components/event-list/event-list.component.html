@@ -6,7 +6,7 @@
     [avScrollPosition]="horizontalScrollPosition"
   >
     <mat-card
-      *ngFor="let card of cards; let i = index"
+      *ngFor="let event of events; let i = index"
       class="example-card"
       [class.selected]="i === selectedIndex"
       (click)="handleClick(i)"

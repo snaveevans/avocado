@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { BehaviorSubject, Subject } from "rxjs";
 import { debounceTime, map } from "rxjs/operators";
+import { EventModel } from "@avocado/events/models/EventModel";
+import { EventService } from "@avocado/events/services/event.service";
 
 @Component({
   selector: "av-event-list",
@@ -8,12 +10,14 @@ import { debounceTime, map } from "rxjs/operators";
   styleUrls: ["./event-list.component.scss"]
 })
 export class EventListComponent implements OnInit {
-  cards = [1, 2, 3, 4, 5, 6];
+  events: EventModel[] = [];
   selectedIndex = 0;
   horizontalScrollPosition = 0;
 
   private cardPositions: number[] = [];
   private horizontalScroll$ = new BehaviorSubject<number>(0);
+
+  constructor(private eventService: EventService) {}
 
   ngOnInit() {
     const selectedIndex$ = new Subject();
@@ -23,8 +27,12 @@ export class EventListComponent implements OnInit {
       .pipe(debounceTime(500))
       .subscribe(_ => this.focusCard(this.selectedIndex));
 
-    // calculate card positions ahead of time so determining selected card is quick
-    this.calculateCardPositions();
+    this.eventService.getEvents().subscribe((events: EventModel[]) => {
+      this.events = events;
+      // calculate card positions ahead of time so determining selected card is quick
+      this.calculateCardPositions();
+      this.selectedIndex = 0;
+    });
 
     // while scrolling determine selected card
     this.horizontalScroll$
@@ -42,8 +50,8 @@ export class EventListComponent implements OnInit {
   calculateCardPositions(): void {
     const cardWidth = window.outerWidth * 0.8;
     const edgePadding = window.outerWidth * 0.1;
-    this.cardPositions = this.cards.map(
-      (_value: number, index: number, arr: number[]) => {
+    this.cardPositions = this.events.map(
+      (_value: EventModel, index: number, arr: EventModel[]) => {
         const first = cardWidth + edgePadding;
         if (index === 0) {
           // first

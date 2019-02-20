@@ -81,6 +81,7 @@ export class LoginComponent implements OnInit {
   }
 
   cancelRegistration(): void {
+    this.errors = [];
     const queryParams: any = {};
     const redirectUrl = this.route.snapshot.queryParamMap.get("redirectUrl");
     if (redirectUrl && redirectUrl.length > 0) {

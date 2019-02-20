@@ -6,9 +6,10 @@ import { EventListComponent } from "@avocado/events/components/event-list/event-
 import { EventsRoutingModule } from "@avocado/events/events-routing.module";
 import { MaterialModule } from "@avocado/material/material.module";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { EventCardComponent } from './components/event-card/event-card.component';
 
 @NgModule({
-  declarations: [EventListComponent, EventFormComponent],
+  declarations: [EventListComponent, EventFormComponent, EventCardComponent],
   imports: [
     CommonModule,
     EventsRoutingModule,

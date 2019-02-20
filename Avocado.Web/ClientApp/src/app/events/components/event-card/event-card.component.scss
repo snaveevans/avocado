@@ -1,0 +1,49 @@
+@import "../../../styles/colors";
+@import "../../../styles/fonts";
+@import "../../../styles/helpers";
+
+:host {
+  display: block;
+  &:not(.selected) {
+    .example-card {
+      transform: scale(0.9);
+    }
+  }
+}
+
+* {
+  color: $color1;
+}
+
+.example-card {
+  transition: all 0.2s ease-in-out;
+  height: calc(100% - 32px);
+
+  .card-content {
+    margin-left: -6px;
+    margin-right: -6px;
+  }
+
+  .mat-card-image {
+    margin-bottom: 10px;
+  }
+
+  .title {
+    text-decoration: underline;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .description {
+    margin-top: 5px;
+    font-size: $font-size-p;
+    line-height: 1.15;
+    @include line-clamp(2, 1.15);
+  }
+}
+
+.example-header-image {
+  background-image: url("https://material.angular.io/assets/img/examples/shiba1.jpg");
+  background-size: cover;
+}

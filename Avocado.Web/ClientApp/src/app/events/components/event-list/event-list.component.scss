@@ -41,17 +41,3 @@
     width: calc(10%);
   }
 }
-
-.example-card {
-  // flex: 0 0 75vw;
-  transition: all 0.2s ease-in-out;
-
-  &:not(.selected) {
-    transform: scale(0.9);
-  }
-}
-
-.example-header-image {
-  background-image: url("https://material.angular.io/assets/img/examples/shiba1.jpg");
-  background-size: cover;
-}

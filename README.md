@@ -27,12 +27,12 @@
 ## Configure
 
 1. change `JwtIssuerOptions:Secret` _value must be at least 16 characters long_
-2. change `FirebaseConfig` values, Honey-Dos firebase project -> "Get started by adding..." -> Web (</> icon)
+2. change `FirebaseConfig` values, Avocado firebase project -> "Get started by adding..." -> Web (</> icon)
 3. change `FirebaseJson` value
-   - Get the firebase json file from the Honey-Dos firebase project -> Settings (gear icon) -> Project settings -> Service Accounts -> Generate new private key
+   - Get the firebase json file from the Avocado firebase project -> Settings (gear icon) -> Project settings -> Service Accounts -> Generate new private key
    - Reduce it to single line
    - Escape quotes `\"`
-4. add secrets to `HoneyDo.Web` project by executing `cat ./dev-secrets.json | dotnet user-secrets set` in the `HoneyDo.Web` directory.
+4. add secrets to `Avocado.Web` project by executing `cat ./dev-secrets.json | dotnet user-secrets set` in the `Avocado.Web` directory.
 5. **REVERT** all changes immediately, do not commit these values, especially `FirebaseJson`
 
 ## Running

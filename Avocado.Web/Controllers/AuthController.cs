@@ -7,6 +7,8 @@ using Avocado.Domain.Entities;
 using Avocado.Infrastructure.Authentication;
 using Avocado.Infrastructure.Providers;
 using Avocado.Web.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -22,16 +24,19 @@ namespace Avocado.Web.Controllers
         private readonly UserManager<Account> _userManager;
         private readonly IEnumerable<IProvider> _providers;
         private readonly FirebaseConfig _firebaseConfig;
+        private readonly IHostingEnvironment _environment;
 
         public AuthController(IJwtFactory jwtFactory,
             UserManager<Account> userManager,
             IEnumerable<IProvider> providers,
-            IOptions<FirebaseConfig> firebaseConfig)
+            IOptions<FirebaseConfig> firebaseConfig,
+            IHostingEnvironment environment)
         {
             _jwtFactory = jwtFactory;
             _userManager = userManager;
             _providers = providers;
             _firebaseConfig = firebaseConfig.Value;
+            _environment = environment;
         }
 
         [HttpPost]
@@ -57,6 +62,47 @@ namespace Avocado.Web.Controllers
 
             // get account
             Account account = await _userManager.FindByLoginAsync(provider.Provider, providerKey);
+            if (account == null)
+            {
+                return BadRequest();
+            }
+
+            // generate token
+            string token = _jwtFactory.GenerateToken(account);
+            return Ok(new TokenModel(token));
+        }
+
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /api/login/impersonate-token
+        ///     {
+        ///        "provider": "Google",
+        ///        "providerKey": "{valid provider key}"
+        ///     }
+        ///
+        /// </remarks>
+        [HttpPost("impersonate-token")]
+        [AllowAnonymous]
+        [SwaggerOperation(Summary = "Create JWT for provided login information.",
+            OperationId = "CreateImpersonateToken",
+            Consumes = new[] { "application/json" })]
+        [SwaggerResponse(200, "Returns valid JWT.", typeof(TokenModel))]
+        [SwaggerResponse(400, "Login for provided provider and id not found.")]
+        [SwaggerResponse(404, "Does not exist in current environment.")]
+        public async Task<ActionResult<TokenModel>> ImpersonateToken(
+            [FromBody, Required]
+            [SwaggerParameter("Values to use when searching for login.")]
+            ImpersonateModel model)
+        {
+            // only allowed in development
+            if (!_environment.IsDevelopment())
+            {
+                return NotFound();
+            }
+
+            // find account
+            var account = await _userManager.FindByLoginAsync(model.Provider, model.ProviderKey);
             if (account == null)
             {
                 return BadRequest();

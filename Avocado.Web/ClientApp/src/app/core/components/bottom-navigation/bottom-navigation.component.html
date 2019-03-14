@@ -1,6 +1,10 @@
 <mat-toolbar *ngIf="(isAuthenticated$ | async)" color="accent">
   <div class="button-row">
-    <a *ngFor="let route of routes" [routerLink]="route.path">
+    <a
+      class="mat-caption"
+      *ngFor="let route of routes"
+      [routerLink]="route.path"
+    >
       <fa-icon [icon]="route.icon"></fa-icon>
       <div>{{ route.text }}</div>
     </a>

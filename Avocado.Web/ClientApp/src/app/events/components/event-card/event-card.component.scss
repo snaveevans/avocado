@@ -1,5 +1,4 @@
 @import "../../../styles/colors";
-@import "../../../styles/fonts";
 @import "../../../styles/helpers";
 
 :host {
@@ -37,7 +36,6 @@
 
   .description {
     margin-top: 5px;
-    font-size: $font-size-p;
     line-height: 1.15;
     @include line-clamp(2, 1.15);
   }

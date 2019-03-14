@@ -1,8 +1,5 @@
-@import "./app/styles/fonts";
-
-* {
-  font-family: $font-family;
-}
+@import "~@angular/material/theming";
+@import "./theme.scss";
 
 html,
 body {
@@ -22,21 +19,6 @@ h5 {
   margin-left: 0;
   font-weight: initial;
 }
-h1 {
-  font-size: $font-size-h1;
-}
-h2 {
-  font-size: $font-size-h2;
-}
-h3 {
-  font-size: $font-size-h3;
-}
-h4 {
-  font-size: $font-size-h4;
-}
-h5 {
-  font-size: $font-size-h5;
-}
 
 form {
   display: flex;
@@ -53,7 +35,6 @@ form {
   }
   > button {
     height: 45px;
-    font-size: $font-size-h4;
     margin-top: auto;
     margin-bottom: 10px;
   }
@@ -65,4 +46,11 @@ a:hover,
 a:active {
   text-decoration: none;
   color: inherit;
+}
+
+.pcc {
+  color: mat-color($primary, "default-contrast");
+}
+.acc {
+  color: mat-color($accent, "default-contrast");
 }

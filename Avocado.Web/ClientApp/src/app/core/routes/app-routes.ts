@@ -1,14 +1,4 @@
 import { AppRoute } from "./app-route";
-import {
-  faSignInAlt,
-  faSignOutAlt,
-  faQuestionCircle,
-  faPlusCircle,
-  faUsers,
-  faCalendarCheck,
-  faCalendarAlt,
-  faHome
-} from "@fortawesome/free-solid-svg-icons";
 
 export enum RouteName {
   Home = "[RouteName] Home",
@@ -22,18 +12,18 @@ export enum RouteName {
 }
 
 export const allRoutes: { [P in RouteName]: AppRoute } = {
-  [RouteName.Home]: new AppRoute("Home", faHome, ""),
+  [RouteName.Home]: new AppRoute("Home", "home", ""),
   [RouteName.Upcoming]: new AppRoute(
     "Upcoming Events",
-    faCalendarCheck,
+    "calendar-check",
     "events"
   ),
-  [RouteName.MyEvents]: new AppRoute("My Events", faCalendarAlt, "events"),
-  [RouteName.Contacts]: new AppRoute("Contacts", faUsers, "contacts"),
-  [RouteName.NewEvent]: new AppRoute("New Event", faPlusCircle, "events/new"),
-  [RouteName.Help]: new AppRoute("Help", faQuestionCircle, "help"),
-  [RouteName.Login]: new AppRoute("Login", faSignInAlt, "login"),
-  [RouteName.Logout]: new AppRoute("Logout", faSignOutAlt, "login", {
+  [RouteName.MyEvents]: new AppRoute("My Events", "calendar-text", "events"),
+  [RouteName.Contacts]: new AppRoute("Contacts", "account-group", "contacts"),
+  [RouteName.NewEvent]: new AppRoute("New Event", "plus-circle", "events/new"),
+  [RouteName.Help]: new AppRoute("Help", "help-circle", "help"),
+  [RouteName.Login]: new AppRoute("Login", "login", "login"),
+  [RouteName.Logout]: new AppRoute("Logout", "logout", "login", {
     logout: true
   })
 };

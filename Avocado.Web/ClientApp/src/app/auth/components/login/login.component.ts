@@ -1,11 +1,10 @@
 import { Component, OnInit } from "@angular/core";
+import { FormBuilder, Validators } from "@angular/forms";
+import { ActivatedRoute, ParamMap, Router } from "@angular/router";
+import { IdentityError } from "@avocado/auth/models/IdentityError";
 import { AuthService } from "@avocado/auth/services/auth.service";
-import { ActivatedRoute, Router, ParamMap } from "@angular/router";
-import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { FormBuilder, Validators } from "@angular/forms";
-import { IdentityError } from "@avocado/auth/models/IdentityError";
 
 @Component({
   selector: "av-login",
@@ -15,7 +14,6 @@ import { IdentityError } from "@avocado/auth/models/IdentityError";
 export class LoginComponent implements OnInit {
   isLoggingIn = false;
   errors: IdentityError[] = [];
-  googleIcon = faGoogle;
   isLoggedOut = false;
   isLoggingOut$: Observable<boolean>;
   showForm$: Observable<boolean>;

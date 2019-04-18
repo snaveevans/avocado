@@ -1,4 +1,4 @@
-import { BrowserModule } from "@angular/platform-browser";
+import { BrowserModule, DomSanitizer } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 
 import { AppRoutingModule } from "./app-routing.module";
@@ -9,6 +9,7 @@ import { CoreModule } from "@avocado/core/core.module";
 import { AuthModule } from "./auth/auth.module";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { TokenInterceptor } from "@avocado/auth/services/token.interceptor";
+import { MatIconRegistry } from "@angular/material";
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,4 +29,10 @@ import { TokenInterceptor } from "@avocado/auth/services/token.interceptor";
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+  constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
+    matIconRegistry.addSvgIconSet(
+      domSanitizer.bypassSecurityTrustResourceUrl("./assets/mdi.svg")
+    );
+  }
+}

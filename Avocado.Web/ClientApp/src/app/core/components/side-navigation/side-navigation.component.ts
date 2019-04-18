@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output
+} from "@angular/core";
 import { AuthService } from "@avocado/auth/services/auth.service";
 import { AppRoute } from "@avocado/core/routes/app-route";
 import {
@@ -13,7 +19,8 @@ import { map } from "rxjs/operators";
 @Component({
   selector: "av-side-navigation",
   templateUrl: "./side-navigation.component.html",
-  styleUrls: ["./side-navigation.component.scss"]
+  styleUrls: ["./side-navigation.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SideNavigationComponent {
   @Input()

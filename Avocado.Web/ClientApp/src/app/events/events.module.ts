@@ -6,20 +6,23 @@ import { EventFormComponent } from "@avocado/events/components/event-form/event-
 import { EventListComponent } from "@avocado/events/components/event-list/event-list.component";
 import { EventsRoutingModule } from "@avocado/events/events-routing.module";
 import { MaterialModule } from "@avocado/material/material.module";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { EventCardComponent } from "./components/event-card/event-card.component";
-import { EventsComponent } from './components/events/events.component';
+import { EventsComponent } from "./components/events/events.component";
 
 @NgModule({
-  declarations: [EventListComponent, EventFormComponent, EventCardComponent, EventsComponent],
+  declarations: [
+    EventListComponent,
+    EventFormComponent,
+    EventCardComponent,
+    EventsComponent
+  ],
   imports: [
     CommonModule,
     EventsRoutingModule,
     MaterialModule,
     CoreModule,
     FormsModule,
-    ReactiveFormsModule,
-    FontAwesomeModule
+    ReactiveFormsModule
   ]
 })
 export class EventsModule {}

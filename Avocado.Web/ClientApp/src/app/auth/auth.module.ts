@@ -1,11 +1,9 @@
-import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-
+import { NgModule } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MaterialModule } from "@avocado/material/material.module";
 import { AuthRoutingModule } from "./auth-routing.module";
 import { LoginComponent } from "./components/login/login.component";
-import { MaterialModule } from "@avocado/material/material.module";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 @NgModule({
   declarations: [LoginComponent],
@@ -13,7 +11,6 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
     CommonModule,
     AuthRoutingModule,
     MaterialModule,
-    FontAwesomeModule,
     FormsModule,
     ReactiveFormsModule
   ]

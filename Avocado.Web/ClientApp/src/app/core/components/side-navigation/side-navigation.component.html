@@ -17,7 +17,7 @@
         (click)="handleLinkClick()"
         [class.last]="route.path === 'login'"
       >
-        <fa-icon [icon]="route.icon" size="lg" [fixedWidth]="true"></fa-icon>
+        <mat-icon [svgIcon]="route.icon"></mat-icon>
         {{ route.text }}
       </a>
     </div>

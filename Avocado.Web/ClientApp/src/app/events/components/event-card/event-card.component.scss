@@ -62,7 +62,7 @@
   justify-content: space-around;
 }
 
-fa-icon {
+mat-icon {
   margin-top: auto;
   margin-bottom: auto;
   + * {
@@ -78,8 +78,9 @@ fa-icon {
   flex-direction: column;
 }
 
-fa-icon {
+mat-icon {
   margin: 0;
+  flex: 0 0 auto;
 }
 
 .detail-row {

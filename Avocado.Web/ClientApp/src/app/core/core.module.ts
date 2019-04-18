@@ -7,7 +7,6 @@ import { SideNavigationComponent } from "@avocado/core/components/side-navigatio
 import { ToolbarComponent } from "@avocado/core/components/toolbar/toolbar.component";
 import { ScrollDirective } from "@avocado/core/directives/scroll.directive";
 import { MaterialModule } from "@avocado/material/material.module";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 const COMPONENTS = [
   ToolbarComponent,
@@ -17,13 +16,7 @@ const COMPONENTS = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule,
-    MaterialModule,
-    HttpClientModule,
-    FontAwesomeModule
-  ],
+  imports: [CommonModule, RouterModule, MaterialModule, HttpClientModule],
   declarations: COMPONENTS,
   exports: COMPONENTS
 })

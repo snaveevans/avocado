@@ -5,7 +5,7 @@
       *ngFor="let route of routes"
       [routerLink]="route.path"
     >
-      <fa-icon [icon]="route.icon"></fa-icon>
+      <mat-icon [svgIcon]="route.icon"></mat-icon>
       <div>{{ route.text }}</div>
     </a>
   </div>

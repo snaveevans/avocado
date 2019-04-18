@@ -1,74 +1,72 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { AccessTokenResult } from "@avocado/auth/models/AccessTokenResult";
+import { FirebaseConfig } from "@avocado/auth/models/FirebaseConfig";
+import { IdentityError } from "@avocado/auth/models/IdentityError";
 import { JwtData } from "@avocado/auth/models/JwtData";
+import { LoginModel } from "@avocado/auth/models/LoginModel";
+import { RegisterModel } from "@avocado/auth/models/RegisterModel";
+import { TokenResult } from "@avocado/auth/models/TokenResult";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import { BehaviorSubject, from, Observable, of, Subject } from "rxjs";
-import { map, shareReplay, switchMap, tap, catchError } from "rxjs/operators";
-import { FirebaseConfig } from "@avocado/auth/models/FirebaseConfig";
-import { RegisterModel } from "@avocado/auth/models/RegisterModel";
-import { LoginModel } from "@avocado/auth/models/LoginModel";
-import { TokenResult } from "@avocado/auth/models/TokenResult";
-import { AccessTokenResult } from "@avocado/auth/models/AccessTokenResult";
-import { IdentityError } from "@avocado/auth/models/IdentityError";
+import {
+  catchError,
+  filter,
+  map,
+  shareReplay,
+  switchMap,
+  tap,
+  retry
+} from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
 })
 export class AuthService {
-  private isInitialized = false;
-  private token?: string;
-  private jwtData$ = new BehaviorSubject<JwtData>(null);
-  private fetchFirebaseConfig = new Subject();
-
-  isAuthenticated$ = this.jwtData$.pipe(
-    tap(_ => setTimeout(this.initializeIfNeeded.bind(this), 1)),
-    map((jwtData?: JwtData) => {
-      return Boolean(jwtData) && !jwtData.isExpired();
+  private firebaseConfigActual$ = new BehaviorSubject<FirebaseConfig>(null);
+  private firebaseConfig$: Observable<
+    FirebaseConfig
+  > = this.firebaseConfigActual$.pipe(
+    tap((config: FirebaseConfig) => {
+      if (config === null) {
+        this.http
+          .get<FirebaseConfig>("api/auth/firebase-config")
+          .pipe(retry(3))
+          .subscribe(c => this.firebaseConfigActual$.next(c));
+      } else {
+        firebase.initializeApp(config);
+      }
     }),
+    filter((config: FirebaseConfig) => config !== null),
     shareReplay(1)
   );
 
-  constructor(private http: HttpClient) {
-    this.fetchFirebaseConfig.subscribe(_ =>
-      this.http
-        .get<FirebaseConfig>("api/auth/firebase-config")
-        .subscribe((config: FirebaseConfig) => {
-          firebase.initializeApp(config);
-          this.fetchFirebaseConfig.complete();
-        })
-    );
-  }
+  private tokenActual$ = new BehaviorSubject<string>("init");
+  token$: Observable<string> = this.tokenActual$.pipe(
+    tap((token: string) => {
+      if (token !== null && token !== "init") {
+        localStorage.setItem("token", token);
+      } else if (token === "init") {
+        // token hasn't been in
+        this.tokenActual$.next(localStorage.getItem("token") || "");
+      }
+    }),
+    filter((token: string) => token !== "init"),
+    shareReplay(1)
+  );
 
-  private initializeIfNeeded(): void {
-    if (this.isInitialized) {
-      return;
-    }
-    this.isInitialized = true;
+  isAuthenticated$: Observable<boolean> = this.token$.pipe(
+    map((token: string) => (token ? new JwtData(token) : null)),
+    map((jwtData?: JwtData) => Boolean(jwtData) && !jwtData.isExpired()),
+    shareReplay(1)
+  );
 
-    const token = localStorage.getItem("token");
-    if (token && token.length > 0) {
-      this.setToken(token);
-    }
-
-    this.fetchFirebaseConfig.next();
-  }
-
-  private setToken(token: string): void {
-    // TODO: set account
-    this.isInitialized = true;
-    this.token = token;
-    this.jwtData$.next(new JwtData(token));
-    localStorage.setItem("token", token);
-  }
-
-  getToken(): string {
-    this.initializeIfNeeded();
-    return this.token;
-  }
+  constructor(private http: HttpClient) {}
 
   login = (): Observable<IdentityError[]> =>
-    from(this.getProviderToken()).pipe(
+    this.firebaseConfig$.pipe(
+      switchMap(_ => from(this.getProviderToken())),
       switchMap(
         (tokenResult: AccessTokenResult): Observable<IdentityError[]> => {
           if (tokenResult.errors.length) {
@@ -83,7 +81,8 @@ export class AuthService {
     );
 
   register = (name: string, userName: string): Observable<IdentityError[]> =>
-    from(this.getProviderToken()).pipe(
+    this.firebaseConfig$.pipe(
+      switchMap(_ => from(this.getProviderToken())),
       switchMap(
         (tokenResult: AccessTokenResult): Observable<IdentityError[]> => {
           if (tokenResult.errors.length) {
@@ -140,15 +139,13 @@ export class AuthService {
       ? of([IdentityError.invalidAccessToken()])
       : this.http.post<TokenResult>("api/auth", model).pipe(
           map(({ token }) => {
-            this.setToken(token);
+            this.tokenActual$.next(token);
             return [];
           }),
           catchError(result => of(result.error as IdentityError[]))
         );
 
   logout(): void {
-    this.token = null;
-    this.jwtData$.next(null);
-    localStorage.setItem("token", "");
+    this.tokenActual$.next("");
   }
 }

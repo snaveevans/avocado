@@ -7,6 +7,7 @@ import {
 import { Injectable } from "@angular/core";
 import { AuthService } from "@avocado/auth/services/auth.service";
 import { Observable } from "rxjs";
+import { switchMap, take } from "rxjs/operators";
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
@@ -15,14 +16,18 @@ export class TokenInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    const token = this.authService.getToken();
-    if (token && token.length) {
-      request = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`
+    return this.authService.token$.pipe(
+      take(1),
+      switchMap((token: string) => {
+        if (token && token.length) {
+          request = request.clone({
+            setHeaders: {
+              Authorization: `Bearer ${token}`
+            }
+          });
         }
-      });
-    }
-    return next.handle(request);
+        return next.handle(request);
+      })
+    );
   }
 }

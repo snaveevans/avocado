@@ -1,12 +1,17 @@
+:host {
+  display: flex;
+}
+
 mat-drawer-container {
   display: flex;
-  height: calc(100vh - 95px);
+  flex: 1 1 auto;
 
   .menu-items-container {
     display: flex;
+    flex: 1 1 auto;
     flex-direction: column;
-    width: 200px;
     height: 100%;
+    width: 200px;
   }
 
   a {
@@ -16,6 +21,7 @@ mat-drawer-container {
   mat-drawer-content {
     scroll-behavior: smooth;
     width: 100%;
+    display: flex;
   }
   .last {
     order: 99;

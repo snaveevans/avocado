@@ -1,8 +1,9 @@
 :host {
   display: flex;
-  flex: 1 1 100px;
   flex-direction: column;
   padding: 10px;
+  margin-left: auto;
+  margin-right: auto;
 
   > div {
     margin-bottom: 10px;
@@ -12,7 +13,6 @@
 div {
   display: flex;
   flex-direction: column;
-  margin: auto;
 }
 
 button {

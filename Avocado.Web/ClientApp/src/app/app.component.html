@@ -1,5 +1,12 @@
-<av-toolbar (menuClick)="handleMenuClick()"></av-toolbar>
-<av-side-navigation [isOpen]="isSideNavOpen" (close)="handleClose()">
+<av-toolbar class="flex-fixed" (menuClick)="handleMenuClick()"></av-toolbar>
+<av-side-navigation
+  class="flex-grow"
+  [isOpen]="isSideNavOpen"
+  (close)="handleClose()"
+>
   <router-outlet></router-outlet>
 </av-side-navigation>
-<av-bottom-navigation *ngIf="(isAuthenticated$ | async)"></av-bottom-navigation>
+<av-bottom-navigation
+  *ngIf="(isAuthenticated$ | async)"
+  class="flex-fixed"
+></av-bottom-navigation>

@@ -1,4 +1,6 @@
 import { Component } from "@angular/core";
+import { AuthService } from "@avocado/auth/services/auth.service";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "av-root",
@@ -7,6 +9,11 @@ import { Component } from "@angular/core";
 })
 export class AppComponent {
   isSideNavOpen = false;
+  isAuthenticated$: Observable<boolean>;
+
+  constructor(authService: AuthService) {
+    this.isAuthenticated$ = authService.isAuthenticated$;
+  }
 
   handleMenuClick(): void {
     this.isSideNavOpen = !this.isSideNavOpen;

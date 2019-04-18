@@ -9,3 +9,22 @@
   -webkit-box-orient: vertical;
   max-height: $numLines * $lineHeight + unquote("em");
 }
+
+$medium: 768px;
+$large: 1024px;
+
+@mixin for-size($size) {
+  @if $size == small-only {
+    @media (max-width: #{$medium}) {
+      @content;
+    }
+  } @else if $size == medium-up {
+    @media (min-width: #{$medium}) {
+      @content;
+    }
+  } @else if $size == large-up {
+    @media (min-width: #{$large}) {
+      @content;
+    }
+  }
+}

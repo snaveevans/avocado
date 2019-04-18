@@ -1,15 +1,11 @@
-<div class="header"><h3>Upcoming Events</h3></div>
-<div class="content">
-  <div
-    class="card-container"
-    (avScroll)="handleScroll($event)"
-    [avScrollPosition]="horizontalScrollPosition"
+<div class="scrolling-wrapper scrolling-wrapper-flexbox">
+  <av-event-card
+    *ngFor="let event of events; let i = index"
+    class="card"
+    (click)="handleClick(event)"
+    [event]="event"
+    [i]="i"
   >
-    <av-event-card
-      *ngFor="let event of events; let i = index"
-      [class.selected]="i === selectedIndex"
-      (click)="handleClick(i)"
-      [event]="event"
-    ></av-event-card>
-  </div>
+  </av-event-card>
+  <div class="card empty"></div>
 </div>

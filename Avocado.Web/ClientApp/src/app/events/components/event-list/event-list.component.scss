@@ -1,42 +1,37 @@
 @import "../../../styles/colors";
 
-:host {
+.scrolling-wrapper-flexbox {
   display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-  @include gradient-background;
-}
-
-.header {
-  flex: 0 1 auto;
-  margin-left: 10px;
-  margin-right: 10px;
-  margin-top: 12px;
-  margin-bottom: 0;
-}
-
-.content {
-  flex: 1 1 auto;
-  padding-bottom: 20px;
-}
-
-.card-container {
-  height: 100%;
-  display: grid;
-  grid-gap: 0;
-  grid-template-columns: calc(10%);
-  grid-auto-flow: column;
-  grid-auto-columns: 80%;
-  grid-template-rows: minmax(150px, 1fr);
-  overflow-x: scroll;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  align-content: stretch;
   scroll-snap-type: x proximity;
   scroll-behavior: smooth;
-  padding-bottom: 10px;
 
-  &:before,
-  &:after {
-    content: "";
-    width: calc(10%);
+  .card {
+    flex: 0 0 auto;
+    margin-left: 10px;
+    width: 80%;
+    max-width: 300px;
+
+    &.empty {
+      margin-left: 0;
+      width: 10px;
+      border: none;
+    }
+  }
+}
+
+.scrolling-wrapper {
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+.scrolling-wrapper,
+.scrolling-wrapper-flexbox {
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+  &::-webkit-scrollbar {
+    display: none;
   }
 }

@@ -1,4 +1,4 @@
-<mat-card class="example-card">
+<mat-card class="event-card">
   <img
     mat-card-image
     src="https://material.angular.io/assets/img/examples/shiba2.jpg"
@@ -6,9 +6,150 @@
   />
   <div class="card-content">
     <h4 class="title">{{ event.title }}</h4>
-    <div class="description">{{ event.description }}</div>
+    <div
+      class="description mat-body three-line-clamp"
+      [ngClass]="{
+        'no-wrap': isAdminMember,
+        'three-line-clamp': !isAdminMember
+      }"
+    >
+      {{ event.description }}
+    </div>
+    <div class="injected-content">
+      <!-- TODO refactor this content -->
+      <!-- poll non-admin member -->
+      <div *ngIf="isPoll && !isAdminMember" class="card-details mat-body">
+        <div class="detail-row">
+          <fa-icon [icon]="userIcon" size="lg" [fixedWidth]="true"></fa-icon>
+          <div>7 Going <span class="invited mat-caption">12 Invited</span></div>
+        </div>
+        <div class="detail-row">
+          <fa-icon
+            [icon]="mapMarkerIcon"
+            size="lg"
+            [fixedWidth]="true"
+          ></fa-icon>
+          <div class="no-wrap">
+            Event Center 275 N Old Mill Lane, Salt Lake City Utah, 84037
+          </div>
+        </div>
+        <div class="detail-row">
+          <fa-icon
+            [icon]="calendarIcon"
+            size="lg"
+            [fixedWidth]="true"
+          ></fa-icon>
+          <div>Poll Ends Sep 3</div>
+        </div>
+      </div>
+      <!-- non-poll non-admin member -->
+      <div *ngIf="!isPoll && !isAdminMember" class="card-details mat-body">
+        <div class="detail-row">
+          <fa-icon [icon]="userIcon" size="lg" [fixedWidth]="true"></fa-icon>
+          <div>
+            43 Going <span class="invited mat-caption">120 Invited</span>
+          </div>
+        </div>
+        <div class="detail-row">
+          <fa-icon
+            [icon]="mapMarkerIcon"
+            size="lg"
+            [fixedWidth]="true"
+          ></fa-icon>
+          <div class="no-wrap">
+            Event Center 275 N Old Mill Lane, Salt Lake City Utah, 84037
+          </div>
+        </div>
+        <div class="detail-row">
+          <fa-icon
+            [icon]="calendarIcon"
+            size="lg"
+            [fixedWidth]="true"
+          ></fa-icon>
+          <div class="wrap">Sat Sep 18 7:00p - Mon Sep 20 7:00p</div>
+        </div>
+      </div>
+      <!-- poll admin member -->
+      <div *ngIf="isPoll && isAdminMember" class="card-details mat-body">
+        <div class="detail-row">
+          <fa-icon [icon]="userIcon" size="lg" [fixedWidth]="true"></fa-icon>
+          <div>
+            43 Going <span class="invited mat-caption">120 Invited</span>
+          </div>
+        </div>
+        <div class="poll-container">
+          <div class="detail-row">
+            <fa-icon
+              [icon]="calendarIcon"
+              size="lg"
+              [fixedWidth]="true"
+            ></fa-icon>
+            <div class="wrap">Poll ends Sep 3</div>
+          </div>
+          <div class="poll-times">
+            <div
+              class="poll-time"
+              *ngFor="let time of times; let i = index"
+              [class.mat-caption]="i !== 2"
+            >
+              <div>Fri</div>
+              <div>Sep 7</div>
+              <div>7:00p</div>
+              <div>
+                <fa-icon
+                  [icon]="userIcon"
+                  size="lg"
+                  [fixedWidth]="true"
+                ></fa-icon>
+                3
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="detail-row">
+          <fa-icon
+            [icon]="mapMarkerIcon"
+            size="lg"
+            [fixedWidth]="true"
+          ></fa-icon>
+          <div>
+            Event Center 275 N Old Mill Lane, Salt Lake City Utah, 84037
+          </div>
+        </div>
+      </div>
+      <!-- non-poll admin member -->
+      <div *ngIf="!isPoll && isAdminMember" class="card-details mat-body">
+        <div class="detail-row">
+          <fa-icon [icon]="userIcon" size="lg" [fixedWidth]="true"></fa-icon>
+          <div>
+            43 Going <span class="invited mat-caption">120 Invited</span>
+          </div>
+        </div>
+        <div class="detail-row">
+          <fa-icon
+            [icon]="calendarIcon"
+            size="lg"
+            [fixedWidth]="true"
+          ></fa-icon>
+          <div class="wrap">Sat Sep 18 7:00p - Mon Sep 20 7:00p</div>
+        </div>
+        <div class="detail-row">
+          <fa-icon
+            [icon]="mapMarkerIcon"
+            size="lg"
+            [fixedWidth]="true"
+          ></fa-icon>
+          <div class="wrap">
+            Event Center 275 N Old Mill Lane, Salt Lake City Utah, 84037
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <!-- <mat-card-actions>
-    <button mat-button>LIKE</button> <button mat-button>SHARE</button>
-  </mat-card-actions> -->
+  <mat-card-actions *ngIf="!isAdminMember">
+    <button *ngIf="isPoll" mat-raised-button color="accent">
+      Help pick a time.
+    </button>
+    <button *ngIf="!isPoll" mat-raised-button color="accent">RSVP</button>
+  </mat-card-actions>
 </mat-card>

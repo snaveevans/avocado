@@ -1,0 +1,24 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 300px;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .logout-success {
+    margin-bottom: 10px;
+  }
+
+  .login-button {
+    margin-top: auto;
+    min-width: 300px;
+  }
+}

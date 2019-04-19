@@ -1,7 +1,3 @@
-<div *ngIf="isLoggedOut && (isLoggingOut$ | async)">
-  You have successfully been logged out.
-</div>
-
 <div *ngIf="errors.length">
   <mat-list>
     <h3 mat-subheader>Errors</h3>
@@ -12,35 +8,33 @@
   </mat-list>
 </div>
 
-<div *ngIf="!(showForm$ | async)">
-  <button mat-raised-button color="accent" (click)="startRegistration()">
+<div
+  *ngIf="!(isRegistering$ | async); else registrationForm"
+  class="login-actions"
+>
+  <button
+    class="login-action"
+    mat-raised-button
+    color="accent"
+    (click)="showForm()"
+  >
     <mat-icon svgIcon="google"></mat-icon>
     Sign-up with Google
   </button>
-  <button mat-raised-button color="primary" (click)="login()">
+  <button
+    class="login-action"
+    mat-raised-button
+    color="primary"
+    (click)="login()"
+  >
     <mat-icon svgIcon="google"></mat-icon>
     Login with Google
   </button>
 </div>
 
-<div *ngIf="(showForm$ | async)">
-  <form
-    [formGroup]="registrationForm"
-    (ngSubmit)="register()"
-    #formInstance="ngForm"
-    [ngClass]="{ submitted: formInstance.submitted }"
-  >
-    <mat-form-field appearance="outline">
-      <mat-label>Name</mat-label>
-      <input matInput formControlName="name" />
-      <mat-error>Required</mat-error>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>User Name</mat-label>
-      <input matInput formControlName="userName" />
-      <mat-error>Required</mat-error>
-    </mat-form-field>
-    <button type="submit" mat-raised-button color="primary">Register</button>
-    <button mat-raised-button (click)="cancelRegistration()">Cancel</button>
-  </form>
-</div>
+<ng-template #registrationForm>
+  <av-register-form
+    (register)="register($event)"
+    (cancel)="cancelRegistration()"
+  ></av-register-form>
+</ng-template>

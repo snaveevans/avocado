@@ -1,0 +1,17 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 300px;
+}
+
+.form-action {
+  width: 100%;
+
+  + .form-action {
+    margin-top: 10px;
+  }
+}

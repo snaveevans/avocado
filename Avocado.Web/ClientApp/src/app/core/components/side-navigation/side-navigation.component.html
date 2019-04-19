@@ -15,7 +15,7 @@
         [routerLink]="route.path"
         [queryParams]="route.queryParams"
         (click)="handleLinkClick()"
-        [class.last]="route.path === 'login'"
+        [class.last]="route.path === 'logout' || route.path === 'login'"
       >
         <mat-icon [svgIcon]="route.icon"></mat-icon>
         {{ route.text }}

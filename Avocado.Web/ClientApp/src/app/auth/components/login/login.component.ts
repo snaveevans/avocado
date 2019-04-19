@@ -1,7 +1,7 @@
-import { Component, OnInit } from "@angular/core";
-import { FormBuilder, Validators } from "@angular/forms";
+import { Component } from "@angular/core";
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { IdentityError } from "@avocado/auth/models/IdentityError";
+import { RegisterForm } from "@avocado/auth/models/RegisterForm";
 import { AuthService } from "@avocado/auth/services/auth.service";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -11,47 +11,26 @@ import { map } from "rxjs/operators";
   templateUrl: "./login.component.html",
   styleUrls: ["./login.component.scss"]
 })
-export class LoginComponent implements OnInit {
-  isLoggingIn = false;
+export class LoginComponent {
   errors: IdentityError[] = [];
-  isLoggedOut = false;
-  isLoggingOut$: Observable<boolean>;
-  showForm$: Observable<boolean>;
-  registrationForm = this.formBuilder.group({
-    name: ["", [Validators.required]],
-    userName: ["", [Validators.required]]
-  });
+  isRegistering$: Observable<boolean>;
 
   constructor(
     private authService: AuthService,
     private route: ActivatedRoute,
-    private router: Router,
-    private formBuilder: FormBuilder
+    private router: Router
   ) {
-    this.isLoggingOut$ = this.route.queryParamMap.pipe(
-      map((paramMap: ParamMap) => paramMap.get("logout") === "true")
-    );
-    this.showForm$ = this.route.queryParamMap.pipe(
+    this.isRegistering$ = this.route.queryParamMap.pipe(
       map((paramMap: ParamMap) => paramMap.get("register") === "true")
     );
   }
 
-  ngOnInit() {
-    this.isLoggingOut$.subscribe((isLoggingOut: boolean) => {
-      if (isLoggingOut) {
-        this.authService.logout();
-        this.isLoggedOut = true;
-      }
-    });
-  }
-
   login(): void {
-    this.isLoggingIn = true;
     this.errors = [];
     this.authService.login().subscribe(this.postAuthentication);
   }
 
-  startRegistration(): void {
+  showForm(): void {
     const queryParams: any = {
       register: true
     };
@@ -65,17 +44,8 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  register(): void {
-    if (!this.registrationForm.valid) {
-      return;
-    }
-    this.isLoggingIn = true;
-    this.errors = [];
-    const name = this.registrationForm.get("name").value;
-    const userName = this.registrationForm.get("userName").value;
-    this.authService
-      .register(name, userName)
-      .subscribe(this.postAuthentication);
+  register(registerForm: RegisterForm): void {
+    this.authService.register(registerForm).subscribe(this.postAuthentication);
   }
 
   cancelRegistration(): void {
@@ -92,7 +62,6 @@ export class LoginComponent implements OnInit {
   }
 
   private postAuthentication = (errors: IdentityError[]): void => {
-    this.isLoggingIn = false;
     if (errors.length) {
       this.errors = errors;
       return;

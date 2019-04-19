@@ -1,0 +1,23 @@
+<form
+  [formGroup]="registrationForm"
+  (ngSubmit)="handleSubmit()"
+  #formInstance="ngForm"
+  [ngClass]="{ submitted: formInstance.submitted }"
+>
+  <mat-form-field appearance="outline">
+    <mat-label>Name</mat-label>
+    <input matInput formControlName="name" />
+    <mat-error>Required</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>User Name</mat-label>
+    <input matInput formControlName="userName" />
+    <mat-error>Required</mat-error>
+  </mat-form-field>
+  <button class="form-action" type="submit" mat-raised-button color="primary">
+    Register
+  </button>
+  <button class="form-action" mat-raised-button (click)="cancel.emit()">
+    Cancel
+  </button>
+</form>

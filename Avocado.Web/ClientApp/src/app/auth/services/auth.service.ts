@@ -19,6 +19,7 @@ import {
   tap,
   retry
 } from "rxjs/operators";
+import { RegisterForm } from "@avocado/auth/models/RegisterForm";
 
 @Injectable({
   providedIn: "root"
@@ -80,7 +81,7 @@ export class AuthService {
       catchError(_ => of([IdentityError.providerTokenFailed()]))
     );
 
-  register = (name: string, userName: string): Observable<IdentityError[]> =>
+  register = ({ name, userName }: RegisterForm): Observable<IdentityError[]> =>
     this.firebaseConfig$.pipe(
       switchMap(_ => from(this.getProviderToken())),
       switchMap(

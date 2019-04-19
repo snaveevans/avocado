@@ -23,9 +23,7 @@ export const allRoutes: { [P in RouteName]: AppRoute } = {
   [RouteName.NewEvent]: new AppRoute("New Event", "plus-circle", "events/new"),
   [RouteName.Help]: new AppRoute("Help", "help-circle", "help"),
   [RouteName.Login]: new AppRoute("Login", "login", "login"),
-  [RouteName.Logout]: new AppRoute("Logout", "logout", "login", {
-    logout: true
-  })
+  [RouteName.Logout]: new AppRoute("Logout", "logout", "logout")
 };
 
 export const menuRoutes: RouteName[] = [...Object.values(RouteName)];

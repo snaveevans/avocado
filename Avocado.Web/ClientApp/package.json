@@ -10,7 +10,6 @@
     "test": "ng test",
     "lint": "ng lint",
     "prettier": "prettier --write src/**/*",
-    "precommit": "run-s prettier lint",
     "e2e": "ng e2e"
   },
   "private": true,
@@ -56,10 +55,5 @@
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
     "typescript": "~3.1.6"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "precommit"
-    }
   }
 }

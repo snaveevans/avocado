@@ -27,7 +27,7 @@
 ## Configure
 
 1. change `JwtIssuerOptions:Secret` _value must be at least 16 characters long_
-2. change `FirebaseConfig` values, Avocado firebase project -> "Get started by adding..." -> Web (</> icon)
+2. change `FirebaseConfig` values, Avocado firebase project -> "+ Add app" -> Web (</> icon)
 3. change `FirebaseJson` value
    - Get the firebase json file from the Avocado firebase project -> Settings (gear icon) -> Project settings -> Service Accounts -> Generate new private key
    - Reduce it to single line
@@ -47,13 +47,9 @@ To add a migration `dotnet ef migrations add {migration name} -p ./Avocado.Infra
 
 To update database with migrations `dotnet ef database update -p ./Avocado.Infrastructure/ -s ./Avocado.Web/ -c {AvocadoContext}`
 
-## JWT Notes
-
-`JwtKey` must be added to the dotnet secrets store for development use `dotnet user-secrets` in the `Avocado.Web` directory.
-
 ## Database
 
 To run local database
 
-- First time: `docker run --name avocado-db -e POSTGRES_DB=avocado -e POSTGRES_USER=avocado-user -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres`
+- First time: Use init.sh or run `docker run --name avocado-db -e POSTGRES_DB=avocado -e POSTGRES_USER=avocado-user -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres`
 - Following: `docker start avocado-db`

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "event scheduler",
   "scripts": {
-    "watch": "concurrently --kill-others --handle-input \"npm run start --prefix Avocado.Web/ClientApp\" \"nodemon Avocado.Web/Avocado.Web.csproj\"",
+    "watch": "concurrently --kill-others --handle-input \"nodemon Avocado.Web/Avocado.Web.csproj\" \"npm run start --prefix Avocado.Web/ClientApp\"",
     "database:update": "dotnet ef database update -p ./Avocado.Infrastructure/ -s ./Avocado.Web/ -c AvocadoContext"
   },
   "repository": {

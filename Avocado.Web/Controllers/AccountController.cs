@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Avocado.Domain.Entities;
-using Avocado.Infrastructure.Authentication;
 using Avocado.Infrastructure.Providers;
 using Avocado.Web.Models;
 using Microsoft.AspNetCore.Authorization;

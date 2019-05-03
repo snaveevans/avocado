@@ -45,7 +45,7 @@ else
     dotnet dev-certs https --trust # mac/windows
 fi
 
-## Set up JwtIssuerOptions:Secret with input or random key with dotnet-user-serets
+## Set up local environment secrets
 echo "Checking for dotnet tool 'user-secrets'."
 if dotnet user-secrets --version; then
     echo "'user-secrets' is installed."
@@ -54,7 +54,11 @@ else
     dotnet tool install --global dotnet-user-secrets
 fi
 
-## Set up JwtIssuerOptions:Secret with defined key at least 16 chars or random key TODO: Ignore it
+## Configure dev-secrets.json found in Avocado.Web
+echo "Configuring dev-secrets.json"
+cat ./Avocado.Web/dev-secrets.json | dotnet user-secrets set -p "./Avocado.Web"
+
+## Set up JwtIssuerOptions:Secret with defined key at least 16 chars or random key
 read -p "Input JwtIssuerOptions:Secret (16 char minimum) or press [enter] for a random key:" key
 if [ -z "$key" ]; then
     echo "Generating Random Key..."
@@ -114,10 +118,10 @@ fi
 ## cleanup
 unset key jwt ans
 
-## Database migration TODO: Set flag to only do database migration
+## Database migration, must be done after all secrets are setup
 echo "Migrating the database on docker"
 dotnet ef database update -p ./Avocado.Infrastructure/ -s ./Avocado.Web/ -c AvocadoContext
 
 ## Complete
 echo "Initialization complete. Please manually check for errors. When you are ready to run Avocado, run the command 'npm run watch'."
-eotnet dev-certs https --trust # mac/windows
+exit 0

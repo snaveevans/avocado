@@ -37,6 +37,12 @@ $accent-palette: (
     700: #ffffff
   )
 );
+$warn-palette: (
+  500: #b61111,
+  contrast: (
+    500: #ffffff
+  )
+);
 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
@@ -44,7 +50,7 @@ $accent-palette: (
 // mat-palette(palette, default hue, light hue, dark hue);
 $primary: mat-palette($primary-palette, 500, 100, 700);
 $accent: mat-palette($accent-palette, 500, 100, 700);
-$warn: mat-palette($mat-red);
+$warn: mat-palette($warn-palette, 500, 500, 500);
 
 // Create the theme object (a Sass map containing all of the palettes).
 $avocado-app-theme: mat-light-theme($primary, $accent, $warn);

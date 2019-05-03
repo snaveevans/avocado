@@ -4,7 +4,13 @@
   "description": "event scheduler",
   "scripts": {
     "watch": "concurrently --kill-others --handle-input \"nodemon Avocado.Web/Avocado.Web.csproj\" \"npm run start --prefix Avocado.Web/ClientApp\"",
-    "database:update": "dotnet ef database update -p ./Avocado.Infrastructure/ -s ./Avocado.Web/ -c AvocadoContext"
+    "database:update": "dotnet ef database update -p ./Avocado.Infrastructure/ -s ./Avocado.Web/ -c AvocadoContext",
+    "build": "npm run build:web && npm run build:client",
+    "build:web": "dotnet build Avocado.Web/Avocado.Web.csproj",
+    "build:client": "npm run build --prefix Avocado.Web/ClientApp",
+    "test": "npm run test:domain && npm run test:client",
+    "test:domain": "dotnet test Avocado.Test/Avocado.Test.csproj",
+    "test:client": "npm run test --prefix Avocado.Web/ClientApp"
   },
   "repository": {
     "type": "git",
